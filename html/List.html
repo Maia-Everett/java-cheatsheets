@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>List&lt;E&gt; и ArrayList&lt;E&gt;</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">List&lt;E&gt; и ArrayList&lt;E&gt;</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#интерфейс-и-реализация">Интерфейс и реализация</a></li>
+<li><a href="#создание">Создание</a></li>
+<li><a href="#длина-и-доступ-по-индексу">Длина и доступ по индексу</a></li>
+<li><a href="#итерация-обход-списка">Итерация (обход списка)</a></li>
+<li><a href="#печать-списка">Печать списка</a></li>
+<li><a href="#изменение-списка">Изменение списка</a></li>
+<li><a href="#списки-и-массивы">Списки и массивы</a></li>
+<li><a href="#сортировка">Сортировка</a></li>
+</ul>
+</div>
+<p>Интерфейс: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html"><code>java.util.List</code></a></p>
+<p>Класс: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html"><code>java.util.ArrayList</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Интерфейсный тип <code>List&lt;E&gt;</code> описывает абстракцию &quot;конечный упорядоченный список объектов типа <code>E</code>&quot;. Здесь <code>E</code> может быть любым объектным типом, в том числе и списочным. Например:</p>
+<ul>
+<li><code>List&lt;String&gt;</code> — это список строк;</li>
+<li><code>List&lt;LocalDate&gt;</code> — список дат;</li>
+<li><code>List&lt;List&lt;String&gt;&gt;</code> — список списков строк;</li>
+<li><code>List&lt;Object&gt;</code> — список, который может хранить объекты любого типа.</li>
+</ul>
+<p>Класс <code>ArrayList&lt;E&gt;</code> является конкретной реализацией интерфейса <code>List&lt;E&gt;</code>. Он реализует список с <em>константным временем доступа по индексу</em> (то есть время на извлечение элемента по индексу не зависит от длины списка и положения в нём элемента), доступный для записи и динамически расширяющийся при добавлении в него новых элементов.</p>
+<h2 id="интерфейс-и-реализация">Интерфейс и реализация</h2>
+<p>Тип <code>List</code> — это абстрактный тип. Сам по себе он не реализует алгоритм хранения списка и операции с ним. Нельзя просто так взять и создать экземпляр типа <code>List</code> <em>(Boromir.jpg)</em>. Если точнее, то <code>List</code> — это <em>интерфейс</em>. Можно создать только экземпляр конкретного класса, реализующего интерфейс <code>List</code>; одним из таких классов, и наиболее часто используемым, является <code>ArrayList</code>. Например, мы могли бы создать список строк вот так:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strings = <span class="kw">new</span> ArrayList&lt;&gt;();</code></pre></div>
+<p>Пустые угловые скобки — это просто синтаксический сахар, означающий &quot;использовать справа тот тип, который ожидается слева&quot;. Можно, но не нужно, записать ту же инструкцию более длинным способом:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strings = <span class="kw">new</span> ArrayList&lt;String&gt;();</code></pre></div>
+<p>Как видно, переменная интерфейсного типа может ссылаться на объект любого класса, реализующего этот интерфейс. На практике принято работать именно с абстрактным типом <code>List</code>, а конкретный тип считать деталью реализации, &quot;забыв&quot; о нём сразу после создания. Например, почти все классы стандартной библиотеки принимают и возвращают именно тип <code>List</code>, а не <code>ArrayList</code> или другой конкретный тип. Это позволяет в случае необходимости легко сменить реализацию списка, не трогая интерфейс, например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strings = <span class="kw">new</span> LinkedList&lt;&gt;();</code></pre></div>
+<p>Не все реализации интерфейса <code>List</code> поддерживают все методы, объявленные в нём. Например, если вы реализуете список фиксированного размера, то для него будет бессмысленна операция <code>add</code>, добавляющая элемент в список. Библиотечные списки фиксированного размера при попытке вызова <code>add</code> бросают <code>UnsupportedOperationException</code>. Точно так же в списках, доступных только для чтения, то же исключение бросает операция <code>set</code>, заменяющая элемент списка. А вот <code>ArrayList</code> поддерживает все доступные операции.</p>
+<h2 id="создание">Создание</h2>
+<p>Как мы знаем, конструктор <code>ArrayList</code> без параметров создаёт пустой список:</p>
+<p><code>ArrayList&lt;E&gt;()</code></p>
+<p>К сожалению, списки могут хранить только объекты; нельзя создать список, хранящий числовые типы или тип <code>boolean</code>. Поэтому вместо примитивных типов нужно использовать классы-обёртки:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
+numbers.<span class="fu">add</span>(<span class="dv">5</span>);</code></pre></div>
+<p>Если <code>T1</code> и <code>T2</code> — разные типы, то компилятор не даст присвоить переменной типа <code>List&lt;T1&gt;</code> выражение типа <code>List&lt;T2&gt;</code>, даже если переменной типа <code>T1</code> можно присвоить выражение типа <code>T2</code>. В самом деле, если бы это было возможно, мы могли бы испортить список, добавив в него объекты не того типа:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String str = <span class="st">&quot;Hello&quot;</span>;
+Object obj = str;                            <span class="co">// можно</span>
+
+List&lt;String&gt; strList = <span class="kw">new</span> ArrayList&lt;&gt;();
+List&lt;Object&gt; objList = strList;              <span class="co">// нельзя, но давайте представим...</span>
+objList.<span class="fu">add</span>(LocalDate.<span class="fu">of</span>(<span class="dv">2016</span>, <span class="dv">2</span>, <span class="dv">24</span>));      <span class="co">// упс, положили не строку</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(strList.<span class="fu">get</span>(<span class="dv">0</span>).<span class="fu">length</span>()); <span class="co">// ой-ой-ой</span></code></pre></div>
+<p>Это означает что нельзя присвоить переменной типа <code>List&lt;List&lt;E&gt;&gt;</code> выражение типа <code>ArrayList&lt;ArrayList&lt;E&gt;&gt;</code> (подумайте, почему). Зато можно создать копию списка, используя <em>конструктор копии</em>, который принимает любую коллекцию (в том числе и список) любого типа, который можно положить в наш список:</p>
+<p><code>ArrayList&lt;E&gt;(Collection&lt;любой_подтип_E&gt; source)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strList = <span class="kw">new</span> ArrayList&lt;&gt;();
+strList.<span class="fu">add</span>(<span class="st">&quot;Hello&quot;</span>);
+List&lt;String&gt; listCopy = <span class="kw">new</span> ArrayList&lt;&gt;(strList);
+
+List&lt;Object&gt; objList = <span class="kw">new</span> ArrayList&lt;&gt;(strList);  <span class="co">// вот так уже можно, это копия</span>
+objList.<span class="fu">add</span>(LocalDate.<span class="fu">of</span>(<span class="dv">2016</span>, <span class="dv">2</span>, <span class="dv">24</span>));</code></pre></div>
+<h2 id="длина-и-доступ-по-индексу">Длина и доступ по индексу</h2>
+<p>Любой список поддерживает две операции: получение текущего размера списка, то есть числа элементов в нём, и получение элемента списка по индексу:</p>
+<p><code>int size()</code></p>
+<p><code>E get(int index)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
+numbers.<span class="fu">add</span>(<span class="dv">5</span>);                      <span class="co">// int -&gt; Integer </span>
+numbers.<span class="fu">add</span>(<span class="dv">100</span>);                    <span class="co">// int -&gt; Integer</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(numbers.<span class="fu">size</span>());  <span class="co">// 2</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(numbers.<span class="fu">get</span>(<span class="dv">0</span>));  <span class="co">// 5</span>
+
+<span class="dt">int</span> secondElement = numbers.<span class="fu">get</span>(<span class="dv">1</span>);  <span class="co">// Integer -&gt; int</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(secondElement);   <span class="co">// 100</span></code></pre></div>
+<p>Аналогично строкам и массивам, возможные индексы начинаются с 0 и заканчиваются <code>size() - 1</code>.</p>
+<p>Как и для строк, существует сокращённая форма проверки на пустой список:</p>
+<p><code>boolean isEmpty()</code></p>
+<p>Она аналогична <code>size() == 0</code>, но для некоторых списков (например, <code>LinkedList</code>) выполняется быстрее.</p>
+<blockquote>
+<p>Поскольку вместо примитивных типов мы вынуждены хранить в списке объекты-обёртки, нужно помнить, что выражения типа <code>Integer</code> (а также <code>Long</code>, <code>Double</code> и т.д.) могут иметь значение <code>null</code>, тогда как примитивные типы <code>int</code>, <code>long</code>, <code>double</code> и т.д. не могут хранить <code>null</code>. Таким образом, нужна осторожность при работе со списками, допускающими хранение значений <code>null</code> (а <code>ArrayList</code> как раз из их числа). Например, следующий код не сработает:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
+numbers.<span class="fu">add</span>(<span class="kw">null</span>);
+<span class="dt">int</span> i = numbers.<span class="fu">get</span>(<span class="dv">0</span>);  <span class="co">// бросает NullPointerException</span></code></pre></div>
+<p>Если вы принимаете списки из внешнего кода, будьте готовы к тому, что они могут содержать <code>null</code>.</p>
+</blockquote>
+<h2 id="итерация-обход-списка">Итерация (обход списка)</h2>
+<p>В принципе методов <code>size</code> и <code>get</code> достаточно, чтобы написать код, обходящий все элементы списка от начала к концу:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; list.<span class="fu">size</span>(); i++) {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(list.<span class="fu">get</span>(i));
+}</code></pre></div>
+<p>Но так делать обычно не стоит. Не все реализации <code>List</code> поддерживают константное время доступа по индексу, как это делает <code>ArrayList</code>. Например, для связанного списка <code>LinkedList</code> операция <code>get</code> занимает время, пропорциональное индексу элемента (то есть выполняется тем дольше, чем дальше элемент от начала). Говорят, что эта операция имеет <em>линейную сложность</em> по времени. Если мы применим к <code>LinkedList</code> наивный цикл обхода вроде показанного выше, то время выполнения этого цикла будет пропорционально уже квадрату размера списка <em>(квадратичная сложность)</em>.</p>
+<p>И это ужасно. <em>(LexLuthor.jpg)</em></p>
+<p>К счастью, каждый список умеет эффективно обходить сам себя. Операция обхода списка <em>(итерация)</em> является настолько базовой, что для неё даже есть поддержка на уровне языка Java. Вот так мы можем эффективно обойти любой список — хоть <code>ArrayList</code>, хоть <code>LinkedList</code>, хоть любой другой — за линейное время:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">for</span> (E e : list) {
+    <span class="co">// код, использующий e</span>
+}</code></pre></div>
+<p>Такой цикл называется циклом <em>for-each</em>. Вот пример его применения:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strings = <span class="kw">new</span> ArrayList&lt;&gt;();
+strings.<span class="fu">add</span>(<span class="st">&quot;Hello&quot;</span>);
+
+<span class="kw">for</span> (String str : strings) {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(str);
+}</code></pre></div>
+<p>Для совсем дотошных скажу, что такая запись является синтаксическим сахаром, а под капотом происходит вот какой ужас:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">for</span> (Iterator&lt;String&gt; it = strings.<span class="fu">iterator</span>(); it.<span class="fu">hasNext</span>(); ) {
+    String str = it.<span class="fu">next</span>();
+    System.<span class="fu">out</span>.<span class="fu">println</span>(str);
+}</code></pre></div>
+<p>Но до итераторов мы ещё доберёмся. Они понадобятся нам, если мы захотим написать свой класс, поддерживающий итерацию циклом for-each.</p>
+<p>Обычный же цикл for с переменной-счётчиком может понадобиться, если внутри цикла нужен доступ не только к элементам списка, но и к их индексам. Только нужно обходить таким образом только списки, поддерживающие константное время доступа по индексу. Например, <code>ArrayList</code>.</p>
+<h2 id="печать-списка">Печать списка</h2>
+<p>Быстро распечатать весь список (например, в отладочных целях) можно, получив его строковое представление с помощью метода <code>toString</code>. Он возвращает строку со всеми элементами списка через запятую и в квадратных скобках.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
+numbers.<span class="fu">add</span>(<span class="dv">5</span>);
+numbers.<span class="fu">add</span>(<span class="dv">100</span>);
+
+String str = numbers.<span class="fu">toString</span>();  <span class="co">// &quot;[5, 100]&quot;</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(str);
+System.<span class="fu">out</span>.<span class="fu">println</span>(numbers);      <span class="co">// Так тоже можно: println сам вызовет toString</span></code></pre></div>
+<h2 id="изменение-списка">Изменение списка</h2>
+<p>Теперь мы рассмотрим операции, которые не читают из списка, а пишут в него. Их поддерживают не все списки. К счастью, <code>ArrayList</code> реализует все эти операции.</p>
+<p>Метод <code>add</code> добавляет элемент в конец списка или, если первым параметром указан индекс, <em>перед</em> этим индексом:</p>
+<p><code>boolean add(E element)</code></p>
+<p><code>void add(int beforeIndex, E element)</code></p>
+<p>Например, <code>list.add(0, element)</code> добавляет элемент в начало списка. При добавлении элемента не в конец списка все следующие за ним элементы сдвигаются вправо.</p>
+<p>Кстати, что ещё за <code>boolean</code> такой? Дело в том, что любой список является коллекцией, но не любая коллекция является списком. Метод <code>add</code> с одним параметром возвращает <code>true</code>, если элемент действительно был добавлен. А некоторые коллекции (они называются <em>множествами</em>) не хранят более одного одинакового элемента, и для них <code>add</code> возвращает <code>false</code>, если такой элемент во множестве уже есть. Но списки всегда хранят ровно столько элементов, сколько в них было добавлено (даже если они повторяются), и ровно в том же порядке, поэтому для них <code>add</code> всегда возвращает <code>true</code>.</p>
+<p>Добавлять элементы по одному не всегда удобно (и не всегда эффективно). Метод <code>addAll</code> позволяет скопировать в список содержимое целой коллекции (в том числе и другого списка) — если, конечно, она совместима по типу.</p>
+<p><code>boolean addAll(Collection&lt;любой_подтип_E&gt; source)</code></p>
+<p><code>boolean addAll(int beforeIndex, Collection&lt;любой_подтип_E&gt; source)</code></p>
+<p>Кстати, конструктор копии для класса <code>ArrayList</code> аналогичен вызову конструктора без параметров с последующим вызовом <code>addAll</code>. Например, такой код</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strList = <span class="kw">new</span> ArrayList&lt;&gt;();
+List&lt;Object&gt; objList = <span class="kw">new</span> ArrayList&lt;&gt;(strList);</code></pre></div>
+<p>делает то же, что и</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strList = <span class="kw">new</span> ArrayList&lt;&gt;();
+List&lt;Object&gt; objList = <span class="kw">new</span> ArrayList&lt;&gt;();
+objList.<span class="fu">addAll</span>(strList);</code></pre></div>
+<p>Парным к методу <code>add</code> является <code>remove</code>. Одна его форма удаляет элемент по индексу, а вторая удаляет <em>первый найденный</em> элемент, равный переданному:</p>
+<p><code>boolean remove(int index)</code></p>
+<p><code>boolean remove(Object o)</code></p>
+<p>Если элемент удаляется не из конца списка, то следующие за ним элементы сдвигаются влево.</p>
+<blockquote>
+<p>Сравнение элементов осуществляется по <code>equals</code>, а не по <code>==</code>. Таким образом, приведённый ниже код удалит из списка строк единственный его элемент, несмотря на то, что элемент списка и параметр метода <code>remove</code> являются разными объектами:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strList = <span class="kw">new</span> ArrayList&lt;&gt;();
+strList.<span class="fu">add</span>(<span class="st">&quot;Hello&quot;</span>);
+strList.<span class="fu">remove</span>(<span class="kw">new</span> String(<span class="st">&quot;Hello&quot;</span>));</code></pre></div>
+</blockquote>
+<blockquote>
+<p>Будьте осторожны с методом <code>remove</code> в списках типа <code>List&lt;Integer&gt;</code>. Если вы передадите <code>int</code> вместо <code>Integer</code> и наоборот, может вызваться не та версия метода <code>remove</code>, которая нужна:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
+numbers.<span class="fu">add</span>(<span class="dv">5</span>);
+numbers.<span class="fu">remove</span>(<span class="dv">5</span>);    <span class="co">// remove(int); выбросит IndexOutOfBoundsException</span>
+
+Integer obj = <span class="dv">5</span>;
+numbers.<span class="fu">remove</span>(obj);  <span class="co">// remove(Object); OK</span></code></pre></div>
+</blockquote>
+<p>Аналогично <code>addAll</code> есть метод <code>removeAll</code>, удаляющий все элементы переданной коллекции, найденные в списке:</p>
+<p><code>boolean removeAll(Collection&lt;любой_тип&gt; collection)</code></p>
+<p>и ещё есть метод <code>retailAll</code>, который, наоборот, оставляет в списке только те элементы, которые есть в переданной коллекции (по сути, реализуя операцию пересечения):</p>
+<p><code>boolean retainAll(Collection&lt;любой_тип&gt; collection)</code></p>
+<p>Методы <code>remove</code>, <code>removeAll</code> и <code>retainAll</code> возвращают <code>true</code>, если список был изменён, то есть какие-то элементы действительно были найдены и удалены.</p>
+<p>Метод <code>clear</code> очищает весь список, делая его пустым:</p>
+<p><code>void clear()</code></p>
+<p>И, наконец, метод <code>set</code> не изменяет длину списка, а заменяет элемент по указанному индексу другим, возвращая тот элемент, который находился по этому индексу до этого:</p>
+<p><code>E set(int index, E element)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
+numbers.<span class="fu">add</span>(<span class="dv">5</span>);
+numbers.<span class="fu">add</span>(<span class="dv">100</span>);
+
+System.<span class="fu">out</span>.<span class="fu">println</span>(numbers);             <span class="co">// [5, 100]</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(numbers.<span class="fu">set</span>(<span class="dv">0</span>, <span class="dv">42</span>));  <span class="co">// 5</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(numbers);             <span class="co">// [42, 100]</span></code></pre></div>
+<blockquote>
+<p>Разные реализации списков оптимизированы для разных целей. Например, <code>ArrayList</code> оптимизирован для добавления элементов в конец списка и для доступа по индексу, но вставка и удаление не из конца списка имеют линейную сложность, потому что приводят к сдвигу элементов массива, который <code>ArrayList</code> использует внутри. А <code>LinkedList</code> оптимизирован для вставки и удаления в любое место списка, но потребляет больше памяти; кроме того, для доступа к элементу по индексу N ему нужно сначала пройти N - 1 предыдущих элементов, поэтому операции с индексами имеют для него линейную сложность.</p>
+<p>В типичных приложениях, как правило, используется всё же <code>ArrayList</code>, потому что приложения, как правило, чаще читают из произвольных мест списков, чем изменяют их.</p>
+</blockquote>
+<h2 id="списки-и-массивы">Списки и массивы</h2>
+<p>К сожалению, во многих старых API в Java, созданных до появления удобной абстракции списков, используются массивы там, где уместнее был бы список. Поэтому иногда приходится преобразовывать списки в массивы и наоборот.</p>
+<p>Копию списка в виде массива можно получить с помощью метода <code>toArray</code>:</p>
+<p><code>E[] toArray(E[] array)</code></p>
+<p>По историческим причинам у этого метода довольно странный синтаксис. Он принимает массив и заполняет его начало, если длины переданного массива хватает, чтобы вместить копию всего списка, а в противном случае создаёт новый массив того же типа и нужной длины.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
+numbers.<span class="fu">add</span>(<span class="dv">5</span>);
+numbers.<span class="fu">add</span>(<span class="dv">100</span>);
+
+Integer[] array1 = <span class="kw">new</span> Integer[<span class="dv">1</span>];             <span class="co">// слишком мало</span>
+Integer[] result1 = numbers.<span class="fu">toArray</span>(array1);
+System.<span class="fu">out</span>.<span class="fu">println</span>(array1 == result1);         <span class="co">// false</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(Arrays.<span class="fu">toString</span>(array1));   <span class="co">// [0]</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(Arrays.<span class="fu">toString</span>(result1));  <span class="co">// [5, 100]</span>
+
+Integer[] array2 = <span class="kw">new</span> Integer[<span class="dv">4</span>];             <span class="co">// больше, чем нужно</span>
+Integer[] result2 = numbers.<span class="fu">toArray</span>(array2);
+System.<span class="fu">out</span>.<span class="fu">println</span>(array2 == result2);         <span class="co">// true</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(Arrays.<span class="fu">toString</span>(array2));   <span class="co">// [5, 100, 0, 0]</span></code></pre></div>
+<p>Рекомендуемой идиомой является передача в метод <code>toArray</code> нового массива с размером, равным размеру списка:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">numbers.<span class="fu">toArray</span>(<span class="kw">new</span> Integer[numbers.<span class="fu">size</span>()])</code></pre></div>
+<blockquote>
+<p>В примере используется массив объектов-обёрток <code>Integer[]</code>, а не чисел <code>int[]</code>. К сожалению, преобразовать список <code>List&lt;Integer&gt;</code> в массив <code>int[]</code> не так просто. Можно написать его самостоятельно или использовать метод <code>Ints.toArray</code> из библиотеки Google Guava.</p>
+</blockquote>
+<blockquote>
+<p>Для печати элементов массива нужно использовать <code>Arrays.toString</code>. Вызов же метода <code>toString</code> у самого массива вернёт малоинтересную тарабарщину:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">System.<span class="fu">out</span>.<span class="fu">println</span>(array2);  <span class="co">// [C@279f2327</span></code></pre></div>
+</blockquote>
+<p>Обратную же операцию — преобразование массива в список — можно осуществить статическим методом <code>Arrays.asList</code>.</p>
+<p><code>List&lt;T&gt; asList(T... array)</code></p>
+<p>Этот метод возвращает не <code>ArrayList</code>, а представление массива в виде списка фиксированной длины. У такого списка нельзя вызывать никакие методы, изменяющие его длину (то есть <code>add</code>, <code>addAll</code>, <code>remove</code>, <code>removeAll</code>, <code>retainAll</code> и <code>clear</code>). Но можно вызывать методы <code>get</code> и <code>set</code>, причём изменения в массиве отразятся на списке и наоборот:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String[] stringArray = { <span class="st">&quot;First&quot;</span>, <span class="st">&quot;Second&quot;</span> };
+List&lt;String&gt; stringList = Arrays.<span class="fu">asList</span>(stringArray);
+
+stringArray[<span class="dv">0</span>] = <span class="st">&quot;Первый&quot;</span>;
+System.<span class="fu">out</span>.<span class="fu">println</span>(stringList);                   <span class="co">// [Первый, Second]</span>
+stringList.<span class="fu">set</span>(<span class="dv">0</span>, <span class="st">&quot;Второй&quot;</span>);
+System.<span class="fu">out</span>.<span class="fu">println</span>(Arrays.<span class="fu">toString</span>(stringArray)); <span class="co">// [Первый, Второй]</span></code></pre></div>
+<p>Если же нужен именно <code>ArrayList</code> (например, для добавления и удаления элементов), всегда можно воспользоваться конструктором копии, но полученный список будет только копией массива, не связанной с ним.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; stringArrayList = <span class="kw">new</span> ArrayList&lt;&gt;(stringList);
+stringArrayList.<span class="fu">set</span>(<span class="dv">0</span>, <span class="st">&quot;FIRST&quot;</span>);
+System.<span class="fu">out</span>.<span class="fu">println</span>(stringArrayList);              <span class="co">// [FIRST, Второй]</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(Arrays.<span class="fu">toString</span>(stringArray)); <span class="co">// [Первый, Второй]</span></code></pre></div>
+<h2 id="сортировка">Сортировка</h2>
+<p>Для сортировки используется метод <code>sort</code>. Конечно, он работает, только если список доступен для записи (метод <code>set</code>).</p>
+<p><code>void sort(Comparator&lt;любой_супертип_E&gt; comparator)</code></p>
+<p>Для работы алгоритма сортировки нужен <em>компаратор</em> — нечто, что умеет сравнивать и упорядочивать два объекта по отношению &quot;больше-меньше&quot;. Где взять компаратор? Для некоторых классов уже реализован <em>естественный порядок</em>, совпадающий с их интуитивным упорядочением (для чисел — по возрастанию, для строк — по алфавиту, для дат — из прошлого в будущее). Оказывается, что классы <code>Integer</code>, <code>String</code> и большинство классов даты и времени (например, <code>LocalDate</code>) реализуют интерфейс <code>Comparable</code>, и у них есть метод <code>compareTo</code>. Списки элементов такого типа можно передать другой форме метода сортировки, который является статическим методом класса <code>Collections</code>, либо с <code>null</code> вместо компаратора:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
+numbers.<span class="fu">add</span>(<span class="dv">100</span>);
+numbers.<span class="fu">add</span>(<span class="dv">5</span>);
+numbres.<span class="fu">add</span>(<span class="dv">42</span>);
+Collections.<span class="fu">sort</span>(numbers); <span class="co">// 5, 42, 100</span>
+numbers.<span class="fu">sort</span>(<span class="kw">null</span>);        <span class="co">// то же самое</span></code></pre></div>
+<p>А если нам нужен порядок сортировки, отличный от естественного, или же тип элемента не реализует <code>Comparable</code>? Тогда нам нужно передать методу <code>sort</code> свой компаратор. В стандартной библиотеке есть несколько уже имеющихся компараторов. Например, в классе <code>Collections</code> есть метод, возвращающий компаратор, сортирующий в обратном порядке:</p>
+<p><code>static &lt;T&gt; Comparator&lt;T&gt; reverseOrder()</code></p>
+<p>С его помощью мы можем отсортировать наш список <code>numbers</code> по убыванию:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">numbers.<span class="fu">sort</span>(Collections.<span class="fu">reverseOrder</span>()); <span class="co">// 100, 42, 5</span></code></pre></div>
+<p>Также в качестве компаратора можно передать ссылку на любой метод, принимающий два параметра нужного нам типа и возвращающий int, то есть имеющий вид</p>
+<p><code>int имяМетода(E element1, E element2)</code></p>
+<p>Соглашения о возвращаемом значении такие же, как для <code>compareTo</code>:</p>
+<ul>
+<li>&lt; 0, если первый элемент меньше второго</li>
+<li>0, если два элемента равны</li>
+<li>&gt; 0, если первый элемент больше второго</li>
+</ul>
+<p>Например, такую форму имеет метод <code>String.compareToIgnoreCase</code>. Поэтому, если мы хотим отсортировать список имён файлов в папке, то, скорее всего, пользователь захочет видеть их упорядоченными без учёта регистра. Это можно сделать двумя способами:</p>
+<pre><code>String[] array = { &quot;FILE.txt&quot;, &quot;user.bin&quot;, &quot;abc.txt&quot; };
+List&lt;String&gt; fileNames = Arrays.asList(array);
+
+fileNames.sort(String.CASE_INSENSITIVE_ORDER);
+fileNames.sort(String::compareToIgnoreCase);
+// Оба метода дадут один и тот же результат:
+// abc.txt, FILE.txt, user.bin</code></pre>
+<p>Ещё в качестве компаратора можно передать <em>лямбда-выражение</em> или экземпляр любого класса, реализующего интерфейс <code>Comparator</code>, но этого мы пока касаться не будем.</p>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>@Test, Assert</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title"><span class="citation">@Test</span>, Assert</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#основы-написания-тестов">Основы написания тестов</a></li>
+<li><a href="#проверки-assertions">Проверки (assertions)</a></li>
+<li><a href="#идиома-ожидаемое-исключение-expected-exception">Идиома &quot;ожидаемое исключение&quot; (expected exception)</a></li>
+<li><a href="#выполнение-кода-до-и-после-тестов">Выполнение кода до и после тестов</a></li>
+<li><a href="#доступ-к-деталям-реализации">Доступ к деталям реализации</a></li>
+<li><a href="#наборы-тестов">Наборы тестов</a></li>
+</ul>
+</div>
+<p>Аннотация: <a href="http://junit.sourceforge.net/javadoc/org/junit/Test.html"><code>org.junit.Test</code></a></p>
+<p>Класс: <a href="http://junit.sourceforge.net/javadoc/org/junit/Assert.html"><code>org.junit.Assert</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Библиотека JUnit применяется для написания <em>юнит-тестов</em> — небольших единиц кода для автоматизированного тестирования отдельных компонентов программы в изоляции от других её компонентов.</p>
+<p>JUnit поставляется в составе среды Eclipse, но не включается в проекты по умолчанию. Для добавления JUnit в проект нужно зайти в свойства зависимостей проекта (правой кнопкой на проект → <em>Build Path</em> → <em>Configure Build Path</em>) и на вкладке <em>Libraries</em> добавить библиотеку JUnit кнопкой <em>Add Library</em> → <em>JUnit</em>.</p>
+<h2 id="основы-написания-тестов">Основы написания тестов</h2>
+<p>Тестом может служить любой класс с методами без параметров, помеченными аннотацией <code>@Test</code>. У класса также должен быть конструктор без параметров (подойдёт также класс без явного конструктора; как вы помните, если в классе явно не объявлено ни одного конструктора, компилятор генерирует пустой <code>public</code>-конструктор без параметров). Если в классе есть хотя бы один метод с аннотацией <code>@Test</code>, Eclipse позволяет запустить этот класс как тест JUnit с помощью команды контекстного меню <em>Run As</em> → <em>JUnit Test</em>.</p>
+<p>Например, мы могли бы начать писать класс, тестирующий библиотечный класс <code>ArrayList</code>, следующим образом:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> TestArrayList {
+    <span class="fu">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">testAdd</span>() {
+        List&lt;String&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+        list.<span class="fu">add</span>(<span class="st">&quot;Hello&quot;</span>);
+        <span class="co">// ...</span>
+    }
+    
+    <span class="fu">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">testAddAll</span>() {
+        List&lt;String&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+        list.<span class="fu">addAll</span>(Arrays.<span class="fu">asList</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;World&quot;</span>));
+        <span class="co">// ...</span>
+    }
+}</code></pre></div>
+<h2 id="проверки-assertions">Проверки (assertions)</h2>
+<p>Для проверки того, что тестируемые классы и методы работают правильно, мы используем статический класс <code>org.junit.Assert</code>. После первой же непройденной проверки выполнение тестового метода обрывается, и соответствующий этому методу тест считается проваленным.</p>
+<p>Все методы класса <code>Assert</code> являются статическими. Как правило, в тесты имеет смысл импортировать этот класс статически:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import static org.junit.Assert.*;</span></code></pre></div>
+<p>Кстати, Eclipse предлагает сделать это, если вызвать любой метод <code>assertXXXX</code> внутри метода, отмеченного как <code>@Test</code>.</p>
+<p>Методов проверки существует много. Вот самые главные из них (в квадратные скобки заключён необязательный аргумент, задающий сообщение об ошибке при провале проверки). Все эти методы объявлены как <code>static void</code>.</p>
+<table class="table table-striped">
+<tr>
+<td>
+<code>fail([String message])</code>
+</td>
+<td>
+Немедленно выходит из теста и помечает его как проваленный.
+</td>
+<tr>
+<td>
+<code>assertTrue([String message], boolean condition)</code>
+</td>
+<td>
+Проверяет, что указанное условие выполняется. Проверка считается успешной, если <code>condition == true</code>.
+</td>
+</tr>
+<tr>
+<td>
+<code>assertFalse([String message], boolean condition)</code>
+</td>
+<td>
+Проверяет, что указанное условие не выполняется. Проверка считается успешной, если <code>condition == false</code>.
+</td>
+</tr>
+<tr>
+<td>
+<code>assertNull([String message], Object object)</code>
+</td>
+<td>
+Проверяет, что указанная ссылка на объект равна <code>null</code>.
+</td>
+</tr>
+<tr>
+<td>
+<code>assertNotNull([String message], Object object)</code>
+</td>
+<td>
+Проверяет, что указанная ссылка на объект не равна <code>null</code>.
+</td>
+</tr>
+<tr>
+<td>
+<code>assertEquals([String message,] long expected, long actual)</code>
+</td>
+<td>
+Проверяет на равенство два целочисленных значения. Проверка считается успешной, если <code>expected == actual</code>.
+</td>
+</tr>
+<tr>
+<td>
+<code>assertEquals([String message,] double expected, double actual, double delta)</code>
+</td>
+<td>
+Проверяет, что два значения с плавающей точкой отличаются друг от друга не более чем на <code>delta</code>. Иными словами, проверка считается успешной, если <code>Math.abs(expected - actual) &lt;= delta</code>.
+</td>
+</tr>
+<tr>
+<td>
+<code>assertEquals([String message,] Object expected, Object actual)</code>
+</td>
+<td>
+Проверяет два объекта на равенство по значению. Проверка считается успешной, если <code>Objects.equals(expected, actual) == true</code>.
+</td>
+</tr>
+<tr>
+<td>
+<code>assertSame([String message,] Object expected, Object actual)</code>
+</td>
+<td>
+Проверяет, что две ссылки ссылаются на один и тот же объект. Проверка считается успешной, если <code>expected == actual</code>.
+</td>
+</tr>
+<tr>
+<td>
+<code>assertNotSame([String message,] Object expected, Object actual)</code>
+</td>
+<td>
+Проверяет, что две ссылки ссылаются на разные объекты. Проверка считается успешной, если <code>expected != actual</code>.
+</td>
+</tr>
+</table>
+<p>С помощью этих методов мы можем реализовать проверки в наших методах, тестирующих <code>add</code> и <code>addAll</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import static org.junit.Assert.*;</span>
+
+<span class="kw">public</span> <span class="kw">class</span> TestArrayList {
+    <span class="fu">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">testAdd</span>() {
+        List&lt;String&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+        
+        <span class="co">// предусловия</span>
+        <span class="fu">assertTrue</span>(list.<span class="fu">isEmpty</span>());
+        <span class="fu">assertEquals</span>(<span class="dv">0</span>, list.<span class="fu">size</span>());
+        
+        list.<span class="fu">add</span>(<span class="st">&quot;Hello&quot;</span>);
+        
+        <span class="co">// постусловия</span>
+        <span class="fu">assertFalse</span>(list.<span class="fu">isEmpty</span>());
+        <span class="fu">assertEquals</span>(<span class="dv">1</span>, list.<span class="fu">size</span>());
+        <span class="fu">assertEquals</span>(<span class="st">&quot;Hello&quot;</span>, list.<span class="fu">get</span>(<span class="dv">0</span>));
+    }
+    
+    <span class="fu">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">testAddAll</span>() {
+        List&lt;String&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+        
+        <span class="co">// предусловия</span>
+        <span class="fu">assertTrue</span>(list.<span class="fu">isEmpty</span>());
+        <span class="fu">assertEquals</span>(<span class="dv">0</span>, list.<span class="fu">size</span>());
+        
+        list.<span class="fu">addAll</span>(Arrays.<span class="fu">asList</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;World&quot;</span>));
+        
+        <span class="co">// постусловия</span>
+        <span class="fu">assertFalse</span>(list.<span class="fu">isEmpty</span>());
+        <span class="fu">assertEquals</span>(<span class="dv">2</span>, list.<span class="fu">size</span>());
+        <span class="fu">assertEquals</span>(<span class="st">&quot;Hello&quot;</span>, list.<span class="fu">get</span>(<span class="dv">0</span>));
+        <span class="fu">assertEquals</span>(<span class="st">&quot;World&quot;</span>, list.<span class="fu">get</span>(<span class="dv">1</span>));
+    }
+}</code></pre></div>
+<blockquote>
+<p>В семействах методов <code>assertEquals</code> и <code>assert[Not]Same</code> эталонное значение, с которым производится сравнение, передаётся первым параметром, а проверяемое значение — вторым. Логика теста будет работать при любом порядке параметров, но правильный порядок нужен для правильных сообщений об ошибке при провале теста.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">assertEquals</span>(<span class="dv">1</span>, list.<span class="fu">size</span>());  <span class="co">// Правильно</span>
+<span class="fu">assertEquals</span>(list.<span class="fu">size</span>(), <span class="dv">1</span>);  <span class="co">// Неправильно</span></code></pre></div>
+</blockquote>
+<h2 id="идиома-ожидаемое-исключение-expected-exception">Идиома &quot;ожидаемое исключение&quot; (expected exception)</h2>
+<p>Иногда тест должен проверять, что метод выбрасывает определённое исключение, и считаться проваленным, если выполнение метода завершается нормально. Например, при тестировании <code>ArrayList</code> нам нужно проверить, что выход за границы списка корректно выбрасывает <code>IndexOutOfBoundsException</code>.</p>
+<p>Если нам нужно только проверить, что метод завершился по выбросу исключения, мы можем добавить параметр <code>expected</code> к аннотации <code>@Test</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Test</span>(expected = IndexOutOfBoundsException.<span class="fu">class</span>)
+<span class="kw">public</span> <span class="dt">void</span> <span class="fu">testOutOfBounds</span>() {
+    List&lt;String&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+    list.<span class="fu">get</span>(<span class="dv">1</span>);
+}</code></pre></div>
+<p>Но что, если нам нужно организовать несколько таких проверок внутри одного метода, либо подвергнуть проверкам объект исключения? На помощь приходит идиома &quot;expected exception&quot;. Мы заключаем код, выбрасывающий ожидаемое исключение, в блок <code>try-catch</code> и заставляем тест провалиться при нормальном завершении блока <code>try</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">try</span> {
+    <span class="co">// тестируемый код</span>
+    <span class="fu">fail</span>();
+} <span class="kw">catch</span> (ExpectedExceptionType expected) {
+    <span class="co">// анализируем объект исключения</span>
+}</code></pre></div>
+<p>Например, таким образом мы можем в одном методе проверить объект <code>ArrayList</code> на выход за границы диапазона в обоих направлениях:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Test</span>
+<span class="kw">public</span> <span class="dt">void</span> <span class="fu">testOutOfBounds</span>() {
+    List&lt;String&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+    list.<span class="fu">add</span>(<span class="st">&quot;Hello&quot;</span>);
+    list.<span class="fu">add</span>(<span class="st">&quot;World&quot;</span>);
+    <span class="fu">assertEquals</span>(<span class="dv">2</span>, list.<span class="fu">size</span>());
+    
+    list.<span class="fu">get</span>(<span class="dv">0</span>); <span class="co">// OK</span>
+    list.<span class="fu">get</span>(<span class="dv">1</span>); <span class="co">// OK</span>
+    
+    <span class="kw">try</span> {
+        list.<span class="fu">get</span>(<span class="dv">2</span>);
+        <span class="fu">fail</span>();
+    } <span class="kw">catch</span> (IndexOutOfBoundsException expected) {
+        <span class="fu">assertEquals</span>(<span class="st">&quot;index: 2, size: 2&quot;</span>, expected.<span class="fu">getMessage</span>());
+    }
+    
+    <span class="kw">try</span> {
+        list.<span class="fu">get</span>(-<span class="dv">1</span>);
+        <span class="fu">fail</span>();
+    } <span class="kw">catch</span> (IndexOutOfBoundsException expected) {
+        <span class="fu">assertEquals</span>(<span class="st">&quot;index: -1, size: 2&quot;</span>, expected.<span class="fu">getMessage</span>());
+    }
+}</code></pre></div>
+<h2 id="выполнение-кода-до-и-после-тестов">Выполнение кода до и после тестов</h2>
+<p>Методы, помеченные аннотациями <code>@Before</code> и <code>@After</code>, будут выполнены один раз перед и, соответственно, после каждого теста:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Before</span>
+<span class="kw">public</span> <span class="dt">void</span> <span class="fu">before</span>() {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Вхожу в тест&quot;</span>);
+}
+
+<span class="fu">@After</span>
+<span class="kw">public</span> <span class="dt">void</span> <span class="fu">after</span>() {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Выхожу из теста&quot;</span>);
+}</code></pre></div>
+<p>Это бывает полезно, чтобы инициализировать какие-то зависимости тестов, а после их завершения убраться за собой.</p>
+<p>Если же нужно, чтобы метод вызывался один раз перед прогоном <em>всех</em> объявленных в классе тестов, или один раз после завершения всех тестов, такие методы нужно объявить статическими и навесить на них аннотацию <code>@BeforeClass</code> и, соответственно, <code>@AfterClass</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@BeforeClass</span>
+<span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">beforeClass</span>() {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Выполняю тесты TestArrayList&quot;</span>);
+}
+
+<span class="fu">@AfterClass</span>
+<span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">afterClass</span>() {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Тесты TestArrayList выполнены&quot;</span>);
+}</code></pre></div>
+<h2 id="доступ-к-деталям-реализации">Доступ к деталям реализации</h2>
+<p>Иногда тестам для своей работы недостаточно интерфейса класса, и им нужен доступ к деталям реализации класса, помеченным как <code>private</code>.</p>
+<p>Хорошим тоном считается размещать тесты в том же пакете, что и тестируемый класс. В этом случае для доступа к деталям реализации допустимо повысить видимость методов с <code>private</code> до <code>package-private</code>, а для полей объявить методы доступа с видимостью <code>package-private</code>. Конечно, такое решение следует задокументировать в комментариях, подчеркнув, что эти методы нужны только для тестов.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">private</span> SomeType someField;
+
+<span class="co">// accessor for testing</span>
+SomeType <span class="fu">getSomeField</span>() { <span class="kw">return</span> someField; }
+
+<span class="co">// visible for testing</span>
+<span class="dt">void</span> <span class="fu">doSomethingNastyWithThisObject</span>() {
+    ...
+}</code></pre></div>
+<p>Вот пример, где это может понадобиться. Допустим, нас чем-то не устраивает стандартный класс <code>String</code> (а зря!) и мы реализуем собственный строковой класс. Внутри у него, как и у стандартного класса <code>String</code>, хранится массив <code>char</code>, и нам нужно проверить, что при вызове конструктора с параметром типа &quot;массив <code>char</code>&quot; он создаёт копию этого массива, а не хранит ссылку на переданный массив (что позволило бы изменить состояние неизменяемого объекта).</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> MyString {
+    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">char</span>[] value;
+    
+    <span class="kw">public</span> <span class="fu">MyString</span>(<span class="dt">char</span>[] value) {
+        <span class="kw">this</span>.<span class="fu">value</span> = Arrays.<span class="fu">copyOf</span>(value, value.<span class="fu">length</span>);
+    }
+}
+
+<span class="kw">public</span> <span class="kw">class</span> TestMyString {
+    <span class="fu">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">testArrayCopied</span>() {
+        <span class="dt">char</span>[] value = { &#39;H&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39; };
+        MyString str = <span class="kw">new</span> <span class="fu">MyString</span>(value);
+        <span class="co">// assertNotSame(value, ?)</span>
+    }
+}</code></pre></div>
+<p>Мы не можем напрямую доступиться к полю <code>value</code>, потому что оно объявлено как <code>private</code>. Чтобы обратиться к его значению в тесте, нам нужно добавить для него геттер с видимостью <code>package-private</code> — специально для теста:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> MyString {
+    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">char</span>[] value;
+    
+    <span class="kw">public</span> <span class="fu">MyString</span>(<span class="dt">char</span>[] value) {
+        <span class="kw">this</span>.<span class="fu">value</span> = Arrays.<span class="fu">copyOf</span>(value, value.<span class="fu">length</span>);
+    }
+    
+    <span class="co">// accessor for testing</span>
+    <span class="dt">char</span>[] <span class="fu">getValue</span>() { <span class="kw">return</span> value; }
+}</code></pre></div>
+<p>Тогда тест записывается прямолинейно:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> TestMyString {
+    <span class="fu">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">testArrayCopied</span>() {
+        <span class="dt">char</span>[] value = { &#39;H&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39; };
+        MyString str = <span class="kw">new</span> <span class="fu">MyString</span>(value);
+        <span class="fu">assertNotSame</span>(value, str.<span class="fu">getValue</span>());
+    }
+}</code></pre></div>
+<p>Если в проекте используется библиотека Google Guava, вместо комментария можно использовать аннотацию <code>@VisibleForTesting</code>, предназначенную как раз для такого случая.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@VisibleForTesting</span>
+<span class="dt">char</span>[] <span class="fu">getValue</span>() { <span class="kw">return</span> value; }</code></pre></div>
+<h2 id="наборы-тестов">Наборы тестов</h2>
+<p>При наличии нескольких классов-тестов можно объединить их в <em>набор тестов</em> (test suite), который можно использовать, чтобы прогнать все тесты, включённые в набор. Для этого нужно создать новый класс, который можно даже оставить пустым, и пометить его аннотациями <code>@RunWith(Suite.class)</code> и <code>@SuiteClasses</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@RunWith</span>(Suite.<span class="fu">class</span>)
+<span class="fu">@SuiteClasses</span>({
+    TestArrayList.<span class="fu">class</span>,
+    TestMyString.<span class="fu">class</span>,
+})
+<span class="kw">public</span> <span class="kw">class</span> CoreUtilsTestSuite { }</code></pre></div>
+<p>Такой класс точно так же можно запустить из Eclipse с помощью <em>Run As</em> → <em>JUnit Test</em>.</p>
+</body>
+</html>

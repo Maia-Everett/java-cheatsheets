@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>String</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">String</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#создание">Создание</a></li>
+<li><a href="#байты-и-символы">Байты и символы</a></li>
+<li><a href="#сравнение">Сравнение</a></li>
+<li><a href="#регистр">Регистр</a></li>
+<li><a href="#длина-и-индексы">Длина и индексы</a></li>
+<li><a href="#подстроки">Подстроки</a></li>
+<li><a href="#поиск">Поиск</a></li>
+<li><a href="#замена">Замена</a></li>
+</ul>
+</div>
+<p>Класс: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html"><code>java.lang.String</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Представляет собой строку символов. Если точнее, то элемент строки (<code>char</code>) представляет собой кодовую единицу кодировки UTF-16. В пределах базовой многоязыковой плоскости (BMP, U+0000 – U+FFFF) символ представляется одним <code>char</code>'ом, в остальных плоскостях (U+10000 – U+1FFFF) — двумя.</p>
+<h2 id="создание">Создание</h2>
+<p>Обычно в пользовательском коде объекты <code>String</code> не создаются явно, а возвращаются как результат выполнения других операций. Все строковые константы в Java (например, <code>&quot;Hello World!&quot;</code>) имеют тип <code>String</code>. Кроме того, строки возвращаются при построении строкового представления объекта (<code>Object.toString</code>), как результат соединения строк (операция + и объект <code>StringBuilder</code>), а также при работе с текстовыми потоками (<code>Scanner</code> и <code>Reader</code>).</p>
+<p>Кроме того, для создания строк полезно семейство фабричных методов <code>valueOf</code>:</p>
+<p><code>static String valueOf(&lt;любой_тип&gt; value)</code></p>
+<p>Для значения <code>null</code> этот метод возвращает строку <code>&quot;null&quot;</code>, для объектов — результат <code>value.toString()</code>, а для числовых типов и типа <code>boolean</code> — тот же результат, что и при прибавлении их к строке оператором +:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String.<span class="fu">valueOf</span>(<span class="kw">null</span>)            <span class="co">// &quot;null&quot;</span>
+String.<span class="fu">valueOf</span>(LocalDate.<span class="fu">now</span>()) <span class="co">// то же, что и LocalDate.now().toString()</span>
+                                <span class="co">// например, &quot;2016-02-24&quot;</span>
+String.<span class="fu">valueOf</span>(<span class="dv">5</span>)               <span class="co">// &quot;5&quot;</span>
+String.<span class="fu">valueOf</span>(5L)              <span class="co">// &quot;5&quot;</span>
+String.<span class="fu">valueOf</span>(<span class="kw">true</span>)            <span class="co">// &quot;true&quot;</span></code></pre></div>
+<blockquote>
+<p>Массивы типа <code>char[]</code> можно преобразовать в <code>String</code> только через конструктор <code>String(char[])</code> или метод <code>valueOf</code>. Вызов <code>toString</code> или попытка присоединить массив к строке оператором <code>+</code> выдаст совсем не то, что нужно:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">char</span>[] array = {&#39;H&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;};
+System.<span class="fu">out</span>.<span class="fu">println</span>(String.<span class="fu">valueOf</span>(array));
+System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="kw">new</span> String(array));
+System.<span class="fu">out</span>.<span class="fu">println</span>(array.<span class="fu">toString</span>());
+System.<span class="fu">out</span>.<span class="fu">println</span>(array + <span class="st">&quot; World&quot;</span>);</code></pre></div>
+<p>В результате выведется что-то вроде:</p>
+<pre><code>Hello
+Hello
+[C@279f2327
+[C@279f2327 World</code></pre>
+</blockquote>
+<h2 id="байты-и-символы">Байты и символы</h2>
+<p>Строку можно раскодировать из массива байт, указав нужную кодировку в конструкторе:</p>
+<p><code>String(byte[] bytes, Charset charset)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">byte</span>[] bytes = Files.<span class="fu">readAllBytes</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">test.txt&quot;</span>));
+String str = <span class="kw">new</span> String(bytes, StandardCharsets.<span class="fu">UTF_8</span>);</code></pre></div>
+<p>Для обратного преобразования из строки в массив байт тоже нужно указать кодировку:</p>
+<p><code>byte[] getBytes(Charset charset)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">byte</span>[] bytes = <span class="st">&quot;Hello&quot;</span>.<span class="fu">getBytes</span>(StandardCharsets.<span class="fu">UTF_8</span>);
+Files.<span class="fu">write</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">test.txt&quot;</span>), bytes);</code></pre></div>
+<p>И, наконец, метод</p>
+<p><code>char[] toCharArray()</code></p>
+<p>возвращает копию символов, содержащихся в строке, в виде массива. Именно копию; при изменении полученного массива исходная строка не изменится.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String str = <span class="st">&quot;Hello&quot;</span>;
+<span class="dt">char</span>[] array = str.<span class="fu">toCharArray</span>();
+array[<span class="dv">4</span>] = &#39;s&#39;;
+
+System.<span class="fu">out</span>.<span class="fu">println</span>(str);
+System.<span class="fu">out</span>.<span class="fu">println</span>(array);
+System.<span class="fu">out</span>.<span class="fu">println</span>(String.<span class="fu">valueOf</span>(array));</code></pre></div>
+<p>Результат:</p>
+<pre><code>Hello
+Hells
+Hells</code></pre>
+<h2 id="сравнение">Сравнение</h2>
+<p>Никогда не используйте оператор == для сравнения строк. Он возвращает <code>true</code> только в том случае, если оба сравниваемых выражения указывают на один и тот же объект. Для сравнения строк по значению, а не по ссылке, используйте <code>equals</code>:</p>
+<p><code>boolean equals(Object other)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;2&quot;</span> == String.<span class="fu">valueOf</span>(<span class="dv">2</span>)      <span class="co">// false; не делайте так!</span>
+<span class="st">&quot;2&quot;</span>.<span class="fu">equals</span>(String.<span class="fu">valueOf</span>(<span class="dv">2</span>)) <span class="co">// true</span></code></pre></div>
+<blockquote>
+<p>При сравнении со строковой константой принято использовать идиому, при которой метод <code>equals</code> вызывается для константы, особенно если строка получена из внешнего кода:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">equals</span>(myString)  <span class="co">// правильно</span>
+myString.<span class="fu">equals</span>(<span class="st">&quot;Hello&quot;</span>)  <span class="co">// неправильно</span></code></pre></div>
+<p>Это связано с тем, что если <code>myString == null</code>, то попытка вызвать для этой переменной любой метод выбросит исключение <code>NullPointerException</code>. В то же время <code>&quot;Hello&quot;.equals(null)</code> вернёт <code>false</code>, не выбросив исключения.</p>
+</blockquote>
+<p>Чтобы упорядочить строки в лексикографическом (то есть алфавитном, словарном) порядке, применяется метод</p>
+<p><code>int compareTo(String other)</code></p>
+<p>Для сравнения символов используются коды Unicode, например, <code>'D' &lt; 'd'</code>, а также <code>'d' &lt; 'Д'</code>. Метод <code>compareTo</code> возвращает:</p>
+<ul>
+<li>значение меньше 0, если эта строка меньше переданной строки</li>
+<li>0, если строки равны</li>
+<li>значение больше 0, если эта строка больше переданной строки</li>
+</ul>
+<p>Поэтому, чтобы проверить условие <code>str1 *op* str2</code>, где <code>*op*</code> - это <code>&lt;</code>, <code>&gt;</code> или <code>==</code>, нужно записать <code>str1.compareTo(str2) *op* 0</code>.</p>
+<p>Пример:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;ABC&quot;</span>.<span class="fu">compareTo</span>(<span class="st">&quot;ABCD&quot;</span>) &lt; <span class="dv">0</span>  <span class="co">// true</span>
+<span class="st">&quot;ABC&quot;</span>.<span class="fu">compareTo</span>(<span class="st">&quot;ABC&quot;</span>) == <span class="dv">0</span>  <span class="co">// true</span>
+<span class="st">&quot;ABC&quot;</span>.<span class="fu">compareTo</span>(<span class="st">&quot;ABAB&quot;</span>) &gt; <span class="dv">0</span>  <span class="co">// true</span></code></pre></div>
+<h2 id="регистр">Регистр</h2>
+<p>У <code>equals</code> и <code>compareTo</code> также есть версии, сравнивающие строки без учёта регистра:</p>
+<p><code>boolean equalsIgnoreCase(String other)</code></p>
+<p><code>int compareToIgnoreCase(String other)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;ABC&quot;</span>.<span class="fu">equalsIgnoreCase</span>(<span class="st">&quot;abc&quot;</span>)    <span class="co">// true</span>
+<span class="st">&quot;ABC&quot;</span>.<span class="fu">compareToIgnoreCase</span>(<span class="st">&quot;abc&quot;</span>) <span class="co">// 0</span></code></pre></div>
+<p>А если нужно преобразовать регистр в верхний или нижний, используются методы</p>
+<p><code>String toUpperCase()</code></p>
+<p><code>String toLowerCase()</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">toUpperCase</span>()  <span class="co">// &quot;HELLO&quot;</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">toLowerCase</span>()  <span class="co">// &quot;hello&quot;</span></code></pre></div>
+<blockquote>
+<p>Класс <code>String</code> является <em>неизменяемым</em>, поэтому любые операции преобразования строки возвращают новую строку, не изменяя ту, для которой был вызван метод. Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String str1 = <span class="st">&quot;HELLO&quot;</span>;
+str1.<span class="fu">toLowerCase</span>();       <span class="co">// уважайте труд сборщика, не мусорьте :(</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(str1); <span class="co">// str1 не изменилась, так что HELLO</span>
+String str2 = str1.<span class="fu">toLowerCase</span>();
+System.<span class="fu">out</span>.<span class="fu">println</span>(str2); <span class="co">// hello</span></code></pre></div>
+</blockquote>
+<h2 id="длина-и-индексы">Длина и индексы</h2>
+<p><em>Длина строки</em> — это количество элементов <code>char</code> в ней.</p>
+<p><code>int length()</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">length</span>()            <span class="co">// 5</span>
+<span class="st">&quot;Привет&quot;</span>.<span class="fu">length</span>()           <span class="co">// 6</span>
+<span class="st">&quot;Hello</span><span class="ch">\n</span><span class="st">&quot;</span>.<span class="fu">length</span>()          <span class="co">// 6</span>
+<span class="st">&quot;Hello</span><span class="ch">\u0020</span><span class="st">World&quot;</span>.<span class="fu">length</span>() <span class="co">// 11</span>
+<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">&quot;</span>.<span class="fu">length</span>()             <span class="co">// 3</span></code></pre></div>
+<p>Обратите внимание, что escape-последовательности типа <code>\\</code>, <code>\n</code> и <code>\u0020</code> кодируют один <code>char</code> каждая, несмотря на то, что записываются в Java-коде несколькими символами.</p>
+<p>Элементы <code>char</code> в строке имеют <em>индекс</em>, изменяющийся от <code>0</code> (первый символ) до <code>length() - 1</code> (последний символ). Чтобы получить <code>char</code>, находящийся в строке по определённому индексу, используется метод</p>
+<p><code>char charAt(int index)</code></p>
+<p>Например, следующий код печатает каждый <code>char</code> на отдельной строке:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String str = <span class="st">&quot;Hello&quot;</span>;
+
+<span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; str.<span class="fu">length</span>(); i++) {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(str.<span class="fu">charAt</span>(i));
+}</code></pre></div>
+<p>Строка нулевой длины называется <em>пустой строкой</em>. Проверить, является ли строка пустой, можно с помощью метода</p>
+<p><code>boolean isEmpty()</code></p>
+<p>Он аналогичен сравнению <code>length() == 0</code>.</p>
+<blockquote>
+<p>Пустая строка <code>&quot;&quot;</code> отличается от значения <code>null</code>. Если строковой переменной присвоено значение <code>null</code>, то она не ссылается ни на один объект, и попытка вызвать для неё любой метод выбросит <code>NullPointerException</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String str1 = <span class="st">&quot;&quot;</span>;
+String str2 = <span class="kw">null</span>;
+str1.<span class="fu">length</span>()  <span class="co">// 0</span>
+str2.<span class="fu">length</span>()  <span class="co">// выбрасывает NullPointerException</span></code></pre></div>
+<p>Иногда бывает полезно проверить, что строковая переменная не содержит ни <code>null</code>, ни пустую строку. Например, в серверных приложениях значение <code>null</code> может означать, что в строке запроса определённый параметр отсутствует, а пустая строка означает, что параметр присутствует и пуст:</p>
+<pre><code>http://example.com/article?name=Java
+    request.getParameter(&quot;version&quot;) -&gt; null
+
+http://example.com/article?name=Java&amp;version=
+    request.getParameter(&quot;version&quot;) -&gt; &quot;&quot;
+
+http://example.com/article?name=Java&amp;version=4
+    request.getParameter(&quot;version&quot;) -&gt; &quot;4&quot;</code></pre>
+<p>В этом случае можно использовать следующую идиому:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String version = request.<span class="fu">getParameter</span>(<span class="st">&quot;version&quot;</span>);
+
+<span class="kw">if</span> (version == <span class="kw">null</span> || version.<span class="fu">isEmpty</span>()) {
+    <span class="co">// код обработки пустого параметра</span>
+}</code></pre></div>
+</blockquote>
+<h2 id="подстроки">Подстроки</h2>
+<p>Чтобы выделить из строки подстроку, используется семейство методов <code>substring</code>:</p>
+<p><code>String substring(int beginIndex)</code></p>
+<p><code>String substring(int beginIndex, int endIndex)</code></p>
+<p>Здесь <code>beginIndex</code> — это индекс первого символа подстроки, а <code>endIndex</code> — индекс символа, <em>следующего за последним</em>. При этом всегда выполняется равенство <code>beginIndex + длина_подстроки == endIndex</code>. Обратите внимание, что индексы начинаются с 0.</p>
+<p>Если <code>endIndex</code> не задан (первая форма метода <code>substring</code>), то возвращается подстрока от <code>beginIndex</code> до конца строки.</p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">substring</span>(<span class="dv">2</span>);     <span class="co">// &quot;llo&quot;</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">substring</span>(<span class="dv">2</span>, <span class="dv">5</span>);  <span class="co">// &quot;llo&quot;; то же самое</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">substring</span>(<span class="dv">1</span>, <span class="dv">2</span>);  <span class="co">// &quot;e&quot;</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">substring</span>(<span class="dv">5</span>, <span class="dv">5</span>);  <span class="co">// &quot;&quot;; вырожденный случай</span></code></pre></div>
+<p>Следующий код печатает все непустые подстроки строки <code>&quot;Hello&quot;</code>, начинающиеся с первого символа <code>H</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String str = <span class="st">&quot;Hello&quot;</span>;
+
+<span class="kw">for</span> (<span class="dt">int</span> endIndex = <span class="dv">1</span>; endIndex &lt;= str.<span class="fu">length</span>(); endIndex++) {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(str.<span class="fu">substring</span>(<span class="dv">0</span>, endIndex));
+}</code></pre></div>
+<p>Результат:</p>
+<pre><code>H
+He
+Hel
+Hell
+Hello</code></pre>
+<blockquote>
+<p>Будьте внимательны с граничными условиями циклов. Если бы в предыдущем коде вместо <code>&lt;=</code> было написано <code>&lt;</code>, то строка <code>Hello</code> не вывелась бы, и вывод остановился бы на строке <code>Hell</code>. (Почему?)</p>
+</blockquote>
+<h2 id="поиск">Поиск</h2>
+<p>Семейство методов <code>indexOf</code> ищет первое вхождение указанного символа в строке. Если вместо символа указать строку, то вернётся индекс начала первой соответствующей подстроки в строке. Можно также указать индекс, с которого начинать поиск (по умолчанию — с начала строки).</p>
+<p><code>int indexOf(int ch)</code></p>
+<p><code>int indexOf(int ch, int fromIndex)</code></p>
+<p><code>int indexOf(String str)</code></p>
+<p><code>int indexOf(String str, int fromIndex)</code></p>
+<p>Если символ или строка не найдены, возвращается -1. Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">indexOf</span>(&#39;l&#39;)     <span class="co">// 2</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">indexOf</span>(&#39;g&#39;)     <span class="co">// -1</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">indexOf</span>(&#39;H&#39;, <span class="dv">1</span>)  <span class="co">// -1</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">indexOf</span>(<span class="st">&quot;ell&quot;</span>)   <span class="co">// 1</span></code></pre></div>
+<p>Есть ещё полностью аналогичное семейство <code>lastIndexOf</code>, которое ищет не с начала, а с конца (но для строкового параметра всё равно возвращает индекс начала подстроки).</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">lastIndexOf</span>(&#39;l&#39;)     <span class="co">// 3</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">lastIndexOf</span>(<span class="st">&quot;ello&quot;</span>)  <span class="co">// 1</span></code></pre></div>
+<p>Если нужно только проверить, содержит ли строка подстроку, можно использовать метод <code>contains</code>:</p>
+<p><code>boolean contains(CharSequence s)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">contains</span>(<span class="st">&quot;ell&quot;</span>)  <span class="co">// true; аналогично &quot;Hello&quot;.indexOf(&quot;ell&quot;) != -1</span></code></pre></div>
+<p>Также можно проверить, начинается или заканчивается ли строка указанной подстрокой:</p>
+<p><code>boolean startsWith(String prefix)</code></p>
+<p><code>boolean endsWith(String suffix)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">startsWith</span>(<span class="st">&quot;He&quot;</span>)   <span class="co">// true</span>
+<span class="st">&quot;Hello&quot;</span>.<span class="fu">endsWith</span>(<span class="st">&quot;World&quot;</span>)  <span class="co">// false</span></code></pre></div>
+<h2 id="замена">Замена</h2>
+<p>Для замены символов или подстрок служит семейство методов <code>replace</code>:</p>
+<p><code>String replace(char oldChar, char newChar)</code></p>
+<p><code>String replace(CharSequence target, CharSequence replacement)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Hello&quot;</span>.<span class="fu">replace</span>(<span class="st">&quot;lo&quot;</span>, <span class="st">&quot;p&quot;</span>));  <span class="co">// Help</span></code></pre></div>
+<p>Если строка или символ встретились несколько раз, то заменяются все вхождения:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="st">&quot;Hello&quot;</span>.<span class="fu">replace</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;&quot;</span>)  <span class="co">// Heo</span></code></pre></div>
+<p>Опять же, методы <code>replace</code> возвращают новую строку, не изменяя ту, для которой они вызывались.</p>
+<p>Есть ещё методы <code>replaceAll</code> и <code>replaceFirst</code>, которые в качестве выражений для поиска и замены принимают не обычные строки, а <em>регулярные выражения</em>. С ними мы познакомимся, изучив классы <code>Pattern</code> и <code>Matcher</code>. Если вам нужно заменить именно обычные строки, не используйте эти методы, иначе результат будет не тем, что вы ожидали:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String str = <span class="st">&quot;Ночь. Улица. Фонарь. Аптека.&quot;</span>;
+System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;replace: &quot;</span> + str.<span class="fu">replace</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;!&quot;</span>));
+System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;replaceAll: &quot;</span> + str.<span class="fu">replaceAll</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;!&quot;</span>));</code></pre></div>
+<p>Результат:</p>
+<pre><code>replace: Ночь! Улица! Фонарь! Аптека!
+replaceAll: !!!!!!!!!!!!!!!!!!!!!!!!!!!!</code></pre>
+</body>
+</html>

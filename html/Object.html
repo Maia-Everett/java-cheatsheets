@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Object</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Object</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#строковое-представление">Строковое представление</a></li>
+<li><a href="#рефлексия">Рефлексия</a></li>
+<li><a href="#сравнение-и-хэш-код">Сравнение и хэш-код</a></li>
+<li><a href="#уничтожение-объекта">Уничтожение объекта</a></li>
+</ul>
+</div>
+<p>Класс: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html"><code>java.lang.Object</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Базовый класс, от которого наследуют все остальные классы в языке Java. Любой объект Java, включая массивы, содержит все методы Object. Выражение любого типа (кроме числовых и boolean) можно присваивать переменной типа Object, а в качестве параметра метода, ожидающего Object, можно передавать вообще любое выражение, которое при необходимости завернётся в объект (например, <code>int</code> в <code>Integer</code>).</p>
+<h2 id="строковое-представление">Строковое представление</h2>
+<p>У любого объекта есть метод <code>toString</code>:</p>
+<p><code>String toString()</code></p>
+<p>Именно этот метод используется при слиянии строк оператором +, если вместо строки передать произвольный объект. Исключение составляет значение <code>null</code>, которое при прибавлении к строке даст строку <code>&quot;null&quot;</code>. Большинство классов стандартной библиотеки, хранящих в себе данные <strong>(кроме массивов!)</strong>, переопределяют этот метод так, чтобы выводить удобное представление этих данных.</p>
+<p>Кроме того, метод <code>toString</code> используется методами <code>print</code> и <code>println</code>, а также спецификатором <code>%s</code> в контексте <code>printf</code>. Поэтому в Java (в отличие от C и C++) <code>%s</code> в <code>printf</code> работает с любым выражением:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Object obj = <span class="st">&quot;Hello&quot;</span>;
+LocalDate einsteinBirth = LocalDate.<span class="fu">of</span>(<span class="dv">1879</span>, Month.<span class="fu">MARCH</span>, <span class="dv">14</span>);
+List&lt;Integer&gt; numbers = Arrays.<span class="fu">asList</span>(<span class="dv">1</span>, <span class="dv">2</span>);
+
+System.<span class="fu">out</span>.<span class="fu">println</span>(obj + <span class="st">&quot; World&quot;</span>);
+System.<span class="fu">out.printf</span>(<span class="st">&quot;Мои любимые числа - </span><span class="ch">%s\n</span><span class="st">&quot;</span>, numbers);
+String einsteinFact = String<span class="fu">.format</span>(<span class="st">&quot;Эйнштейн родился </span><span class="ch">%s</span><span class="st">&quot;</span>, einsteinBirth);
+System.<span class="fu">out</span>.<span class="fu">println</span>(einsteinFact);</code></pre></div>
+<p>Результат:</p>
+<pre><code>Hello World
+Мои любимые числа - [1, 2]
+Эйнштейн родился 1879-03-14</code></pre>
+<p>Реализация <code>toString()</code> по умолчанию, содержащаяся в классе <code>Object</code>, выводит полное имя класса и его хэш-код в шестнадцатиричном представлении. Например, следующая программа использует реализацию <code>toString</code> по умолчанию:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package com.hornsandhooves;</span>
+
+<span class="kw">public</span> <span class="kw">class</span> DefaultToString {
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+        System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="kw">new</span> <span class="fu">DefaultToString</span>());
+    }
+}</code></pre></div>
+<p>Результатом будет что-то вроде:</p>
+<p><code>com.hornsandhooves.DefaultToString@7d4991ad</code></p>
+<blockquote>
+<p>К сожалению, по историческим причинам массивы тоже используют реализацию по умолчанию:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">int</span>[] numberArray = { <span class="dv">1</span>, <span class="dv">2</span> };
+System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Мои любимые числа - &quot;</span> + numberArray);
+<span class="co">// Мои любимые числа - [I@7d4991ad</span></code></pre></div>
+<p>Если же нужно распечатать именно содержимое массива, нужно использовать статический метод <code>Arrays.toString</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">int</span>[] numberArray = { <span class="dv">1</span>, <span class="dv">2</span> };
+System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Мои любимые числа - &quot;</span> + Arrays.<span class="fu">toString</span>(numberArray));
+<span class="co">// Мои любимые числа - [1, 2]</span></code></pre></div>
+</blockquote>
+<p>Имеет смысл переопределять <code>toString</code> в своих классах, чтобы было удобно отлаживать их внутреннее представление.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package com.hornsandhooves;</span>
+
+<span class="kw">public</span> <span class="kw">class</span> Person {
+    <span class="kw">private</span> <span class="dt">final</span> String firstName;
+    <span class="kw">private</span> <span class="dt">final</span> String lastName;
+    
+    <span class="kw">public</span> <span class="fu">Person</span>(String firstName, String lastName) {
+        <span class="kw">this</span>.<span class="fu">firstName</span> = firstName;
+        <span class="kw">this</span>.<span class="fu">lastName</span> = lastName;
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> String <span class="fu">toString</span>() {
+        <span class="kw">return</span> firstName + <span class="st">&quot; &quot;</span> + lastName;
+    }
+
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+        System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Остап&quot;</span>, <span class="st">&quot;Бендер&quot;</span>));
+    }
+}</code></pre></div>
+<p>Результат:</p>
+<p><code>Остап Бендер</code></p>
+<p>Отладчики в популярных IDE (например, Eclipse) используют <code>toString</code> как представление объекта, например, в списке локальных переменных или отслеживаемых выражений.</p>
+<h2 id="рефлексия">Рефлексия</h2>
+<p><em>Рефлексия</em> (reflection) — это подсистема платформы Java, позволяющая получать информацию о классах и объектах во время выполнения, а также обращаться к полям и методам классов и объектов, зная только их имена и типы параметров. Это очень мощный механизм, которого пока не имеет смысла касаться в полной мере. Отметим лишь, что основным классом, предоставляющим средства рефлексии, является класс <code>Class</code>, и у любого объекта можно запросить его реальный (а не объявленный) тип с помощью метода <code>getClass</code>:</p>
+<p><code>Class&lt;? extends объявленный_тип_объекта&gt; getClass()</code></p>
+<p>Например, можно написать вот так (мы помним, что <code>String</code> и <code>StringBuilder</code> являются подтипами <code>CharSequence</code>):</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">CharSequence str = <span class="st">&quot;Hello&quot;</span>;
+CharSequence sb = <span class="kw">new</span> StringBuilder(<span class="st">&quot;World&quot;</span>);
+Class&lt;? <span class="kw">extends</span> CharSequence&gt; = str.<span class="fu">getClass</span>();  <span class="co">// String.class</span>
+Class&lt;? <span class="kw">extends</span> CharSequence&gt; = sb.<span class="fu">getClass</span>();   <span class="co">// StringBuilder.class</span></code></pre></div>
+<p>Здесь страшные письмена <code>&lt;? extends CharSequence&gt;</code> означают &quot;тип <code>CharSequence</code> или некоторый его подтип&quot;. Таким образом, запись <code>Class&lt;? extends CharSequence&gt;</code> означает &quot;объект <code>Class</code>, соответствующий типу <code>CharSequence</code> или какому-то его подтипу (например, <code>String</code> или <code>StringBuilder</code>), но какому именно, компилятор не знает&quot;.</p>
+<p>У класса <code>Class</code> очень много методов. Вот лишь пара примеров:</p>
+<p><code>String getName()</code></p>
+<p>Возвращает полное имя класса вместе с именем пакета, через точку.</p>
+<p><code>String getSimpleName()</code></p>
+<p>Возвращает имя класса без пакета.</p>
+<p>Особо любопытные могут использовать <code>getClass</code>, чтобы узнать реальное имя класса, экземпляром которого является объект, даже если мы работаем с ним через супертип (например, интерфейс <code>List</code>). Так может случиться, например, если фабричный метод прячет конкретный тип как деталь реализации — таков, например, метод <code>Arrays.asList</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; strings = <span class="kw">new</span> ArrayList&lt;&gt;();
+List&lt;Integer&gt; numbers = Arrays.<span class="fu">asList</span>(<span class="dv">1</span>, <span class="dv">2</span>);
+
+strings.<span class="fu">getClass</span>().<span class="fu">getName</span>()  <span class="co">// java.util.ArrayList</span>
+numbers.<span class="fu">getClass</span>().<span class="fu">getName</span>()  <span class="co">// java.util.Arrays$ArrayList</span></code></pre></div>
+<p>Естественно, поскольку это деталь реализации, в будущих версиях JDK реальные имена классов, скрывающихся за фабричными методами, вполне могут измениться.</p>
+<p>Каждому классу или интерфейсу в памяти всегда гарантированно соответствует ровно один экземпляр типа <code>Class</code>. Поэтому объекты типа <code>Class</code> можно сравнивать по <code>==</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">if</span> (<span class="st">&quot;Hello&quot;</span>.<span class="fu">getClass</span>() == <span class="st">&quot;World&quot;</span>.<span class="fu">getClass</span>()) { <span class="kw">... </span>}  <span class="co">// true</span></code></pre></div>
+<h2 id="сравнение-и-хэш-код">Сравнение и хэш-код</h2>
+<p>Метод <code>equals</code> сравнивает два объекта на равенство по значению:</p>
+<p><code>boolean equals(Object obj)</code></p>
+<p>Классы стандартной библиотеки, представляющие значения (например, <code>String</code> и <code>LocalDate</code>), переопределяют метод <code>equals</code>, и он, как правило, работает так, как мы ожидаем:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">LocalDate nlLiberationDay = LocalDate.<span class="fu">of</span>(<span class="dv">1945</span>, Month.<span class="fu">MAY</span>, <span class="dv">5</span>);
+LocalDate ruVictoryDay = LocalDate.<span class="fu">of</span>(<span class="dv">1945</span>, Month.<span class="fu">MAY</span>, <span class="dv">9</span>);
+
+nlLiberationDay.<span class="fu">plusDays</span>(<span class="dv">4</span>) == ruVictoryDay       <span class="co">// false</span>
+nlLiberationDay.<span class="fu">plusDays</span>(<span class="dv">4</span>).<span class="fu">equals</span>(ruVictoryDay)  <span class="co">// true</span></code></pre></div>
+<p>Если же мы реализуем свой класс и хотим сравнивать его экземпляры по значению, то мы должны написать свой <code>equals</code>, потому что реализация по умолчанию (в <code>Object</code>) сравнивает объекты по ссылке! Вот её исходный код:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span>(Object obj) {
+    <span class="kw">return</span> (<span class="kw">this</span> == obj);
+}</code></pre></div>
+<p>Реализация метода <code>equals</code> должна удовлетворять четырём требованиям, первые три из которых известны из математики как определение <em>отношения эквивалентности</em>:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Рефлексивность</strong>: Для всякого <code>x</code> должно выполняться условие <code>x.equals(x)</code>.</li>
+<li><strong>Симметричность</strong>: Для всяких <code>x</code> и <code>y</code> условие <code>x.equals(y)</code> должно выполняться тогда и только тогда, когда <code>y.equals(x)</code>.</li>
+<li><strong>Транзитивность</strong>: Для всяких <code>x</code> и <code>y</code> и <code>z</code>, если <code>x.equals(y)</code> и <code>y.equals(z)</code>, то <code>x.equals(z)</code>.</li>
+<li><strong>&quot;Ненулёвость&quot;</strong>: Для всякого <code>x != null</code> условие <code>x.equals(null)</code> должно быть ложным.</li>
+</ol>
+<blockquote>
+<p>Нельзя вызвать метод <code>equals</code>, как и вообще никакой метод, у ссылки <code>null</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String broken = <span class="kw">null</span>;
+broken.<span class="fu">equals</span>(<span class="st">&quot;Hello&quot;</span>)  <span class="co">// Выбросит NullPointerException</span></code></pre></div>
+<p>Если нужно сравнить между собой две ссылки, каждая из которых может быть равна <code>null</code>, можно использовать статический метод <code>Objects.equals</code> (не путать с <code>Object.equals</code>). Следующий вызов</p>
+<p><code>Objects.equals(x, y)</code></p>
+<p>возвращает <code>true</code> тогда и только тогда, когда:</p>
+<ul>
+<li>либо <code>x == null</code> и <code>y == null</code>,</li>
+<li>либо <code>x != null</code> и <code>x.equals(y)</code>.</li>
+</ul>
+</blockquote>
+<p>Однако, прежде чем мы бросимся реализовывать <code>equals</code>, нужно прояснить один тонкий момент. Некоторым контейнерам (их называют <em>хэш-таблицами</em> для эффективности нужно не только сравнивать объекты на равенство, но и иметь возможность запросить у объекта числовое значение, которое всегда было бы равным для равных объектов, а для большинства разных объектов было бы разным. Это значение называется <em>хэш-кодом</em>, и его можно запросить у любого объекта:</p>
+<p><code>int hashCode()</code></p>
+<p>Детали реализации хэш-таблиц нам сейчас не важны. Важно усвоить одно правило: <em>при переопределении <code>equals</code> всегда нужно также переопределять <code>hashCode</code></em>. Если переопределить <code>equals</code> и оставить стандартную реализацию <code>hashCode</code> (которая, как правило, возвращает разные значения для объектов с разными адресами), работа хэш-таблиц нарушится:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> Person {
+    <span class="kw">private</span> <span class="dt">final</span> String firstName;
+    <span class="kw">private</span> <span class="dt">final</span> String lastName;
+    
+    <span class="kw">public</span> <span class="fu">Person</span>(String firstName, String lastName) {
+        <span class="kw">this</span>.<span class="fu">firstName</span> = firstName;
+        <span class="kw">this</span>.<span class="fu">lastName</span> = lastName;
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span>(Object obj) {
+        <span class="kw">if</span> (<span class="kw">this</span> == obj) {
+            <span class="kw">return</span> <span class="kw">true</span>;  <span class="co">// оптимизация</span>
+        }
+        
+        <span class="kw">if</span> (!obj <span class="kw">instanceof</span> Person) {
+            <span class="kw">return</span> <span class="kw">false</span>;
+        }
+        
+        Person otherPerson = (Person) obj;
+        <span class="kw">return</span> Objects.<span class="fu">equals</span>(firstName, otherPerson.<span class="fu">firstName</span>)
+            &amp;&amp; Objects.<span class="fu">equals</span>(lastName, otherPerson.<span class="fu">lastName</span>);
+    }
+    
+    <span class="co">// Ошибка - не переопределили hashCode!</span>
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Set&lt;Person&gt; famousPeople = <span class="kw">new</span> HashSet&lt;&gt;();
+
+Person newton = <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Исаак&quot;</span>, <span class="st">&quot;Ньютон&quot;</span>);
+Person newtonClone = <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Исаак&quot;</span>, <span class="st">&quot;Ньютон&quot;</span>);
+System.<span class="fu">out</span>.<span class="fu">println</span>(newton.<span class="fu">equals</span>(newtonClone));          <span class="co">// true</span>
+
+famousPeople.<span class="fu">add</span>(newton);
+System.<span class="fu">out</span>.<span class="fu">println</span>(famousPeople.<span class="fu">contains</span>(newtonClone));  <span class="co">// false - ошибка!</span></code></pre></div>
+<p>Должно выполняться следующее условие:</p>
+<p style="text-align: center">
+<strong><em>Если</em> объекты равны по <code>equals</code>, <em>то</em> у них должен быть одинаковый хэш-код.</strong>
+</p>
+<p>Обратное, вообще говоря, может быть неверным. Вот самая простая (и самая ужасная) реализация <code>hashCode</code>, которую только можно себе представить:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Override</span>
+<span class="kw">public</span> <span class="dt">int</span> <span class="fu">hashCode</span>() {
+    <span class="kw">return</span> <span class="dv">42</span>;    <span class="co">// Никогда не делайте так!</span>
+}</code></pre></div>
+<p>Наш код заработает, но неэффективно. Букву контракта мы соблюли, но не дух. Действительно, у любых двух равных объектов будет одинаковый хэш-код. Проблема в том, что так вообще у любых двух объектов нашего класса будет одинаковый хэш-код. С точки зрения производительности это совершенно неприемлемо. Желательно, чтобы как можно чаще было верно и обратное: если <code>x.equals(y) == false</code>, то <code>x.hashCode() != y.hashCode()</code>.</p>
+<p>Подробные рекомендации по реализации <code>equals</code> и <code>hashCode</code> можно найти в книге Джошуа Блоха &quot;Java. Эффективное программирование&quot; (Effective Java). Здесь отметим лишь, что проще всего для реализации <code>hashCode</code> использовать статический метод <code>Objects.hash</code> <em>по тем же полям, что сравниваются в</em> <code>equals</code>. Например, для приведённого выше класса <code>Person</code> мы можем реализовать <code>hashCode</code> вот так:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Override</span>
+<span class="kw">public</span> <span class="dt">int</span> <span class="fu">hashCode</span>() {
+    <span class="kw">return</span> Objects.<span class="fu">hash</span>(firstName, lastName);
+}</code></pre></div>
+<blockquote>
+<p>Если вы реализуете интерфейс <code>Comparable</code> для упорядочения объектов, то, как правило, должно выполняться ещё одно правило: реализация метода <code>compareTo</code> должна быть совместимой с <code>equals</code>, то есть <code>x.equals(y)</code> должно быть верно тогда и только тогда, когда <code>x.compareTo(y) == 0</code>. Например, в нашем классе <code>Person</code> мы могли бы реализовать возможность сортировки сначала по фамилии, а затем по имени:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person <span class="kw">implements</span> Comparable&lt;Person&gt; {
+    ...
+
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">compareTo</span>(Person other) {
+       <span class="kw">return</span> Comparator.<span class="fu">comparing</span>(Person::lastName)
+                        .<span class="fu">thenComparing</span>(Person::firstName);
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> String <span class="fu">toString</span>() { <span class="kw">return</span> firstName + <span class="st">&quot; &quot;</span> + lastName; }
+    
+    ...
+}</code></pre></div>
+<p>А вот пример использования такого порядка:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Person&gt; quantumPhysicists = Arrays.<span class="fu">asList</span>(
+    <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Эрвин&quot;</span>, <span class="st">&quot;Шрёдингер&quot;</span>),
+    <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Нильс&quot;</span>, <span class="st">&quot;Бор&quot;</span>),
+    <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Альберт&quot;</span>, <span class="st">&quot;Эйнштейн&quot;</span>),
+    <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Поль&quot;</span>, <span class="st">&quot;Дирак&quot;</span>),
+    <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Вернер&quot;</span>, <span class="st">&quot;Гейзенберг&quot;</span>)
+);
+
+quantumPhysicists.<span class="fu">sort</span>(<span class="kw">null</span>);
+quantumPhysicists.<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);</code></pre></div>
+<p>Результат:</p>
+<pre><code>Нильс Бор
+Вернер Гейзенберг
+Поль Дирак
+Эрвин Шрёдингер
+Альберт Эйнштейн</code></pre>
+<p>У нашего класса <code>Person</code> всё хорошо с совместимостью <code>equals</code> и <code>compareTo</code>. А вот в стандартной библиотеке есть пример того, как делать не надо: метод <code>equals</code> класса <code>BigDecimal</code> обращает внимание на незначащие нули, а метод <code>compareTo</code> их игнорирует!</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">BigDecimal onePoint0 = <span class="kw">new</span> BigDecimal(<span class="st">&quot;1.0&quot;</span>);
+BigDecimal onePoint00 = <span class="kw">new</span> BigDecimal(<span class="st">&quot;1.00&quot;</span>);
+
+onePoint0.<span class="fu">equals</span>(onePoint00)     <span class="co">// false</span>
+onePoint0.<span class="fu">compareTo</span>(onePoint00)  <span class="co">// 0</span></code></pre></div>
+</blockquote>
+<h2 id="уничтожение-объекта">Уничтожение объекта</h2>
+<p>Метод <code>Object.finalize</code> вызывается перед тем, как объект будет уничтожен сборщиком мусора. Он объявлен как <code>protected</code>, поэтому его нельзя вызвать из внешнего кода, можно только переопределить. По умолчанию он не делает ничего.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> LastWords {
+    <span class="fu">@Override</span>
+    <span class="kw">protected</span> <span class="dt">void</span> <span class="fu">finalize</span>() {
+        System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Мрачный жнец пришёл за мной&quot;</span>);
+    }
+    
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+        <span class="kw">new</span> <span class="fu">LastWords</span>();
+        System.<span class="fu">gc</span>();      <span class="co">// Явно вызвали сборщик мусора</span>
+    }
+}</code></pre></div>
+<p>Вообще говоря, нет гарантии того, что <code>finalize</code> будет вызван хоть когда-нибудь. Гипотетическая реализация JVM с бесконечной памятью имеет вполне законное право не только никогда не производить сборку мусора неявно, но и определить метод <code>System.gc</code> вот так:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">gc</span>() { }</code></pre></div>
+<p>Поэтому, если класс держит какой-то ресурс, которые не контролирует сборщик мусора Java (а таково большинство ресурсов ОС — файлы, окна, сетевые соединения...), лучше освобождать эти ресурсы явно. Для этого принято реализовывать интерфейс <code>AutoCloseable</code> (или его подинтерфейс <code>Closeable</code>, появившийся раньше) и использовать объект внутри блока <em>try с ресурсами:</em></p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> HttpReader <span class="kw">implements</span> Closeable {
+    <span class="kw">private</span> <span class="dt">final</span> Scanner scanner;
+    
+    <span class="kw">public</span> <span class="fu">HttpReader</span>(String host, <span class="dt">int</span> port) <span class="kw">throws</span> IOException {
+        Socket socket = <span class="kw">new</span> Socket(host, port);
+        String request = <span class="st">&quot;GET / HTTP/1.1</span><span class="ch">\r\n</span><span class="st">&quot;</span>
+                + <span class="st">&quot;Host: &quot;</span> + host + <span class="st">&quot;</span><span class="ch">\r\n</span><span class="st">&quot;</span>
+                + <span class="st">&quot;</span><span class="ch">\r\n</span><span class="st">&quot;</span>;
+        
+        socket.<span class="fu">getOutputStream</span>().<span class="fu">write</span>(
+                request.<span class="fu">getBytes</span>(StandardCharsets.<span class="fu">US_ASCII</span>));
+        socket.<span class="fu">getOutputStream</span>().<span class="fu">flush</span>();
+        
+        scanner = <span class="kw">new</span> Scanner(socket.<span class="fu">getInputStream</span>());
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">close</span>() <span class="kw">throws</span> IOException {
+        scanner.<span class="fu">close</span>();
+    }
+    
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) <span class="kw">throws</span> IOException {
+        <span class="kw">try</span> (HttpReader reader = <span class="kw">new</span> <span class="fu">HttpReader</span>(<span class="st">&quot;google.com&quot;</span>, <span class="dv">80</span>)) {
+            <span class="kw">while</span> (reader.<span class="fu">scanner</span>.<span class="fu">hasNextLine</span>()) {
+                System.<span class="fu">out</span>.<span class="fu">println</span>(reader.<span class="fu">scanner</span>.<span class="fu">nextLine</span>());
+            }
+        }
+    }
+}</code></pre></div>
+<p>Пример вполне рабочий, хоть и абсолютно игрушечный. Сетевое соединение закрывается по выходу из блока <code>try</code> с помощью неявного вызова метода <code>close</code>.</p>
+<pre><code>HTTP/1.1 302 Found
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Location: http://www.google.ru/?gfe_rd=cr&amp;ei=QSvYVoNahMdguoKtyAw
+Content-Length: 255
+Date: Thu, 03 Mar 2016 12:17:05 GMT
+
+&lt;HTML&gt;&lt;HEAD&gt;&lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html;charset=utf-8&quot;&gt;
+&lt;TITLE&gt;302 Moved&lt;/TITLE&gt;&lt;/HEAD&gt;&lt;BODY&gt;
+&lt;H1&gt;302 Moved&lt;/H1&gt;
+The document has moved
+&lt;A HREF=&quot;http://www.google.ru/?gfe_rd=cr&amp;amp;ei=QSvYVoNahMdguoKtyAw&quot;&gt;here&lt;/A&gt;.
+&lt;/BODY&gt;&lt;/HTML&gt;</code></pre>
+<p>Для перестраховки можно переопределить и метод <code>finalize</code>, чтобы закрыть связанные с объектом ресурсы даже в случае, если пользователь класса забыл вызвать <code>close</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Override</span>
+<span class="kw">protected</span> <span class="dt">void</span> <span class="fu">finalize</span>() {
+    <span class="fu">close</span>();
+}</code></pre></div>
+<p>Библиотечный класс <code>Socket</code>, кстати, так и делает, но в общем случае полагаться на это нельзя, потому что <code>finalize</code> будет вызван не сразу, а только позже, во время сборки мусора — если он вообще когда-нибудь будет вызван.</p>
+</body>
+</html>

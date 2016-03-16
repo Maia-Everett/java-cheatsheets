@@ -1,0 +1,71 @@
+body {
+	font-family: Lato;
+	font-size: 14pt;
+}
+
+@media screen {
+	body {
+		margin: 0 auto 2em auto;
+		padding: 1em;
+		max-width: 1000px;
+	}
+}
+
+@media print {
+	body {
+		margin: 2em;
+	}
+}
+
+code {
+	font-family: Liberation Mono;
+}
+
+pre {
+	font-size: 90%;
+}
+
+#header h1 {
+	font-size: 50px;
+}
+
+#TOC ul {
+	background-color: rgb(245, 245, 245);
+	border: 1px solid rgb(204, 204, 204);
+	border-radius: 4px;
+	padding: 9.5px;
+	margin: 0px 0px 10px;
+	list-style-type: none;	
+}
+
+blockquote {
+	color: #555;
+	background: #f8f8f8;
+	min-height: 4em;
+}
+
+blockquote::before {
+	content: "\f071";
+	float: left;
+	font-size: 2em;
+	font-family: FontAwesome;
+	margin-left: -0.2em;
+	margin-right: 0.4em;
+}
+
+blockquote p:first-child::before {
+	content: "Важно! ";
+	font-weight: bold;
+}
+
+blockquote p, blockquote ul {
+	margin-left: 2.6em;
+}
+
+blockquote pre {
+	margin-left: 3em;
+}
+
+table code {
+	white-space: inherit;
+}
