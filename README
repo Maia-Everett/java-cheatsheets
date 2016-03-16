@@ -1,10 +1,7 @@
-Some guides on Java classes and libraries that I wrote in Russian for personal use, for the purposes of teaching Java,
-originally aimed at beginners with knowledge of Java syntax, but not libraries. I publish them to github, because
-why not? :) Non-Russian-speakers are unlikely to find them useful, though.
+Some guides on Java classes and libraries that I wrote in Russian for personal use, for the purposes of teaching Java, originally aimed at beginners with knowledge of Java syntax, but not libraries. I publish them to github, because why not? :) Non-Russian-speakers are unlikely to find them useful, though.
 
 Requirements:
 - pandoc (.md -> .html)
 - wkhtmltopdf (.html -> .pdf)
 
-To enable internal links in generated PDF files, download a statically linked version of wkhtmltopdf from
-http://wkhtmltopdf.org/ instead of using the version provided in the Linux distribution.
+To enable internal links in generated PDF files, download a statically linked version of wkhtmltopdf from http://wkhtmltopdf.org/ instead of using the version provided in the Linux distribution.

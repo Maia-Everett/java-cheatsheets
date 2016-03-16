@@ -59,6 +59,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#длина-и-доступ-по-индексу">Длина и доступ по индексу</a></li>
 <li><a href="#итерация-обход-списка">Итерация (обход списка)</a></li>
 <li><a href="#печать-списка">Печать списка</a></li>
+<li><a href="#линейный-и-двоичный-поиск">Линейный и двоичный поиск</a></li>
 <li><a href="#изменение-списка">Изменение списка</a></li>
 <li><a href="#списки-и-массивы">Списки и массивы</a></li>
 <li><a href="#сортировка">Сортировка</a></li>
@@ -164,6 +165,22 @@ numbers.<span class="fu">add</span>(<span class="dv">100</span>);
 String str = numbers.<span class="fu">toString</span>();  <span class="co">// &quot;[5, 100]&quot;</span>
 System.<span class="fu">out</span>.<span class="fu">println</span>(str);
 System.<span class="fu">out</span>.<span class="fu">println</span>(numbers);      <span class="co">// Так тоже можно: println сам вызовет toString</span></code></pre></div>
+<p>Напечатать каждый элемент на отдельной строке можно циклом, а можно и с помощью метода <code>forEach</code>, с которым мы познакомимся позже (как и со странным синтаксисом, использованным здесь).</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">numbers.<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);</code></pre></div>
+<p>Результат:</p>
+<pre><code>5
+100</code></pre>
+<h2 id="линейный-и-двоичный-поиск">Линейный и двоичный поиск</h2>
+<p>Метод <code>indexOf</code> реализует линейный поиск элемента в списке (по <code>equals</code>) от начала к концу, аналогично строкам:</p>
+<p><code>int indexOf(E element)</code></p>
+<p>Он возвращает индекс первого вхождения элемента или -1, если элемент не найден.</p>
+<p>Аналогично работает метод <code>lastIndexOf</code>, который ищет не с начала, а с конца списка, возвращая индекс последнего вхождения (или -1).</p>
+<p><code>int lastIndexOf(E element)</code></p>
+<p>Если же список отсортирован, можно применить более быстрый алгоритм двоичного поиска с помощью статического метода <code>Collections.binarySearch</code>.</p>
+<p><code>static int binarySearch(List&lt;сравнимый_тип T&gt; list, T key)</code></p>
+<p><code>static int binarySearch(List&lt;T&gt; list, T key, Comparator&lt;любой_супертип_T&gt; comparator)</code></p>
+<p>Здесь &quot;сравнимый тип&quot; означает тип, реализующий <em>естественный порядок</em> с помощью интерфейса <code>Comparable</code>; кроме того, можно явно передать компаратор, по которому будет осуществляться сравнение элементов. Подробнее о компараторах написано в разделе <a href="#сортировка">&quot;Сортировка&quot;</a>.</p>
+<p>У этого метода возвращаемое значение более хитрое, чем у семейства <code>indexOf</code>. Он тоже возвращает неотрицательное значение, если элемент найден, и отрицательное, если элемент не найден, но это отрицательное значение не всегда равно -1. Если точнее, то оно равно <code>-insertionPoint - 1</code>, где <code>insertionPoint</code> — это тот индекс, при вставке по которому искомого элемента с помощью метода <code>add(beforeIndex, element)</code> список останется отсортированным.</p>
 <h2 id="изменение-списка">Изменение списка</h2>
 <p>Теперь мы рассмотрим операции, которые не читают из списка, а пишут в него. Их поддерживают не все списки. К счастью, <code>ArrayList</code> реализует все эти операции.</p>
 <p>Метод <code>add</code> добавляет элемент в конец списка или, если первым параметром указан индекс, <em>перед</em> этим индексом:</p>
@@ -195,10 +212,10 @@ strList.<span class="fu">remove</span>(<span class="kw">new</span> String(<span 
 <p>Будьте осторожны с методом <code>remove</code> в списках типа <code>List&lt;Integer&gt;</code>. Если вы передадите <code>int</code> вместо <code>Integer</code> и наоборот, может вызваться не та версия метода <code>remove</code>, которая нужна:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Integer&gt; numbers = <span class="kw">new</span> ArrayList&lt;&gt;();
 numbers.<span class="fu">add</span>(<span class="dv">5</span>);
-numbers.<span class="fu">remove</span>(<span class="dv">5</span>);    <span class="co">// remove(int); выбросит IndexOutOfBoundsException</span>
+numbers.<span class="fu">remove</span>(<span class="dv">5</span>);    <span class="co">// remove(int) по индексу; IndexOutOfBoundsException</span>
 
 Integer obj = <span class="dv">5</span>;
-numbers.<span class="fu">remove</span>(obj);  <span class="co">// remove(Object); OK</span></code></pre></div>
+numbers.<span class="fu">remove</span>(obj);  <span class="co">// remove(Object) по значению; OK</span></code></pre></div>
 </blockquote>
 <p>Аналогично <code>addAll</code> есть метод <code>removeAll</code>, удаляющий все элементы переданной коллекции, найденные в списке:</p>
 <p><code>boolean removeAll(Collection&lt;любой_тип&gt; collection)</code></p>
@@ -217,6 +234,45 @@ numbers.<span class="fu">add</span>(<span class="dv">100</span>);
 System.<span class="fu">out</span>.<span class="fu">println</span>(numbers);             <span class="co">// [5, 100]</span>
 System.<span class="fu">out</span>.<span class="fu">println</span>(numbers.<span class="fu">set</span>(<span class="dv">0</span>, <span class="dv">42</span>));  <span class="co">// 5</span>
 System.<span class="fu">out</span>.<span class="fu">println</span>(numbers);             <span class="co">// [42, 100]</span></code></pre></div>
+<p>Как пример, с помощью <a href="#линейный-и-двоичный-поиск">двоичного поиска</a> и методов <code>add</code> и <code>remove</code> с индексом можно реализовать поверх <code>ArrayList</code> отсортированное множество. (Но не делайте так! Библиотечный класс <code>TreeSet</code> намного эффективнее.)</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> HorribleSortedSet&lt;E <span class="kw">extends</span> Comparable&lt;? <span class="kw">super</span> E&gt;&gt;
+        <span class="kw">extends</span> AbstractSet&lt;E&gt; {
+    <span class="kw">private</span> <span class="dt">final</span> List&lt;E&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> Iterator&lt;E&gt; <span class="fu">iterator</span>() {
+        <span class="kw">return</span> list.<span class="fu">iterator</span>();
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">contains</span>(E element) {
+        <span class="kw">return</span> Collections.<span class="fu">binarySearch</span>(list, element) &gt;= <span class="dv">0</span>;
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">add</span>(E element) {
+        <span class="dt">int</span> index = Collections.<span class="fu">binarySearch</span>(list, element);
+        
+        <span class="kw">if</span> (index &gt;= <span class="dv">0</span>) {
+            <span class="kw">return</span> <span class="kw">false</span>;  <span class="co">// Элемент уже присутствует</span>
+        } <span class="kw">else</span> {
+            list.<span class="fu">add</span>(-index - <span class="dv">1</span>, element);
+            <span class="kw">return</span> <span class="kw">true</span>;
+        }
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">remove</span>(E element) {
+        <span class="dt">int</span> index = Collections.<span class="fu">binarySearch</span>(list, element);
+        
+        <span class="kw">if</span> (index &gt;= <span class="dv">0</span>) {
+            list.<span class="fu">remove</span>(index);
+            <span class="kw">return</span> <span class="kw">true</span>;
+        } <span class="kw">else</span> {
+            <span class="kw">return</span> <span class="kw">false</span>;  <span class="co">// Элемент не найден</span>
+        }
+    }
+}</code></pre></div>
 <blockquote>
 <p>Разные реализации списков оптимизированы для разных целей. Например, <code>ArrayList</code> оптимизирован для добавления элементов в конец списка и для доступа по индексу, но вставка и удаление не из конца списка имеют линейную сложность, потому что приводят к сдвигу элементов массива, который <code>ArrayList</code> использует внутри. А <code>LinkedList</code> оптимизирован для вставки и удаления в любое место списка, но потребляет больше памяти; кроме того, для доступа к элементу по индексу N ему нужно сначала пройти N - 1 предыдущих элементов, поэтому операции с индексами имеют для него линейную сложность.</p>
 <p>В типичных приложениях, как правило, используется всё же <code>ArrayList</code>, потому что приложения, как правило, чаще читают из произвольных мест списков, чем изменяют их.</p>
@@ -243,7 +299,7 @@ System.<span class="fu">out</span>.<span class="fu">println</span>(Arrays.<span 
 <p>Рекомендуемой идиомой является передача в метод <code>toArray</code> нового массива с размером, равным размеру списка:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">numbers.<span class="fu">toArray</span>(<span class="kw">new</span> Integer[numbers.<span class="fu">size</span>()])</code></pre></div>
 <blockquote>
-<p>В примере используется массив объектов-обёрток <code>Integer[]</code>, а не чисел <code>int[]</code>. К сожалению, преобразовать список <code>List&lt;Integer&gt;</code> в массив <code>int[]</code> не так просто. Можно написать его самостоятельно или использовать метод <code>Ints.toArray</code> из библиотеки Google Guava.</p>
+<p>В примере используется массив объектов-обёрток <code>Integer[]</code>, а не чисел <code>int[]</code>. К сожалению, преобразовать список <code>List&lt;Integer&gt;</code> в массив <code>int[]</code> не так просто. Можно написать такой метод самостоятельно или использовать метод <code>Ints.toArray</code> из библиотеки Google Guava.</p>
 </blockquote>
 <blockquote>
 <p>Для печати элементов массива нужно использовать <code>Arrays.toString</code>. Вызов же метода <code>toString</code> у самого массива вернёт малоинтересную тарабарщину:</p>
@@ -272,14 +328,15 @@ System.<span class="fu">out</span>.<span class="fu">println</span>(Arrays.<span 
 numbers.<span class="fu">add</span>(<span class="dv">100</span>);
 numbers.<span class="fu">add</span>(<span class="dv">5</span>);
 numbres.<span class="fu">add</span>(<span class="dv">42</span>);
-Collections.<span class="fu">sort</span>(numbers); <span class="co">// 5, 42, 100</span>
-numbers.<span class="fu">sort</span>(<span class="kw">null</span>);        <span class="co">// то же самое</span></code></pre></div>
+Collections.<span class="fu">sort</span>(numbers); <span class="co">// 5, 42, 100; стиль Java 1.2</span>
+numbers.<span class="fu">sort</span>(<span class="kw">null</span>);        <span class="co">// то же самое; стиль Java 8</span></code></pre></div>
 <p>А если нам нужен порядок сортировки, отличный от естественного, или же тип элемента не реализует <code>Comparable</code>? Тогда нам нужно передать методу <code>sort</code> свой компаратор. В стандартной библиотеке есть несколько уже имеющихся компараторов. Например, в классе <code>Collections</code> есть метод, возвращающий компаратор, сортирующий в обратном порядке:</p>
 <p><code>static &lt;T&gt; Comparator&lt;T&gt; reverseOrder()</code></p>
 <p>С его помощью мы можем отсортировать наш список <code>numbers</code> по убыванию:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">numbers.<span class="fu">sort</span>(Collections.<span class="fu">reverseOrder</span>()); <span class="co">// 100, 42, 5</span></code></pre></div>
-<p>Также в качестве компаратора можно передать ссылку на любой метод, принимающий два параметра нужного нам типа и возвращающий int, то есть имеющий вид</p>
-<p><code>int имяМетода(E element1, E element2)</code></p>
+<p>Также в качестве компаратора можно передать ссылку на любой метод, принимающий два параметра нужного нам типа и возвращающий int (при этом в качестве первого параметра может выступать неявный параметр <code>this</code>). Иными словами, такой метод может иметь одну из двух форм:</p>
+<p><code>int E.имяМетода(E element2)</code></p>
+<p><code>static int ЛюбойКласс.имяМетода(E element1, E element2)</code></p>
 <p>Соглашения о возвращаемом значении такие же, как для <code>compareTo</code>:</p>
 <ul>
 <li>&lt; 0, если первый элемент меньше второго</li>
@@ -287,13 +344,13 @@ numbers.<span class="fu">sort</span>(<span class="kw">null</span>);        <span
 <li>&gt; 0, если первый элемент больше второго</li>
 </ul>
 <p>Например, такую форму имеет метод <code>String.compareToIgnoreCase</code>. Поэтому, если мы хотим отсортировать список имён файлов в папке, то, скорее всего, пользователь захочет видеть их упорядоченными без учёта регистра. Это можно сделать двумя способами:</p>
-<pre><code>String[] array = { &quot;FILE.txt&quot;, &quot;user.bin&quot;, &quot;abc.txt&quot; };
-List&lt;String&gt; fileNames = Arrays.asList(array);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String[] array = { <span class="st">&quot;FILE.txt&quot;</span>, <span class="st">&quot;user.bin&quot;</span>, <span class="st">&quot;abc.txt&quot;</span> };
+List&lt;String&gt; fileNames = Arrays.<span class="fu">asList</span>(array);
 
-fileNames.sort(String.CASE_INSENSITIVE_ORDER);
-fileNames.sort(String::compareToIgnoreCase);
-// Оба метода дадут один и тот же результат:
-// abc.txt, FILE.txt, user.bin</code></pre>
+fileNames.<span class="fu">sort</span>(String.<span class="fu">CASE_INSENSITIVE_ORDER</span>);  <span class="co">// Стиль Java 1.2</span>
+fileNames.<span class="fu">sort</span>(String::compareToIgnoreCase);    <span class="co">// Стиль Java 8</span>
+<span class="co">// Оба метода дадут один и тот же результат:</span>
+<span class="co">// abc.txt, FILE.txt, user.bin</span></code></pre></div>
 <p>Ещё в качестве компаратора можно передать <em>лямбда-выражение</em> или экземпляр любого класса, реализующего интерфейс <code>Comparator</code>, но этого мы пока касаться не будем.</p>
 </body>
 </html>

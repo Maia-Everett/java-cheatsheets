@@ -217,6 +217,50 @@ System.out.println(str);
 System.out.println(numbers);      // Так тоже можно: println сам вызовет toString
 ```
 
+Напечатать каждый элемент на отдельной строке можно циклом, а можно и с помощью метода `forEach`, с которым мы
+познакомимся позже (как и со странным синтаксисом, использованным здесь).
+
+```java
+numbers.forEach(System.out::println);
+```
+
+Результат:
+
+```
+5
+100
+```
+
+Линейный и двоичный поиск
+---
+
+Метод `indexOf` реализует линейный поиск элемента в списке (по `equals`) от начала к концу, аналогично строкам:
+
+```int indexOf(E element)```
+
+Он возвращает индекс первого вхождения элемента или -1, если элемент не найден.
+
+Аналогично работает метод `lastIndexOf`, который ищет не с начала, а с конца списка, возвращая индекс последнего
+вхождения (или -1).
+
+```int lastIndexOf(E element)```
+
+Если же список отсортирован, можно применить более быстрый алгоритм двоичного поиска с помощью статического метода
+`Collections.binarySearch`.
+
+```static int binarySearch(List<сравнимый_тип T> list, T key)```
+
+```static int binarySearch(List<T> list, T key, Comparator<любой_супертип_T> comparator)```
+
+Здесь "сравнимый тип" означает тип, реализующий *естественный порядок* с помощью интерфейса `Comparable`; кроме того,
+можно явно передать компаратор, по которому будет осуществляться сравнение элементов. Подробнее о компараторах написано
+в разделе ["Сортировка"](#сортировка).
+
+У этого метода возвращаемое значение более хитрое, чем у семейства `indexOf`. Он тоже возвращает неотрицательное
+значение, если элемент найден, и отрицательное, если элемент не найден, но это отрицательное значение не всегда равно
+-1. Если точнее, то оно равно `-insertionPoint - 1`, где `insertionPoint` &mdash; это тот индекс, при вставке по
+которому искомого элемента с помощью метода `add(beforeIndex, element)` список останется отсортированным.
+
 Изменение списка
 ---
 
@@ -286,10 +330,10 @@ objList.addAll(strList);
 > ```java
 > List<Integer> numbers = new ArrayList<>();
 > numbers.add(5);
-> numbers.remove(5);    // remove(int); выбросит IndexOutOfBoundsException
+> numbers.remove(5);    // remove(int) по индексу; IndexOutOfBoundsException
 >
 > Integer obj = 5;
-> numbers.remove(obj);  // remove(Object); OK
+> numbers.remove(obj);  // remove(Object) по значению; OK
 > ```
 
 Аналогично `addAll` есть метод `removeAll`, удаляющий все элементы переданной коллекции, найденные в списке:
@@ -323,6 +367,51 @@ numbers.add(100);
 System.out.println(numbers);             // [5, 100]
 System.out.println(numbers.set(0, 42));  // 5
 System.out.println(numbers);             // [42, 100]
+```
+
+Как пример, с помощью [двоичного поиска](#линейный-и-двоичный-поиск) и методов `add` и `remove` с индексом можно
+реализовать поверх `ArrayList` отсортированное множество. (Но не делайте так! Библиотечный класс `TreeSet` намного
+эффективнее.)
+
+```java
+public class HorribleSortedSet<E extends Comparable<? super E>>
+		extends AbstractSet<E> {
+	private final List<E> list = new ArrayList<>();
+	
+	@Override
+	public Iterator<E> iterator() {
+		return list.iterator();
+	}
+	
+	@Override
+	public boolean contains(E element) {
+		return Collections.binarySearch(list, element) >= 0;
+	}
+	
+	@Override
+	public boolean add(E element) {
+		int index = Collections.binarySearch(list, element);
+		
+		if (index >= 0) {
+			return false;  // Элемент уже присутствует
+		} else {
+			list.add(-index - 1, element);
+			return true;
+		}
+	}
+	
+	@Override
+	public boolean remove(E element) {
+		int index = Collections.binarySearch(list, element);
+		
+		if (index >= 0) {
+			list.remove(index);
+			return true;
+		} else {
+			return false;  // Элемент не найден
+		}
+	}
+}
 ```
 
 > Разные реализации списков оптимизированы для разных целей. Например, `ArrayList` оптимизирован для добавления
@@ -373,7 +462,7 @@ numbers.toArray(new Integer[numbers.size()])
 ```
 
 > В примере используется массив объектов-обёрток `Integer[]`, а не чисел `int[]`. К сожалению, преобразовать список
-> `List<Integer>` в массив `int[]` не так просто. Можно написать его самостоятельно или использовать метод
+> `List<Integer>` в массив `int[]` не так просто. Можно написать такой метод самостоятельно или использовать метод
 > `Ints.toArray` из библиотеки Google Guava.
 
 > Для печати элементов массива нужно использовать `Arrays.toString`. Вызов же метода `toString` у самого массива
@@ -432,8 +521,8 @@ List<Integer> numbers = new ArrayList<>();
 numbers.add(100);
 numbers.add(5);
 numbres.add(42);
-Collections.sort(numbers); // 5, 42, 100
-numbers.sort(null);        // то же самое
+Collections.sort(numbers); // 5, 42, 100; стиль Java 1.2
+numbers.sort(null);        // то же самое; стиль Java 8
 ```
 
 А если нам нужен порядок сортировки, отличный от естественного, или же тип элемента не реализует `Comparable`? Тогда
@@ -449,9 +538,12 @@ numbers.sort(Collections.reverseOrder()); // 100, 42, 5
 ```
 
 Также в качестве компаратора можно передать ссылку на любой метод, принимающий два параметра нужного нам типа и
-возвращающий int, то есть имеющий вид
+возвращающий int (при этом в качестве первого параметра может выступать неявный параметр `this`). Иными словами, такой
+метод может иметь одну из двух форм:
 
-```int имяМетода(E element1, E element2)```
+```int E.имяМетода(E element2)```
+
+```static int ЛюбойКласс.имяМетода(E element1, E element2)```
 
 Соглашения о возвращаемом значении такие же, как для `compareTo`:
 
@@ -463,12 +555,12 @@ numbers.sort(Collections.reverseOrder()); // 100, 42, 5
 в папке, то, скорее всего, пользователь захочет видеть их упорядоченными без учёта регистра. Это можно сделать двумя
 способами:
 
-```
+```java
 String[] array = { "FILE.txt", "user.bin", "abc.txt" };
 List<String> fileNames = Arrays.asList(array);
 
-fileNames.sort(String.CASE_INSENSITIVE_ORDER);
-fileNames.sort(String::compareToIgnoreCase);
+fileNames.sort(String.CASE_INSENSITIVE_ORDER);  // Стиль Java 1.2
+fileNames.sort(String::compareToIgnoreCase);    // Стиль Java 8
 // Оба метода дадут один и тот же результат:
 // abc.txt, FILE.txt, user.bin
 ```
