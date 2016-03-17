@@ -25,6 +25,10 @@ pre {
 	font-size: 90%;
 }
 
+dd {
+	margin-left: 1.5em;
+}
+
 #header h1 {
 	font-size: 50px;
 }

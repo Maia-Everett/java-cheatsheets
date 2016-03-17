@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Iterable&lt;T&gt;, Iterator&lt;T&gt;</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Iterable&lt;T&gt;, Iterator&lt;T&gt;</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#реализация-интерфейса-iterable">Реализация интерфейса Iterable</a></li>
+<li><a href="#реализация-интерфейса-iterator">Реализация интерфейса Iterator</a></li>
+<li><a href="#удаление-элементов">Удаление элементов</a></li>
+</ul>
+</div>
+<p>Интерфейс: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html">java.lang.Iterable</a></p>
+<p>Интерфейс: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html">java.util.Iterator</a></p>
+<h2 id="описание">Описание</h2>
+<p>Класс, реализующий интерфейс <code>Iterable&lt;T&gt;</code>, представляет абстракцию &quot;последовательность элементов&quot;. Такие классы можно обходить циклом for-each.</p>
+<p>Все коллекции (<code>Collection</code>), в том числе множества (<code>Set</code>) и списки (<code>List</code>), реализуют интерфейс <code>Iterable</code>. Именно поэтому для них работает цикл for-each.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">StringSequence sequence = &lt;создание объекта&gt;;
+
+<span class="kw">for</span> (String str: sequence) {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(str);
+}</code></pre></div>
+<h2 id="реализация-интерфейса-iterable">Реализация интерфейса Iterable</h2>
+<p>Чтобы реализовать интерфейс <code>Iterable&lt;T&gt;</code> для конкретного типа <code>T</code>, нужно объявить с помощью ключевого слова <code>implements</code>, что наш класс реализует интерфейс, и объявить в нём один метод, создающий новый объект — итератор:</p>
+<p><code>public Iterator&lt;T&gt; iterator()</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> StringSequence <span class="kw">implements</span> Iterable&lt;String&gt; {
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> Iterator&lt;String&gt; <span class="fu">iterator</span>() {
+        <span class="co">// реализация</span>
+    }
+}</code></pre></div>
+<p>Где взять итератор? Если наш класс оборачивает другой класс, реализующий интерфейс <code>Iterable</code>, то итератор можно позаимствовать у него:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> StringSequence <span class="kw">implements</span> Iterable&lt;String&gt; {
+    <span class="kw">private</span> <span class="dt">final</span> List&lt;String&gt; list;
+    
+    <span class="kw">public</span> <span class="fu">StringSequence</span>(Collection&lt;String&gt; data) {
+        list = <span class="kw">new</span> ArrayList&lt;&gt;(data);
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> Iterator&lt;String&gt; <span class="fu">iterator</span>() {
+        <span class="kw">return</span> list.<span class="fu">iterator</span>();
+    }
+}</code></pre></div>
+<p>Поскольку <code>ArrayList</code> реализует <code>Iterable</code> и содержит в себе точно те элементы, по которым мы хотим пройтись, его итератор подойдёт для нашей реализации (с небольшой оговоркой, на которой мы остановимся позже).</p>
+<p>Но что, если мы реализуем структуру данных с нуля, а не как обёртку над чужим классом?</p>
+<p>Тогда нам нужно самим создавать итератор. Тип <code>Iterator</code> — это опять-таки интерфейс, который должен реализовывать уже другой класс.</p>
+<h2 id="реализация-интерфейса-iterator">Реализация интерфейса Iterator</h2>
+<p>Итератор — это вспомогательный объект, предназначенный для обхода последовательности. Он реализует абстракцию &quot;указатель на текущий элемент&quot; и умеет продвигаться по последовательности вперёд (но не назад).</p>
+<p>Сразу после создания итератор указывает на начало последовательности. Любой итератор поддерживает две операции:</p>
+<dl>
+<dt><code>boolean hasNext()</code></dt>
+<dd>Проверяет, не достигли ли мы конца последовательности (остались ли ещё элементы для чтения).
+</dd>
+<dt><code>T next()</code></dt>
+<dd>Возвращает следующий элемент последовательности и продвигается на один элемент вперёд. Если мы пытаемся выйти за границы последовательности, выбрасывает <code>NoSuchElementException</code>.
+</dd>
+</dl>
+<p>Таким образом, цикл for-each</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">for</span> (String str: sequence) {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(str);
+}</code></pre></div>
+<p>эквивалентен такой записи (и именно так реализуется под капотом):</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">for</span> (Iterator&lt;String&gt; iter = sequence.<span class="fu">iterator</span>(); iter.<span class="fu">hasNext</span>(); ) {
+    String str = iter.<span class="fu">next</span>();
+    
+    System.<span class="fu">out</span>.<span class="fu">println</span>(str);
+}</code></pre></div>
+<p>Зная это, мы можем написать свой итератор. Поскольку <code>Iterator&lt;T&gt;</code> — это тоже интерфейс, мы должны объявить его в разделе <code>implements</code> класса-итератора.</p>
+<p>Итератору, как правило, нужен доступ к деталям реализации последовательности, которую он обходит. Обычно итератор реализуется как <em>внутренний класс</em>, но это необязательно. Можно реализовать итератор и как видимый в пределах пакета (package-private) обычный класс, передав ему детали реализации в конструкторе.</p>
+<p>Шаш класс <code>StringSequence</code> использует для реализации <code>ArrayList</code>. Напишем свой собственный итератор для <code>ArrayList</code>, не пользуясь стандартным.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> StringSequenceIterator <span class="kw">implements</span> Iterator&lt;String&gt; {
+    <span class="kw">private</span> <span class="dt">final</span> List&lt;String&gt; list;  <span class="co">// список, который обходим</span>
+    <span class="kw">private</span> <span class="dt">int</span> index;                <span class="co">// индекс текущего элемента</span>
+
+    <span class="fu">StringSequenceIterator</span>(List&lt;String&gt; list) {
+        <span class="kw">this</span>.<span class="fu">list</span> = list;
+        index = <span class="dv">0</span>;  <span class="co">// встаём в начало</span>
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">hasNext</span>() {
+        <span class="kw">return</span> index &lt; list.<span class="fu">size</span>();
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> String <span class="fu">next</span>() {
+        <span class="kw">if</span> (index == size) {  <span class="co">// условие конца последовательности</span>
+            <span class="kw">throw</span> <span class="kw">new</span> NoSuchElementException();
+        }
+        
+        String result = list.<span class="fu">get</span>(index);
+        index++;
+        <span class="kw">return</span> result;
+        <span class="co">// Три строки выше можно записать одной:</span>
+        <span class="co">// return list.get(index++);</span>
+    }
+}</code></pre></div>
+<p>И тогда в самом классе <code>StringSequence</code> мы будем создавать этот итератор так:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> StringSequence <span class="kw">implements</span> Iterable&lt;String&gt; {
+    <span class="kw">private</span> <span class="dt">final</span> List&lt;String&gt; list;
+    
+    <span class="kw">public</span> <span class="fu">StringSequence</span>(Collection&lt;String&gt; data) {
+        list = <span class="kw">new</span> ArrayList&lt;&gt;(data);
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> Iterator&lt;String&gt; <span class="fu">iterator</span>() {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="fu">StringSequenceIterator</span>(list);
+    }
+}</code></pre></div>
+<h2 id="удаление-элементов">Удаление элементов</h2>
+<p>Класс-итератор может реализовать также необязательную операцию <code>remove</code>, которая удаляет <em>последний возвращённый методом <code>next</code> элемент</em>. Кроме того, операцию <code>remove</code> можно вызвать только один раз между вызовами <code>next</code>; чтобы удалить элемент, следующий за только что удалённым, нужно сначала вызвать <code>next</code>, потом снова <code>remove</code>.</p>
+<p>Метод <code>remove</code> не нужен для работы цикла for-each. Более того, он недоступен в цикле for-each, и использовать его можно только при явной работе с объектом-итератором.</p>
+<p>Реализация <code>remove</code> по умолчанию просто выбрасывает <code>UnsupportedOperationException</code>.</p>
+<dl>
+<dt><code>boolean remove()</code></dt>
+<dd>Удаляет последний элемент, возвращённый методом <code>next</code>. Выбрасывает <code>IllegalStateException</code>, если мы находимся в начале последовательности (то есть <code>next</code> ни разу не вызывался), либо если метод <code>remove</code> уже был вызван с момента последнего вызова <code>next</code>.
+</dd>
+</dl>
+<p>Как правило, итератор, реализующий <code>remove</code>, хранит дополнительный флаг, показывающий, вызывался ли уже метод <code>remove</code> с момента последнего вызова <code>next</code>.</p>
+<p>Вот пример реализации итератора с поддержкой <code>remove</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> StringSequenceIterator <span class="kw">implements</span> Iterator&lt;String&gt; {
+    <span class="kw">private</span> <span class="dt">final</span> List&lt;String&gt; list;  <span class="co">// список, который обходим</span>
+    <span class="kw">private</span> <span class="dt">int</span> index;                <span class="co">// индекс текущего элемента</span>
+    <span class="kw">private</span> <span class="dt">boolean</span> removeCalled;
+
+    <span class="fu">StringSequenceIterator</span>(List&lt;String&gt; list) {
+        <span class="kw">this</span>.<span class="fu">list</span> = list;
+        index = <span class="dv">0</span>;  <span class="co">// встаём в начало</span>
+        removeCalled = <span class="kw">false</span>;
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">hasNext</span>() {
+        <span class="kw">return</span> index &lt; list.<span class="fu">size</span>();
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> String <span class="fu">next</span>() {
+        <span class="kw">if</span> (index == size) {  <span class="co">// условие конца последовательности</span>
+            <span class="kw">throw</span> <span class="kw">new</span> NoSuchElementException();
+        }
+        
+        removeCalled = <span class="kw">false</span>;  <span class="co">// сбрасываем флаг при вызове next</span>
+        <span class="kw">return</span> list.<span class="fu">get</span>(index++);
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">remove</span>() {
+        <span class="kw">if</span> (removeCalled) {
+            <span class="kw">throw</span> <span class="kw">new</span> IllegalStateException(<span class="st">&quot;remove already called&quot;</span>);
+        }
+        
+        <span class="kw">if</span> (index == <span class="dv">0</span>) {
+            <span class="kw">throw</span> <span class="kw">new</span> IllegalStateException(<span class="st">&quot;next never called&quot;</span>);
+        }
+        
+        <span class="co">// Поскольку мы ранее увеличили index в next, тот элемент,</span>
+        <span class="co">// который последним вернул next, находится по индексу</span>
+        <span class="co">// index - 1</span>
+        index--;             <span class="co">// сдвигаемся влево</span>
+        list.<span class="fu">remove</span>(index);  <span class="co">// удаляем последний возвращённый</span>
+        <span class="co">// теперь index указывает на элемент, следующий за удалённым</span>
+        <span class="co">// устанавливаем флаг, чтобы исключить двойной вызов</span>
+        removeCalled = <span class="kw">true</span>;
+    }
+}</code></pre></div>
+<blockquote>
+<p>Поскольку итераторы изменяемых последовательностей (например, <code>ArrayList</code>) допускают удаление элементов, неосторожное переиспользование итераторов из деталей реализации может привести к нарушению инкапсуляции. Например, наш изначальный класс <code>StringSequence</code>, не использующий свой итератор, по задумке является неизменяемым, но возврат итератора <code>ArrayList</code> позволяет удалять элементы списка, тем самым изменяя его в обход инкапсуляции:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">StringSequence sequence = &lt;...&gt;;
+Iterator&lt;String&gt; iter = sequence.<span class="fu">iterator</span>();
+iter.<span class="fu">next</span>();
+iter.<span class="fu">remove</span>();  <span class="co">// удалили первый элемент!</span></code></pre></div>
+<p>Лучше всего не использовать изменяемые структуры данных внутри неизменяемых, или хотя бы свести к минимуму их использование. Этой ошибки можно было бы избежать, если бы мы сделали наш внутренний список неизменяемым, обернув <code>ArrayList</code> в вызов статического метода <code>Collections.unmodifiableList</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="fu">StringSequence</span>(Collection&lt;String&gt; data) {
+    list = Collections.<span class="fu">unmodifiableList</span>(<span class="kw">new</span> ArrayList&lt;&gt;(data));
+}</code></pre></div>
+<p>В библиотеке Google Guava есть класс <code>ImmutableList</code>, реализующий ту же идиому более эффективно. Он является неизменяемой реализацией списка, не оборачивающей никакой другой список, и просто копирует переданные в него данные:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">list = ImmutableList.<span class="fu">copyOf</span>(data);</code></pre></div>
+</blockquote>
+<blockquote>
+<p>Во время использования итератора — будь то в цикле for-each или напрямую — нельзя изменять объект <code>Iterable</code> никакими другими способами, кроме как через сам итератор. В противном случае возникает <em>неопределённое поведение</em> (undefined behavior), то есть с последовательностью может случиться всё, что угодно, и она может необратимо испортиться. Классы, поддерживающие итерацию, не обязаны никак обрабатывать такой конфликт, хотя стандартные библиотечные коллекции (в том числе <code>ArrayList</code> и <code>LinkedList</code>) отслеживают и обрабатывают такую ситуацию:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+list.<span class="fu">add</span>(<span class="st">&quot;Hello&quot;</span>);
+
+<span class="kw">for</span> (String str: list) {
+    list.<span class="fu">add</span>(<span class="st">&quot;World&quot;</span>);  <span class="co">// бросает ConcurrentModificationException</span>
+}</code></pre></div>
+</blockquote>
+</body>
+</html>
