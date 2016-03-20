@@ -204,7 +204,7 @@ intArrayPrinter.<span class="fu">accept</span>(lost);  <span class="co">// [ 4, 
 <p>Как видно, по умолчанию метод <code>forEach</code> реализуется через цикл for-each, что логично. При желании её всегда можно переопределить, если реализация класса допускает более эффективную реализацию операции &quot;применить действие <code>action</code> для всех элементов&quot; без использования итератора.</p>
 <p>В качестве ещё одного примера можно привести обобщённую реализацию рекурсивного обхода дерева файлов в глубину. Более подробно классы <code>Path</code> и <code>Files</code> будут рассмотрены позже.</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">void</span> <span class="fu">walkDir</span>(Path dir, Consumer&lt;Path&gt; action) <span class="kw">throws</span> IOException {
-    <span class="kw">try</span> (DirectoryStream&lt;Path&gt; dirStream = dir.<span class="fu">newDirectoryStream</span>()) {
+    <span class="kw">try</span> (DirectoryStream&lt;Path&gt; dirStream = Files.<span class="fu">newDirectoryStream</span>(dir)) {
         <span class="co">// Обходим список всех файлов и подкаталогов в каталоге</span>
         <span class="kw">for</span> (Path dirEntry: dirStream) {
             <span class="kw">if</span> (Files.<span class="fu">isDirectory</span>(dirEntry)) {

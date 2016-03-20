@@ -263,7 +263,7 @@ default void forEach(Consumer<? super T> action) {
 
 ```java
 void walkDir(Path dir, Consumer<Path> action) throws IOException {
-	try (DirectoryStream<Path> dirStream = dir.newDirectoryStream()) {
+	try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(dir)) {
 		// Обходим список всех файлов и подкаталогов в каталоге
 		for (Path dirEntry: dirStream) {
 			if (Files.isDirectory(dirEntry)) {
