@@ -70,7 +70,7 @@ IntStream.of(13, 42, 666).forEach(printer);
 
 ```java
 Consumer<String> printer = str -> {
-	System.out.print(str + " ");
+	System.out.print(str.toUpperCase() + " ");
 };
 
 Arrays.asList("Hello", "World").forEach(printer);
@@ -151,7 +151,7 @@ greeting = "Goodbye "; // Ошибка компиляции
 `void forEach(Consumer<? super T> action)`
 
 Здесь запись `<? super T>` означает "тип `T` или любой его супертип" &mdash; то есть тип `T`, любой его суперкласс сколь
-угодно высоко по иерархии или любой интерфейс 
+угодно высоко по иерархии или любой интерфейс, реализованный классом T.
 
 Иначе говоря, в метод `List<String>.forEach` мы можем передать значение типа `Consumer<String>`, или `Consumer<Object>`,
 или `Consumer<CharSequence>`, и так далее.

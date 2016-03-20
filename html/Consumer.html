@@ -90,7 +90,7 @@ IntStream.<span class="fu">of</span>(<span class="dv">13</span>, <span class="dv
 <p>Лямбда-выражение, присвоенное переменной типа <code>IntConsumer</code> — это вполне себе полноценный объект, реализующий интерфейс <code>IntConsumer</code>.</p>
 <p>Аналогично объявляется и лямбда-выражение типа <code>Consumer&lt;T&gt;</code>:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Consumer&lt;String&gt; printer = str -&gt; {
-    System.<span class="fu">out</span>.<span class="fu">print</span>(str + <span class="st">&quot; &quot;</span>);
+    System.<span class="fu">out</span>.<span class="fu">print</span>(str.<span class="fu">toUpperCase</span>() + <span class="st">&quot; &quot;</span>);
 };
 
 Arrays.<span class="fu">asList</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;World&quot;</span>).<span class="fu">forEach</span>(printer);
@@ -139,7 +139,7 @@ greeting = <span class="st">&quot;Goodbye &quot;</span>; <span class="co">// О�
 <h2 id="прямая-передача-лямбда-выражения-в-метод">Прямая передача лямбда-выражения в метод</h2>
 <p>Итак, любой объект типа <code>Iterable&lt;T&gt;</code> (включая все реализации <code>List</code>, такие, как <code>ArrayList</code>) содержит метод <code>forEach</code>, принимающий единственный параметр типа <code>Consumer</code>:</p>
 <p><code>void forEach(Consumer&lt;? super T&gt; action)</code></p>
-<p>Здесь запись <code>&lt;? super T&gt;</code> означает &quot;тип <code>T</code> или любой его супертип&quot; — то есть тип <code>T</code>, любой его суперкласс сколь угодно высоко по иерархии или любой интерфейс</p>
+<p>Здесь запись <code>&lt;? super T&gt;</code> означает &quot;тип <code>T</code> или любой его супертип&quot; — то есть тип <code>T</code>, любой его суперкласс сколь угодно высоко по иерархии или любой интерфейс, реализованный классом T.</p>
 <p>Иначе говоря, в метод <code>List&lt;String&gt;.forEach</code> мы можем передать значение типа <code>Consumer&lt;String&gt;</code>, или <code>Consumer&lt;Object&gt;</code>, или <code>Consumer&lt;CharSequence&gt;</code>, и так далее.</p>
 <p>Аналогично в классе <code>IntStream</code> есть метод:</p>
 <p><code>void forEach(IntConsumer action)</code></p>
