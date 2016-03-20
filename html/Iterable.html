@@ -135,7 +135,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     
     <span class="fu">@Override</span>
     <span class="kw">public</span> String <span class="fu">next</span>() {
-        <span class="kw">if</span> (index == size) {  <span class="co">// условие конца последовательности</span>
+        <span class="kw">if</span> (!<span class="fu">hasNext</span>()) {  <span class="co">// условие конца последовательности</span>
             <span class="kw">throw</span> <span class="kw">new</span> NoSuchElementException();
         }
         
@@ -188,7 +188,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     
     <span class="fu">@Override</span>
     <span class="kw">public</span> String <span class="fu">next</span>() {
-        <span class="kw">if</span> (index == size) {  <span class="co">// условие конца последовательности</span>
+        <span class="kw">if</span> (!<span class="fu">hasNext</span>()) {  <span class="co">// условие конца последовательности</span>
             <span class="kw">throw</span> <span class="kw">new</span> NoSuchElementException();
         }
         

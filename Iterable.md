@@ -126,7 +126,7 @@ class StringSequenceIterator implements Iterator<String> {
 	
 	@Override
 	public String next() {
-		if (index == size) {  // условие конца последовательности
+		if (!hasNext()) {  // условие конца последовательности
 			throw new NoSuchElementException();
 		}
 		
@@ -197,7 +197,7 @@ class StringSequenceIterator implements Iterator<String> {
 	
 	@Override
 	public String next() {
-		if (index == size) {  // условие конца последовательности
+		if (!hasNext()) {  // условие конца последовательности
 			throw new NoSuchElementException();
 		}
 		

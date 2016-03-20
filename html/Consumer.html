@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Consumer&lt;T&gt;, IntConsumer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Consumer&lt;T&gt;, IntConsumer</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#объявление-лямбда-выражения">Объявление лямбда-выражения</a></li>
+<li><a href="#прямая-передача-лямбда-выражения-в-метод">Прямая передача лямбда-выражения в метод</a></li>
+<li><a href="#использование-объектов-consumer-и-intconsumer">Использование объектов <code>Consumer</code> и <code>IntConsumer</code></a></li>
+</ul>
+</div>
+<p>Интерфейс: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html"><code>java.util.function.Consumer</code></a></p>
+<p>Интерфейс: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/IntConsumer.html"><code>java.util.function.IntConsumer</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Используются для передачи в метод блока кода, который принимает один параметр и ничего не возвращает. Таким образом, эти интерфейсы подходят для описания методов с семантикой &quot;применить указанное действие к каждому значению из определённого набора&quot; — например, при обходе списков, деревьев и других структур данных.</p>
+<p>Интерфейс <code>Consumer&lt;T&gt;</code> используется для описания действия, применяемого к значениям указанного параметром интерфейса объектного типа <code>T</code>. Например, <code>Consumer&lt;String&gt;</code> выполняет определённое действие со строковым значениями.</p>
+<p>Интерфейс <code>IntConsumer</code> описывает действие, применяемое к значениям типа <code>int</code>. Существуют также аналогичные интерфейсы <code>LongConsumer</code> и <code>DoubleConsumer</code>, работающие с примитивными типами <code>long</code> и <code>double</code> соответственно.</p>
+<h2 id="объявление-лямбда-выражения">Объявление лямбда-выражения</h2>
+<p>Семейство интерфейсов <code>Consumer</code> является особой разновидностью интерфейсов, называемых <em>функциональными интерфейсами</em>; это значит, что у них объявлен только один абстрактный метод. Приятным свойством функциональных интерфейсов является то, что они могут быть реализованы не только полноценными классами, но и лямбда-выражениями — причём совершенно прозрачно для методов, в которые они передаются.</p>
+<p>Понятно, что объявлять на каждое действие типа <code>Consumer</code> полноценный класс было бы как минимум громоздко. На помощь приходят лямбда-выражения, которые решают одну конкретную проблему: <em>как передать в чужой код свой блок кода, вызываемый из чужого кода</em>.</p>
+<p>В синтаксисе лямбда-выражений в общем случае есть несколько тонкостей, на которых мы сейчас останавливаться не будем. Сейчас покажем лишь, как объявлять конкретную разновидность лямбда-выражений, совместимых с семейством интерфейсов <code>Consumer</code>.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">IntConsumer printer = x -&gt; {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;Число: &quot;</span> + x);
+};
+
+IntStream.<span class="fu">of</span>(<span class="dv">13</span>, <span class="dv">42</span>, <span class="dv">666</span>).<span class="fu">forEach</span>(printer);</code></pre></div>
+<p>Результат:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Число: <span class="dv">13</span>
+Число: <span class="dv">42</span>
+Число: <span class="dv">666</span></code></pre></div>
+<p>Объявление такого лямбда-выражения состоит из трёх частей:</p>
+<ol style="list-style-type: decimal">
+<li>Имя параметра, под которым он будет доступен внутри блока кода. В нашем случае это <code>x</code>, но, как и для параметров методов, это может быть произвольный идентификатор.</li>
+<li>Стрелка, составленная из двух символов <code>-&gt;</code>.</li>
+<li>Тело лямбда-выражения — сам блок кода, ограниченный фигурными скобками <code>{ }</code>, внутри которого реализуются производимые с параметром действия.</li>
+</ol>
+<blockquote>
+<p>Поскольку присваивание лямбда-выражения — это инструкция, в этом случае после закрывающей фигурной скобки должна стоять точка с запятой. Но если лямбда-выражение используется внутри другого выражения (например, вызова метода с параметром — лямбда-выражением), точка с запятой уже не ставится.</p>
+</blockquote>
+<p>Лямбда-выражение, присвоенное переменной типа <code>IntConsumer</code> — это вполне себе полноценный объект, реализующий интерфейс <code>IntConsumer</code>.</p>
+<p>Аналогично объявляется и лямбда-выражение типа <code>Consumer&lt;T&gt;</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Consumer&lt;String&gt; printer = str -&gt; {
+    System.<span class="fu">out</span>.<span class="fu">print</span>(str + <span class="st">&quot; &quot;</span>);
+};
+
+Arrays.<span class="fu">asList</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;World&quot;</span>).<span class="fu">forEach</span>(printer);
+<span class="co">// HELLO WORLD</span></code></pre></div>
+<p>Внутри лямбда-выражения доступны все поля класса, в методе которого оно объявлено:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> StringPrinter {
+    <span class="kw">private</span> String adjective = <span class="st">&quot;beautiful&quot;</span>;
+    
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">doPrint</span>() {
+        List&lt;String&gt; list = Arrays.<span class="fu">asList</span>(<span class="st">&quot;Hello world&quot;</span>, <span class="st">&quot;Goodbye world&quot;</span>);
+        
+        Consumer&lt;String&gt; action = str -&gt; {
+            String inserted = str.<span class="fu">replace</span>(<span class="st">&quot; &quot;</span>, <span class="st">&quot; &quot;</span> + adjective + <span class="st">&quot; &quot;</span>);
+            System.<span class="fu">out</span>.<span class="fu">println</span>(inserted);
+        };
+        
+        list.<span class="fu">forEach</span>(action);
+    }
+}</code></pre></div>
+<p>Результат:</p>
+<pre><code>Hello beautiful world
+Goodbye beautiful world</code></pre>
+<p>Более того, в лямбда-выражении можно даже использовать локальные переменные метода:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String greeting = <span class="st">&quot;Hello &quot;</span>;
+
+Consumer&lt;String&gt; greeter = name -&gt; {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(greeting + name);
+};
+
+Arrays.<span class="fu">asList</span>(<span class="st">&quot;Alice&quot;</span>, <span class="st">&quot;Bob&quot;</span>).<span class="fu">forEach</span>(greeter);</code></pre></div>
+<p>Результат:</p>
+<pre><code>Hello Alice
+Hello Bob</code></pre>
+<p>На локальные переменные, в отличие от полей класса, накладывается ограничение: им должно присваиваться значение один и только один раз во всём методе, как если бы они были объявлены как <code>final</code>. Следующий код не скомпилируется:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String greeting = <span class="st">&quot;Hello &quot;</span>;
+
+Consumer&lt;String&gt; greeter = name -&gt; {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(greeting + name);
+};
+
+greeting = <span class="st">&quot;Goodbye &quot;</span>; <span class="co">// Ошибка компиляции</span></code></pre></div>
+<p>Конечно, это ограничение не распространяется на локальные переменные, объявленные внутри самого лямбда-выражения (вроде переменной <code>inserted</code> в примере с классом <code>StringPrinter</code>).</p>
+<blockquote>
+<p>Хотя это и не обязательно, считается правилом хорошего тона объявлять все локальные переменные метода, используемые в лямбда-выражении, как <code>final</code>, чтобы подчеркнуть невозможность переприсваивания.</p>
+</blockquote>
+<h2 id="прямая-передача-лямбда-выражения-в-метод">Прямая передача лямбда-выражения в метод</h2>
+<p>Итак, любой объект типа <code>Iterable&lt;T&gt;</code> (включая все реализации <code>List</code>, такие, как <code>ArrayList</code>) содержит метод <code>forEach</code>, принимающий единственный параметр типа <code>Consumer</code>:</p>
+<p><code>void forEach(Consumer&lt;? super T&gt; action)</code></p>
+<p>Здесь запись <code>&lt;? super T&gt;</code> означает &quot;тип <code>T</code> или любой его супертип&quot; — то есть тип <code>T</code>, любой его суперкласс сколь угодно высоко по иерархии или любой интерфейс</p>
+<p>Иначе говоря, в метод <code>List&lt;String&gt;.forEach</code> мы можем передать значение типа <code>Consumer&lt;String&gt;</code>, или <code>Consumer&lt;Object&gt;</code>, или <code>Consumer&lt;CharSequence&gt;</code>, и так далее.</p>
+<p>Аналогично в классе <code>IntStream</code> есть метод:</p>
+<p><code>void forEach(IntConsumer action)</code></p>
+<p>Здесь наше действие, передаваемое аргументом метода, работает не с объектом, а с числом типа <code>int</code>.</p>
+<p>Присваивать лямбда-выражение переменной необязательно. Можно объявить его напрямую внутри вызова метода, принимающего объект функционального интерфейса:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">IntStream.<span class="fu">of</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>).<span class="fu">forEach</span>(i -&gt; {
+    System.<span class="fu">out</span>.<span class="fu">print</span>((i * i) + <span class="st">&quot; &quot;</span>);
+});
+<span class="co">// 1 4 9 16</span></code></pre></div>
+<p>Обратите внимание, что сначала пишется фигурная скобка, закрывающая тело лямбда-выражения, а затем — круглая скобка, закрывающая вызов метода.</p>
+<blockquote>
+<p>Внутри лямбда-выражения инструкция <code>return</code> имеет несколько другой смысл, чем внутри метода. Она возвращает управление <em>из тела лямбда-выражения</em>, а не из метода, в котором оно объявлено. Таким образом, если передать лямбда-выражение в метод <code>forEach</code>, инструкция <code>return</code> внутри него будет работать аналогично <code>continue</code> при использовании цикла:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="co">// Печатаем только чётные числа</span>
+<span class="dt">int</span>[] lost = { <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">23</span>, <span class="dv">42</span> };
+
+IntStream.<span class="fu">of</span>(lost).<span class="fu">forEach</span>(i -&gt; {
+    <span class="kw">if</span> (i % <span class="dv">2</span> != <span class="dv">0</span>) {
+        <span class="kw">return</span>;  <span class="co">// переходим к следующему элементу</span>
+    }
+
+    System.<span class="fu">out</span>.<span class="fu">print</span>(i + <span class="st">&quot; &quot;</span>);
+});
+
+<span class="co">// Это аналогично циклу...</span>
+<span class="kw">for</span> (<span class="dt">int</span> i : lost) {
+    <span class="kw">if</span> (i % <span class="dv">2</span> != <span class="dv">0</span>) {
+        <span class="kw">continue</span>;  <span class="co">// переходим к следующему элементу</span>
+    }
+
+    System.<span class="fu">out</span>.<span class="fu">print</span>(i + <span class="st">&quot; &quot;</span>);
+}</code></pre></div>
+<p>Результат в обоих случаях один и тот же:</p>
+<p><code>4 8 16 42</code></p>
+</blockquote>
+<h2 id="использование-объектов-consumer-и-intconsumer">Использование объектов <code>Consumer</code> и <code>IntConsumer</code></h2>
+<p>Лямбда-выражения — это синтаксическая конструкция, не влияющая на само использование функциональных интерфейсов. Коду, использующему интерфейс, совершенно всё равно, как он был реализован: с помощью лямбда-выражения или обычного класса.</p>
+<p><code>Consumer&lt;T&gt;</code> — это обычный интерфейс с одним абстрактным методом:</p>
+<p><code>void accept(T t)</code></p>
+<p>Аналогично и <code>IntConsumer</code> имеет один абстрактный метод:</p>
+<p><code>void accept(int value)</code></p>
+<p>При использовании лямбда-выражения в качестве реализации интерфейса <code>Consumer</code> или <code>IntConsumer</code> оно просто становится реализацией метода <code>accept</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">IntConsumer hexPrinter = i -&gt; {
+    System.<span class="fu">out.printf</span>(<span class="st">&quot;</span><span class="ch">%x\n</span><span class="st">&quot;</span>, i);
+};
+
+hexPrinter.<span class="fu">accept</span>(<span class="dv">255</span>);  <span class="co">// FF</span>
+
+Consumer&lt;<span class="dt">int</span>[]&gt; intArrayPrinter = arr -&gt; {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(Arrays.<span class="fu">toString</span>(arr));
+};
+
+<span class="dt">int</span>[] lost = { <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">23</span>, <span class="dv">42</span> };
+intArrayPrinter.<span class="fu">accept</span>(lost);  <span class="co">// [ 4, 8, 15, 16, 23, 42 ]</span></code></pre></div>
+<p>Аналогичным образом можно использовать и объекты интерфейсов <code>Consumer</code> и <code>IntConsumer</code>, передаваемые как параметры методов. Для примера рассмотрим стандартную реализацию метода <code>forEach</code>. При реализации интерфейса <code>Iterable</code> и метода <code>iterator</code> мы &quot;бесплатно&quot; получаем также и реализацию метода <code>forEach</code> по умолчанию, определённую в объявлении самого интерфейса <code>Iterable&lt;T&gt;</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">default</span> <span class="dt">void</span> <span class="fu">forEach</span>(Consumer&lt;? <span class="kw">super</span> T&gt; action) {
+    <span class="co">// если action == null, явно бросаем NullPointerException</span>
+    Objects.<span class="fu">requireNonNull</span>(action);
+    <span class="kw">for</span> (T t : <span class="kw">this</span>) {
+        action.<span class="fu">accept</span>(t);
+    }
+}</code></pre></div>
+<p>Как видно, по умолчанию метод <code>forEach</code> реализуется через цикл for-each, что логично. При желании её всегда можно переопределить, если реализация класса допускает более эффективную реализацию операции &quot;применить действие <code>action</code> для всех элементов&quot; без использования итератора.</p>
+<p>В качестве ещё одного примера можно привести обобщённую реализацию рекурсивного обхода дерева файлов в глубину. Более подробно классы <code>Path</code> и <code>Files</code> будут рассмотрены позже.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">void</span> <span class="fu">walkDir</span>(Path dir, Consumer&lt;Path&gt; action) <span class="kw">throws</span> IOException {
+    <span class="kw">try</span> (DirectoryStream&lt;Path&gt; dirStream = dir.<span class="fu">newDirectoryStream</span>()) {
+        <span class="co">// Обходим список всех файлов и подкаталогов в каталоге</span>
+        <span class="kw">for</span> (Path dirEntry: dirStream) {
+            <span class="kw">if</span> (Files.<span class="fu">isDirectory</span>(dirEntry)) {
+                <span class="co">// Рекурсия для подкаталогов</span>
+                <span class="fu">walkDir</span>(dirEntry, action);
+            } <span class="kw">else</span> {
+                <span class="co">// Вызываем action для файлов</span>
+                action.<span class="fu">accept</span>(dirEntry);
+            }
+        }
+    }
+        
+    <span class="co">// Вызываем action для dir в последнюю очередь</span>
+    action.<span class="fu">accept</span>(dir);
+}</code></pre></div>
+<p>Один раз реализовав этот алгоритм, мы получаем возможность на его основе писать любые рекурсивные действия над файловой системой — например, рекурсивное удаление каталога вместе со всем содержимым:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">void</span> <span class="fu">deleteDirRecursively</span>(Path dir) {
+    <span class="fu">walkDir</span>(dir, dirEntry -&gt; {
+        <span class="kw">try</span> {
+            Files.<span class="fu">delete</span>(dirEntry);
+        } <span class="kw">catch</span> (IOException e) {
+            e.<span class="fu">printStackTrace</span>();
+        }
+    });
+}
+
+<span class="dt">void</span> <span class="fu">deleteAll</span>() {
+    <span class="fu">deleteDirRecursively</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;C:&quot;</span>));  <span class="co">// Не делайте так :(</span>
+}</code></pre></div>
+<blockquote>
+<p>Показанный здесь пример — учебный. Писать самостоятельно рекурсивный обход каталога не нужно — для этого существуют стандартные и более мощные методы <code>Files.walk</code> и <code>Files.walkFileTree</code>.</p>
+</blockquote>
+</body>
+</html>
