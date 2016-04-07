@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Throwable</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Throwable</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#иерархия-исключений">Иерархия исключений</a></li>
+<li><a href="#проверяемые-и-непроверяемые-исключения">Проверяемые и непроверяемые исключения</a></li>
+<li><a href="#ошибки-error">Ошибки (Error)</a></li>
+<li><a href="#исключения-времени-выполнения-runtimeexception">Исключения времени выполнения (RuntimeException)</a></li>
+<li><a href="#прочие-исключения-exception">Прочие исключения (Exception)</a></li>
+<li><a href="#использование-проверяемых-и-непроверяемых-исключений">Использование проверяемых и непроверяемых исключений</a></li>
+<li><a href="#создание-исключения">Создание исключения</a></li>
+<li><a href="#получение-информации-об-исключении">Получение информации об исключении</a></li>
+</ul>
+</div>
+<p>Класс: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html"><code>java.lang.Throwable</code></a></p>
+<h2 id="описание">Описание</h2>
+<p><code>Throwable</code> — базовый класс всех исключений Java. В инструкциях <code>throw</code> и <code>catch</code> можно использовать только объекты класса <code>Throwable</code> и его подклассов.</p>
+<p>Объект-исключение содержит в себе текстовое сообщение, говорящее о причине ошибки, трассировку стека вызовов на момент создания, а также, возможно, <em>причину</em> (cause) — исключение более низкого уровня, завёрнутое в данное исключение.</p>
+<h2 id="иерархия-исключений">Иерархия исключений</h2>
+<div id="hierarchy" style="text-align: center">
+<img src="Throwable/exceptions.svg" width="800" />
+</div>
+<p>Все исключения в Java делятся на две большие и неравные группы. Меньшая группа наследует от класса <code>Error</code> и обозначает серьёзные низкоуровневые ошибки, после которых продолжение выполнения программы обычно бессмысленно. Большая группа наследует от класса <code>Exception</code> и отвечает за обычные нештатные ситуации, которые могут возникнуть в ходе выполнения программы.</p>
+<p>Теоретически язык Java не запрещает определить свой подкласс класса <code>Throwable</code>, не производный ни от <code>Error</code>, ни от <code>Exception</code>. Компилятор будет рассматривать такую неведому зверушку как обычное проверяемое исключение (см. ниже), но на практике так никто не поступает, да и необходимости в этом нет.</p>
+<h2 id="проверяемые-и-непроверяемые-исключения">Проверяемые и непроверяемые исключения</h2>
+<p>Классы <code>Error</code> и <code>RuntimeException</code> занимают особое положение в иерархии исключений. Эти классы, а также все производные от них, являются <em>непроверяемыми исключениями</em> (unchecked exceptions). Все остальные исключения являются <em>проверяемыми</em> (checked exceptions). На <a href="#hierarchy">диаграмме классов выше</a> непроверяемые исключения выделены голубым, а проверяемые — зелёным.</p>
+<p>Метод, внутри которого может быть выброшено проверяемое исключение, должен либо обработать его в блоке <code>catch</code>, либо передать выше и явно сказать об этом в объявлении с помощью ключевого слова <code>throws</code> (и тогда разбираться с ним будут уже где-то выше). На непроверяемые исключения компилятор не налагает таких требований.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">void</span> <span class="fu">throwsIOException</span>() <span class="kw">throws</span> IOException {
+    <span class="kw">if</span> (MoonPhase.<span class="fu">getCurrent</span>() == MoonPhase.<span class="fu">FULL</span>) {
+        <span class="co">// непроверяемое исключение; можно обработать, но компилятор не заставляет</span>
+        <span class="kw">throw</span> <span class="kw">new</span> IllegalStateException();
+    } <span class="kw">else</span> {
+        <span class="co">// проверяемое исключение</span>
+        <span class="kw">throw</span> <span class="kw">new</span> IOException();
+    }
+}
+
+<span class="dt">void</span> <span class="fu">handlesIOException</span>() {
+    <span class="kw">try</span> {
+        <span class="fu">throwsIOException</span>();
+    } <span class="kw">catch</span> (IOException e) {
+        e.<span class="fu">printStackTrace</span>();
+    }
+}</code></pre></div>
+<blockquote>
+<p>В стандартной библиотеке есть одно нарушение этого правила. Статический метод <code>Class.newInstance</code> передаёт во внешний код любые исключения, в том числе проверяемые, что позволяет обойти проверки времени компиляции:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Thrower {
+    <span class="kw">private</span> <span class="fu">Thrower</span> () <span class="kw">throws</span> IOException {
+        <span class="kw">throw</span> <span class="kw">new</span> IOException();
+    }
+
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+        <span class="kw">try</span> {
+            Thrower t = Thrower.<span class="fu">class</span>.<span class="fu">newInstance</span>();
+        } <span class="kw">catch</span> (IllegalAccessException | InstantiationException e) {
+            <span class="co">// Ну хотя бы эти нужно обрабатывать, но уже поздно</span>
+        }
+    }
+}</code></pre></div>
+<p>Здесь <code>main</code> упадёт по <code>IOException</code>, хотя обычно компилятор заставил бы нас объявить его как <code>throws IOException</code>. Мораль в том, что при использовании рефлексии всегда нужно быть осторожными, потому что она предоставляет внеязыковой механизм манипуляции классами и методами.</p>
+</blockquote>
+<div style="page-break-after: always">
+
+</div>
+<h2 id="ошибки-error">Ошибки (Error)</h2>
+<p>Исключения, производные от класса <code>Error</code>, являются непроверяемыми и обладают объединяющими свойствами:</p>
+<ol style="list-style-type: decimal">
+<li>Они сигнализируют о серьёзных ошибках низкого уровня, после которых восстановление обычно невозможно.</li>
+<li>Многие из них (в частности, <code>OutOfMemoryError</code>, <code>LinkageError</code> и <code>ThreadDeath</code>) могут возникнуть практически в любом месте программы, поэтому настраиваться на них заранее обычно бессмысленно. Кроме того, место, где выбрасывается исключение, обычно не связано с местом логического возникновения нижележащей проблемы.</li>
+</ol>
+<p>Ловить и обрабатывать исключения, производные от <code>Error</code>, обычно не следует. Они выбрасываются затем, чтобы как можно быстрее дать потоку завершиться аварийно, выполнив при этом все блоки <code>finally</code> при раскрутке стека.</p>
+<p>Вот некоторые наиболее распространённые исключения типа <code>Error</code>:</p>
+<dl>
+<dt><code>StackOverflowError</code></dt>
+<dd>Переполнение стека вызовов. Обычно это указывает на бесконечную рекурсию.
+</dd>
+<dt><code>OutOfMemoryError</code></dt>
+<dd>Переполнение кучи, причём сборщик мусора уже попытался её почистить и беспомощно развёл руками. Обычно это указывает на утечки памяти, вызванные хранением ссылок на множество ненужных объектов в корневых переменных.
+</dd>
+<dt><code>LinkageError</code></dt>
+<dd>Базовый класс для различных ошибок при загрузке классов, необходимых для работы выполняемого кода. Сюда относятся в том числе <code>NoClassDefFoundError</code> и <code>ExceptionInInitializerError</code>.
+</dd>
+<dt><code>NoClassDefFoundError</code></dt>
+<dd>JVM не может найти класс, к которому пытается обратиться код. Это может случиться, если код был скомпилирован с зависимостью от какого-то класса или библиотеки, но запущен при отсутствии этого класса/библиотеки в classpath.
+</dd>
+<dt><code>ExceptionInInitializerError</code></dt>
+<dd>При инициализации статического поля класса или внутри блока <code>static</code> выбросилось исключение, к которому можно доступиться через метод <code>getCause</code>.
+</dd>
+<dt><code>ThreadDeath</code></dt>
+<dd>В многопоточной программе чужой поток нагло и бесцеремонно завершил работу нашего потока методом <code>Thread.stop</code>. Если поток завершается по этому исключению, по умолчанию сообщение об ошибке подавляется и не пишется в консоль.
+</dd>
+<dt><code>AssertionError</code></dt>
+<dd>Нарушено базовое условие, которое в корректно работающей программе должно выполняться всегда. Исключения этого класса бросает инструкция <code>assert</code> при запуске JVM с параметром <code>-ea</code> (enable assertions), а также библиотека JUnit при провале тестов.
+</dd>
+</dl>
+<p>Как правило, не стоит выбрасывать исключения типа <code>Error</code> инструкцией <code>throw</code>, кроме исключения <code>AssertionError</code>. Его принято выбрасывать как &quot;невозможное&quot; исключение, чтобы &quot;заткнуть&quot; выбросом исключения пути выполнения, которые заведомо никогда не будут выполнены, но компилятор об этом не знает. Часто это приходится делать при использовании перечислимых типов в инструкции <code>switch</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">enum</span> Stoplight { RED, YELLOW, GREEN }
+<span class="kw">public</span> <span class="kw">enum</span> CarState { STOPPED, STOPPING, MOVING }
+
+<span class="kw">public</span> <span class="kw">class</span> Car {
+    <span class="kw">public</span> CarState <span class="fu">approachIntersection</span>(Intersection intersection) {
+        <span class="kw">switch</span> (intersection.<span class="fu">getStoplight</span>()) {
+        <span class="kw">case</span> RED:
+            <span class="fu">stop</span>();
+            <span class="kw">return</span> CarState.<span class="fu">STOPPING</span>;
+        <span class="kw">case</span> YELLOW:
+            <span class="kw">if</span> (<span class="fu">stopIfPossible</span>()) {
+                <span class="kw">return</span> CarState.<span class="fu">STOPPING</span>;
+            } <span class="kw">else</span> {
+                <span class="kw">return</span> CarState.<span class="fu">MOVING</span>;
+            }
+        <span class="kw">case</span> GREEN:
+            <span class="fu">keepMoving</span>();
+            <span class="kw">return</span> CarState.<span class="fu">MOVING</span>;
+        <span class="kw">default</span>:
+            <span class="co">// не может случиться</span>
+            <span class="kw">throw</span> <span class="kw">new</span> AssertionError();
+        }
+    }
+    
+    <span class="kw">public</span> CarState <span class="fu">handleStoplightSwitch</span>(Stoplight stoplight) {
+        <span class="kw">switch</span> (stoplight) {
+        <span class="kw">case</span> RED:
+            <span class="kw">return</span> CarState.<span class="fu">STOPPED</span>;
+        <span class="kw">case</span> YELLOW:
+            <span class="fu">prepareToMove</span>();
+            <span class="kw">return</span> CarState.<span class="fu">STOPPED</span>;
+        <span class="kw">case</span> GREEN:
+            <span class="fu">startMoving</span>();
+            <span class="kw">return</span> CarState.<span class="fu">MOVING</span>;
+        <span class="kw">default</span>:
+            <span class="co">// не может случиться</span>
+            <span class="kw">throw</span> <span class="kw">new</span> AssertionError();
+        }
+    }
+}</code></pre></div>
+<p>В нашем случае у светофора всего три возможных состояния, но компилятор тем не менее требует, чтобы блок <code>switch</code> обработал невозможную ситуацию <code>default</code>. С помощью <code>throw new AssertionError</code> мы затыкаем компилятор и говорим сопровождающему код, что эта строка кода заведомо не выполнится.</p>
+<p>Ещё один частый use case для <code>AssertionError</code> — блок <code>catch</code> для исключения, невозможного по определению. Например, стандартные классы <code>URLEncoder</code> и <code>URLDecoder</code> имеют методы, принимающие два параметра: перекодируемую строку и строку с именем кодировки.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String url = <span class="st">&quot;https://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BA&quot;</span>;
+String decodedUrl = URLDecoder.<span class="fu">decode</span>(url, <span class="st">&quot;UTF-8&quot;</span>);</code></pre></div>
+<p>Этот код просто так не скомпилируется, потому что метод <code>URLDecoder.decode</code> объявлен как <code>throws UnsupportedEncodingException</code>. Однако кодировка UTF-8 гарантированно поддерживается в любой реализации JVM, поэтому на самом деле это исключение никогда не выбросится (но компилятор, увы, об этом не знает). Нам придётся обернуть этот код в идиому &quot;невозможное исключение&quot; (impossible exception):</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">try</span> {
+    String url = <span class="st">&quot;https://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BA&quot;</span>;
+    String decodedUrl = URLDecoder.<span class="fu">decode</span>(url, <span class="st">&quot;UTF-8&quot;</span>);
+    <span class="co">// https://ru.wikipedia.org/wiki/Стек</span>
+} <span class="kw">catch</span> (UnsupportedEncodingException e) {
+    <span class="co">// не может случиться</span>
+    <span class="kw">throw</span> <span class="kw">new</span> AssertionError(e);
+}</code></pre></div>
+<blockquote>
+<p>Большинство методов, работающих с кодировками, имеют версии, принимающие вместо строки с именем кодировки объект класса <code>Charset</code> и не бросающие <code>UnsupportedEncodingException</code>. Им можно передавать константы из класса <code>StandardCharsets</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; fileContents = Files.<span class="fu">readAllLines</span>(
+      Paths.<span class="fu">get</span>(<span class="st">&quot;отчёт.txt&quot;</span>), StandardCharsets.<span class="fu">UTF_8</span>);
+fileContents.<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);</code></pre></div>
+<p>К сожалению, некоторые старые классы, в том числе <code>URLEncoder</code> и <code>URLDecoder</code>, так и не были обновлены для поддержки параметров типа <code>Charset</code>.</p>
+</blockquote>
+<h2 id="исключения-времени-выполнения-runtimeexception">Исключения времени выполнения (RuntimeException)</h2>
+<p>Строго говоря, <em>все</em> исключения возникают во время выполнения, но класс <code>RuntimeException</code> занимает особое положение. Во-первых, <code>RuntimeException</code> и все производные от него исключения являются непроверяемыми. Во-вторых, многие из этих исключений сигнализируют об ошибках в программном коде и в корректно написанной программе не должны возникать вообще. Такие исключения полезно выбрасывать в собственных <code>public</code>-методах в качестве <em>предусловий</em> (preconditions), краткий смысл которых состоит в том, чтобы сказать вызывающему коду: &quot;Ты виноват, такой ситуации вообще не должно быть&quot;.</p>
+<p>Вот некоторые самые важные из них:</p>
+<dl>
+<dt><code>NullPointerException</code></dt>
+<dd>Программа попыталась обратиться к полю или методу ссылки <code>null</code>, либо значение <code>null</code> было передано в метод, не допускающий <code>null</code> в качестве параметра.
+</dd>
+<dt><code>IllegalArgumentException</code></dt>
+<dd>Метод был вызван с недопустимым значением параметра. Например, один из конструкторов стандартного класса <code>Color</code>, принимающий три целых числа RGB, выбрасывает это исключение, если переданные числа не лежат в диапазоне 0–255.
+</dd>
+<dt><code>IllegalStateException</code></dt>
+<dd>Объект находится в состоянии, в котором выполнение операции невозможно. Например, реализация стека может выбросить это исключение при попытке извлечь элемент из пустого стека.
+</dd>
+<dt><code>IndexOutOfBoundsException</code></dt>
+<dd>Попытка обратиться к упорядоченной последовательности элементов (массиву, строке или списку) по индексу, лежащему вне допустимых значений. Часто происходит при ошибке на единицу, когда в качестве индекса используется <code>length</code> или <code>size</code>.
+</dd>
+<dt><code>NoSuchElementException</code></dt>
+<dd>Выбрасывается итератором при попытке прочитать элемент за концом последовательности (когда <code>hasNext() == false</code>). В корректной реализации итератора это исключение возможно только при ручной работе с итератором и невозможно при использовании цикла for-each.
+</dd>
+<dt><code>UnsupportedOperationException</code></dt>
+<dd>Вызываемая операция в принципе запрещена для этого объекта. Например, неизменяемые коллекции выбрасывают это исключение при попытке изменить их методами <code>set</code>, <code>add</code> или <code>remove</code>.
+</dd>
+<dt><code>ArithmeticException</code></dt>
+<dd>Вызвана недопустимая арифметическая операция, например, деление на ноль. Операции над числами с плавающей точкой не выбрасывают это исключение, вместо этого при недопустимой операции они возвращают значение <code>NaN</code> (а при делении ненулевого числа на ноль — бесконечность).
+</dd>
+<dt><code>ClassCastException</code></dt>
+<dd>Попытка привести объект к несовместимому типу, например, <code>(String) new Object()</code>.
+</dd>
+</dl>
+<p>Все эти исключения объединяет то, что в корректно написанной программе они не должны выбрасываться. Если одно из этих исключений ловится в программе, это знак неверной логики кода. Часто отлов такого исключения можно заменить проверкой; например, вместо отлова <code>ClassCastException</code> использовать оператор <code>instanceof</code>, вместо <code>IndexOutOfBoundsException</code> — проверку диапазона (<code>index &gt;= 0 &amp;&amp; index &lt; size()</code>), а вместо <code>NoSuchElementException</code> — проверку <code>Iterator.hasNext()</code>.</p>
+<h2 id="прочие-исключения-exception">Прочие исключения (Exception)</h2>
+<p>Исключения, производные от <code>Exception</code>, но не <code>RuntimeException</code>, являются проверяемыми. Их очень много, и сторонние библиотеки часто добавляют свои собственные классы исключений. Вот лишь несколько примеров:</p>
+<dl>
+<dt><code>ReflectiveOperationException</code></dt>
+<dd>Базовый класс для исключений, возникающих при работе с механизмом рефлексии. Сюда относятся <code>IllegalAccessException</code> (попытка доступиться извне к членам класса с доступом private, protected или package-private), <code>NoSuchMethodException</code> (метод не найден) и <code>InvocationTargetException</code> (оборачивает исключение, выброшенное вызываемым через рефлексию методом). Отдельно стоит выделить...
+</dd>
+<dt><code>ClassNotFoundException</code></dt>
+<dd>Не путать с <code>NoClassDefFoundError</code>. Выбрасывается методом <code>Class.forName</code>, если класс с таким именем не найден. Это исключение, в отличие от <code>NoClassDefFoundError</code>, предназначено для того, чтобы его перехватывали и обрабатывали.
+</dd>
+<dt><code>CloneNotSupportedException</code></dt>
+<dd>По умолчанию выбрасывается <code>protected</code>-методом <code>Object.clone</code>, если объект не реализует интерфейс <code>Cloneable</code>. По каким-то непонятным причинам конченые укурки, проектировавшие Java 1.0, сделали это исключение проверяемым, и при реализации <code>Cloneable</code>-классов это исключение приходится подавлять.
+</dd>
+<dt><code>SQLException</code></dt>
+<dd>Базовый класс для ошибок при работе с базами данных через JDBC API.
+</dd>
+<dt><code>IOException</code></dt>
+<dd>Базовый класс для исключений при операциях ввода-вывода, к которым относятся операции, в том числе, с файловой системой и сетью. У этого класса очень много подклассов, обозначающих конкретные ситуации; например, <code>ConnectException</code> бросается при неудачной попытке соединения с сервером.
+</dd>
+<dt><code>FileSystemException</code></dt>
+<dd>Подкласс <code>IOException</code>, являющийся базовым классом для исключений при операциях с файловой системой.
+</dd>
+<dt><code>AccessDeniedException</code></dt>
+<dd>Попытка обратиться к файлу, на доступ к которому у пользователя нет прав — например, попытка открыть защищённый системный файл для записи.
+</dd>
+<dt><code>NoSuchFileException</code></dt>
+<dd>Попытка обратиться к несуществующему файлу.
+</dd>
+</dl>
+<blockquote>
+<p>Класс <code>NoSuchFileException</code> появился в Java 7 и является частью нового файлового API (классы <code>Path</code> и <code>Files</code>). В старых API, спроектированных для Java 6 и ниже, можно встретить более старое исключение <code>FileNotFoundException</code>, присутствовавшее ещё в Java 1.0. К сожалению, это исключение не позволяет различить ситуации &quot;файл не найден&quot; и &quot;доступ запрещён&quot; и выбрасывается старыми API в обоих этих случаях.</p>
+</blockquote>
+<h2 id="использование-проверяемых-и-непроверяемых-исключений">Использование проверяемых и непроверяемых исключений</h2>
+<p>Тема проверяемых и непроверяемых исключений, а также правил их использования, сломала немало копий (и кода). Полного консенсуса по этому вопросу нет, но можно пользоваться эмпирическим правилом.</p>
+<p>Выбрасывайте проверяемые исключения только при одновременном выполнении трёх условий:</p>
+<ol style="list-style-type: decimal">
+<li>Вызывающий код не может гарантированно избежать ошибочной ситуации, то есть она находится вне его полного контроля.</li>
+<li>Ошибочная ситуация является &quot;стандартной&quot;, то есть в любом случае автору вызывающего кода нужно думать о том, что произойдёт при возникновении ошибки. Например, при попытке открыть файл может оказаться, что файл недоступен.</li>
+<li>Вызывающий код может осмысленно обработать ошибку или даже восстановиться после неё.</li>
+</ol>
+<p>Хорошими примерами проверяемых исключений являются исключения при работе с файловой системой, сетью, базами данных, окнами, другими процессами в системе и т.д. Все эти сущности объединяет то, что это внешние ресурсы, корректную работу которых вызывающий код не может полностью гарантировать. Плохой пример проверяемого исключения — исключение <code>CloneNotSupportedException</code>, которое может возникнуть только при логической ошибке в использовании метода <code>clone</code>. Если бы класс <code>CloneNotSupportedException</code> был написан в наши дни, скорее всего, это исключение было бы непроверяемым.</p>
+<p>Если хотя бы одно из этих трёх условий не выполняется, используйте непроверяемые исключения. Вот примеры ошибок, для которых подходят непроверяемые исключения:</p>
+<ul>
+<li>Низкоуровневые ошибки самой JVM и загруженных классов (<code>Error</code>).</li>
+<li>Ошибки в логике программы, необнаружимые на этапе компиляции (<code>RuntimeException</code>).</li>
+<li>Ошибки, при которых продолжение выполнения кода не имеет смысла. Например, в серверных приложениях это могут быть ошибки конфигурации сервера, при которых приложение вообще не может запуститься, или ошибки доступа к основной базе данных, с которой работает серверное приложение (здесь само приложение всё равно не сможет восстановиться). Как правило, такие исключения тоже наследуют от <code>RuntimeException</code>.</li>
+</ul>
+<h2 id="создание-исключения">Создание исключения</h2>
+<p>Объекты исключений, как правило, создаются прямо в инструкции <code>throw</code>:</p>
+<p><code>throw new SomeException(параметры);</code></p>
+<p>По соглашению у большинства классов исключений есть четыре конструктора, позволяющие задать исключению сообщение и/или причину — более низкоуровневое исключение.</p>
+<p><code>SomeException()</code></p>
+<p><code>SomeException(String message)</code></p>
+<p><code>SomeException(Throwable cause)</code></p>
+<p><code>SomeException(String message, Throwable cause)</code></p>
+<p>Это позволяет, с одной стороны, соблюдать инкапсуляцию, не проталкивая низкоуровневые исключения вверх, а с другой — сохранять информацию о низкоуровневых исключениях для отладочных целей.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">try</span> {
+    <span class="fu">readConfigFile</span>(<span class="st">&quot;server-config.xml&quot;</span>);
+} <span class="kw">catch</span> (XMLStreamException e) {
+    <span class="kw">throw</span> <span class="kw">new</span> <span class="fu">ServerStartupException</span>(<span class="st">&quot;Invalid server configuration format&quot;</span>, e);
+} <span class="kw">catch</span> (IOException e) {
+    <span class="kw">throw</span> <span class="kw">new</span> <span class="fu">ServerStartupException</span>(<span class="st">&quot;Cannot access server configuration&quot;</span>, e);
+}</code></pre></div>
+<p>У некоторых очень старых классов исключений, написанных до выхода Java 1.4, может не быть конструкторов с параметром <code>cause</code>. Для них можно установить причину после создания объекта с помощью метода <code>initCause</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">throw</span> <span class="kw">new</span> <span class="fu">OldException</span>(<span class="st">&quot;Message&quot;</span>).<span class="fu">initCause</span>(e);</code></pre></div>
+<h2 id="получение-информации-об-исключении">Получение информации об исключении</h2>
+<p>Все исключения поддерживают три базовых операции:</p>
+<dl>
+<dt><code>String getMessage()</code></dt>
+<dd>Возвращает короткое, в одно-два предложения, сообщение об ошибке, переданное в объект исключения при его создании.
+</dd>
+<dt><code>Throwable getCause()</code></dt>
+<dd>Возвращает исключение, послужившее причиной данного исключения, или <code>null</code>, если таковое не было задано. У причины, в свою очередь, тоже может быть причина; с помощью последовательных вызовов <code>getCause</code> можно восстановить причинную цепь исключений (causal chain).
+</dd>
+<dt><code>void printStackTrace()</code><br /><code>void printStackTrace(PrintStream s)</code><br /><code>void printStackTrace(PrintWriter s)</code></dt>
+<dd>Выводит трассировку стека (stack trace) в указанный байтовый или символьный поток (по умолчанию — в <code>System.err</code>). Варианты с <code>PrintStream</code> и <code>PrintWriter</code> бывают полезны, чтобы записать трассировку стека в файл или сетевой поток, либо получить её в виде строки с помощью <code>StringWriter</code>.
+</dd>
+</dl>
+<p>Если у исключения есть причина, методы <code>printStackTrace</code> вслед за трассировкой стека самого исключения печатают трассировку стека его причины, затем — причины причины и так далее.</p>
+<p>По умолчанию для всех исключений, кроме <code>ThreadDeath</code>, при завершении потока по необработанному исключению трассировка стека записывается в <code>System.err</code> с помощью <code>printStackTrace</code>. Это относится и к главному потоку при аварийном завершении метода <code>main</code>.</p>
+<p>Как пример, вот такая неправильная программа</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> ExceptionChain {
+    <span class="kw">private</span> <span class="dt">static</span> <span class="kw">class</span> BadInitializer {
+        <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> <span class="dt">char</span> CONSTANT = <span class="st">&quot;Hello&quot;</span>.<span class="fu">charAt</span>(<span class="dv">5</span>);
+    }
+    
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+        System.<span class="fu">out</span>.<span class="fu">println</span>(BadInitializer.<span class="fu">CONSTANT</span>);
+    }
+}</code></pre></div>
+<p>при выполнении выдаст:</p>
+<pre><code>Exception in thread &quot;main&quot; java.lang.ExceptionInInitializerError
+    at ExceptionChain.main(ExceptionChain.java:11)
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: 5
+    at java.lang.String.charAt(String.java:658)
+    at ExceptionChain$BadInitializer.&lt;clinit&gt;(ExceptionChain.java:7)
+    ... 1 more</code></pre>
+</body>
+</html>
