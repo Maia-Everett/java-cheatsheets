@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Cloneable</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Cloneable</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#как-реализовывать">Как реализовывать</a></li>
+<li><a href="#случай-без-наследования">Случай без наследования</a></li>
+<li><a href="#полиморфное-клонирование-при-наследовании">Полиморфное клонирование при наследовании</a></li>
+<li><a href="#тонкость-final-поля">Тонкость: final-поля</a></li>
+<li><a href="#полиморфное-клонирование-и-подклассы">Полиморфное клонирование и подклассы</a></li>
+</ul>
+</div>
+<p>Интерфейс: <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Cloneable.html"><code>java.lang.Cloneable</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Интерфейс без методов, обозначающий, что объект поддерживает клонирование — глубокое копирование, при котором создаётся новый объект с копией состояния текущего объекта, желательно полностью независимый от исходного.</p>
+<p>Вот полное определение этого интерфейса:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">interface</span> Cloneable { }</code></pre></div>
+<p>Клонирование используется в первую очередь затем, чтобы после него работать с двумя копиями данных независимо, так, чтобы они не портили друг друга. Это полезно, например, при <em>защитном копировании</em> (defensive copying) данных, передаваемых во внешний код. (См. Effective Java.)</p>
+<h2 id="как-реализовывать">Как реализовывать</h2>
+<p>Лучше — никак. Неизменяемые объекты клонировать нет смысла, для изменяемых же предпочтительнее идиома конструктора копии. Даже стандартные классы, поддерживающие клонирование, далеко не всегда удовлетворяют принципу глубокого копирования. Массивы и стандартные контейнеры при клонировании просто копируют ссылки на свои элементы в новый объект, не применяя к ним глубокого копирования.</p>
+<p>Сам по себе интерфейс <code>Cloneable</code> не содержит методов, а метод <code>Object.clone</code>, который переопределяют реализующие <code>Cloneable</code> классы, объявлен как <code>protected</code>. Поэтому классы, реализующие <code>Cloneable</code>, нельзя даже клонировать единообразным образом без использования рефлексии.</p>
+<p>Кроме того, механизм клонирования был спроектирован в Java 1.0. Как и многие компоненты стандартной библиотеки Java 1.0, он во многом спроектирован ужасно, и его не стоит рассматривать как пример для подражания.</p>
+<p>Вы точно хотите продолжать?</p>
+<p>Если всё-таки хотите — читайте дальше.</p>
+<h2 id="случай-без-наследования">Случай без наследования</h2>
+<p>Поскольку в интерфейсе <code>Cloneable</code> по историческим причинам отсутствует публичный метод <code>clone</code>, нам придётся объявить его самостоятельно.</p>
+<p>Сложность клонирования заключается в том, что оно должно возвращать объект того же класса, что и клонируемый объект. В классах, спроектированных для наследования, это требование обеспечить не так просто, ведь производные классы должны возвращать экземпляры производного класса, а не базового.</p>
+<p>Для классов, не предназначенных для наследования, метод <code>clone</code> гарантированно будет возвращать экземпляр самого класса, а не какого-то из его (отсутствующих!) подклассов, поэтому для них легко реализовать метод <code>clone</code> через конструктор копии:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> Point <span class="kw">implements</span> Cloneable {
+    <span class="kw">private</span> <span class="dt">double</span> x;
+    <span class="kw">private</span> <span class="dt">double</span> y;
+    
+    <span class="kw">public</span> Point(<span class="dt">double</span> x, <span class="dt">double</span> y) {
+        <span class="kw">this</span>.<span class="fu">x</span> = x;
+        <span class="kw">this</span>.<span class="fu">y</span> = y;
+    }
+    
+    <span class="co">// Конструктор копии</span>
+    <span class="kw">public</span> Point(Point p) {
+        <span class="kw">this</span>(p.<span class="fu">x</span>, p.<span class="fu">y</span>);
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> Point <span class="fu">clone</span>() {
+        <span class="kw">return</span> <span class="kw">new</span> Point(<span class="kw">this</span>);
+    }
+}</code></pre></div>
+<p>(Почему <code>@Override</code>? Что мы здесь переопределяем? До этого мы доберёмся.)</p>
+<p>Поскольку класс <code>Point</code> объявлен как <code>final</code>, он гарантирует, что любой объект, возвращаемый его методом <code>clone</code>, будет экземпляром самого класса <code>Point</code>, и что сам метод <code>clone</code> не будет переопределён в подклассах. Такой контроль над иерархией классов значительно упрощает и проектирование, и реализацию. Ещё лучше, кстати, было бы определить класс <code>Point</code> как неизменяемый, после чего отпала бы даже необходимость в копировании.</p>
+<p>Если же класс проектируется для наследования, реализация метода <code>clone</code> становится сложнее и обрастает нюансами.</p>
+<h2 id="полиморфное-клонирование-при-наследовании">Полиморфное клонирование при наследовании</h2>
+<p>В случае наследования нам нужен способ создать внутри метода <code>clone</code> экземпляр <em>именно того класса, для которого вызван метод</em> — это может быть либо наш класс, либо какой-то его подкласс. Эта задача — полиморфное клонирование — решается с помощью <em>псевдоконструктора</em> <code>Object.clone</code>. Этот метод объявлен в классе <code>Object</code> следующим образом:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">protected</span> <span class="kw">native</span> Object <span class="fu">clone</span>() <span class="kw">throws</span> CloneNotSupportedException;</code></pre></div>
+<p>На самом деле наш публичный метод <code>clone</code>, объявленный выше в классе <code>Point</code>, переопределяет метод <code>Object.clone</code>, поэтому он и помечен аннотацией <code>@Override</code>.</p>
+<p>Метод <code>Object.clone</code> ужасен. Нет, правда, он действительно ужасен. Он сочетает в себе сразу несколько плохих архитектурных решений, которые не стоит воспроизводить в своём коде.</p>
+<ul>
+<li><code>Object.clone</code> создаёт экземпляр того же класса, что и вызывающий класс, не вызывая никакой его конструктор. Поэтому он и называется псевдоконструктором.</li>
+<li><code>Object.clone</code> возвращает <em>поверхностную копию</em> (shallow copy) вызывающего объекта с копиями всех его полей. Поля объектного типа копируются по ссылке и продолжают ссылаться на те же объекты, что и поля исходного объекта. Это может нарушить некоторые предположения, которые объект делает о своём состоянии.</li>
+<li>Если вызывающий класс не реализует интерфейс <code>Cloneable</code>, то <code>Object.clone</code> бросает исключение <code>CloneNotSupportedException</code>. Это грубое нарушение основной цели интерфейсов — описание контракта, который должны поддерживать реализующие классы. В интерфейсе <code>Cloneable</code> вообще нет методов — он не определяет контракт, а изменяет поведение базового класса, и это единственный пример такого использования интерфейсов во всей стандартной библиотеке. Здесь была бы уместнее аннотация, но, к сожалению, в Java 1.0 аннотаций ещё не было.</li>
+<li>Исключение <code>CloneNotSupportedException</code> является проверяемым — несмотря на то, что метод <code>Object.clone</code> является <code>protected</code>, доступен только из подклассов, и выброс этого интерфейса сигнализирует об ошибке в коде, а не о нештатной ситуации в среде исполнения. Здесь уместнее было бы непроверяемое исключение.</li>
+<li>Поскольку публичные методы <code>clone</code> переопределяют <code>Object.clone</code>, к методу <code>Object.clone</code> нельзя непосредственно доступиться из классов, производных от классов с публичным методом <code>clone</code>. Если в суперклассе публичный метод <code>clone</code> реализован неправильно — tough cookies.</li>
+</ul>
+<blockquote>
+<p>В языке Java есть два псевдоконструктора: <code>clone</code> и <code>readObject</code>. Со вторым из них мы познакомимся позже, при рассмотрении встроенного механизма сериализации.</p>
+</blockquote>
+<p>Тем не менее в реализации <code>clone</code> для классов, спроектированных для наследования, нам придётся использовать <code>Object.clone</code>, потому что лучше всё равно ничего нет: мы не можем обязать каждый подкласс переопределять метод <code>clone</code>, как и не можем обязать каждый подкласс реализовывать конструктор копии, чтобы вызывать его рефлексией.</p>
+<p>Итак, как реализовать свой метод <code>clone</code> через <code>Object.clone</code>?</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Line <span class="kw">implements</span> Cloneable {
+    <span class="kw">private</span> Point start;
+    <span class="kw">private</span> Point end;
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> Line <span class="fu">clone</span>() {
+        <span class="co">// что-то там с Object.clone()</span>
+    }
+}</code></pre></div>
+<p>По шагам:</p>
+<ul>
+<li><p>Сначала разберёмся с типом возвращаемого значения. Метод <code>Object.clone</code> возвращает <code>Object</code>, но объект, возвращаемый <code>Line.clone</code>, является как минимум экземпляром <code>Line</code> (возможно — одного из подклассов <code>Line</code>), поэтому можно объявить наш метод <code>clone</code> как возвращающий объект типа <code>Line</code>. Вообще считается хорошим тоном при реализации <code>clone</code> объявлять его как возвращающий объект того же класса. (К сожалению, по историческим причинам в стандартных классах <code>Date</code>, <code>ArrayList</code> и т.д. этого не сделано.)</p></li>
+<li><p>Следующая неприятность — исключение <code>CloneNotSupportedException</code>. Поскольку наш класс реализует <code>Cloneable</code>, то оно никогда не выбросится, поэтому имеет смысл обернуть его в идиому &quot;невозможное исключение&quot; (см. статью по <code>Throwable</code>):</p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Override</span>
+<span class="kw">public</span> Line <span class="fu">clone</span>() {
+    Line result;
+        
+    <span class="kw">try</span> {
+        <span class="co">// Вызываем Object.clone() через синтаксис super</span>
+        result = (Line) <span class="kw">super</span>.<span class="fu">clone</span>();
+    } <span class="kw">catch</span> (CloneNotSupportedException e) {
+        <span class="co">// Идиома &quot;невозможное исключение&quot;</span>
+        <span class="kw">throw</span> <span class="kw">new</span> AssertionError(e);
+    }
+    
+    <span class="co">// Что-то ещё?</span>
+    <span class="kw">return</span> result;
+}</code></pre></div>
+<ul>
+<li>Если объект не содержит ссылок на изменяемые объекты, на этом можно и остановиться — поверхностное копирование, выполняемое по умолчанию методом <code>Object.clone</code>, нам подходит. В противном случае, чтобы сделать состояние оригинала и копии полностью независимым, нужно скопировать и эти объекты тоже — методом <code>clone</code>, конструктором копии, либо, в худшем случае, ручным копированием их состояния. В нашем случае поля класса <code>Line</code> включают две ссылки на объекты класса <code>Point</code>, который сам является изменяемым, поэтому нужно скопировать и их:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Override</span>
+<span class="kw">public</span> Line <span class="fu">clone</span>() {
+    Line result;
+        
+    <span class="kw">try</span> {
+        <span class="co">// Вызываем Object.clone() через синтаксис super</span>
+        result = (Line) <span class="kw">super</span>.<span class="fu">clone</span>();
+    } <span class="kw">catch</span> (CloneNotSupportedException e) {
+        <span class="co">// Идиома &quot;невозможное исключение&quot;</span>
+        <span class="kw">throw</span> <span class="kw">new</span> AssertionError(e);
+    }
+    
+    <span class="co">// В этом месте пока ещё start и result.start ссылаются на один и тот же объект,</span>
+    <span class="co">// аналогично end и result.end, поэтому копируем</span>
+    
+    result.<span class="fu">start</span> = start.<span class="fu">clone</span>();
+    result.<span class="fu">end</span> = end.<span class="fu">clone</span>();
+    <span class="kw">return</span> result;
+}</code></pre></div>
+<h2 id="тонкость-final-поля">Тонкость: final-поля</h2>
+<p>Что было бы, если бы поля класса <code>Line</code> были объявлены как <code>final</code>? Как бы мы реализовали в этом случае полиморфное клонирование?</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Line <span class="kw">implements</span> Cloneable {
+    <span class="kw">private</span> <span class="dt">final</span> Point start;
+    <span class="kw">private</span> <span class="dt">final</span> Point end;
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> Line <span class="fu">clone</span>() {
+        &lt;...&gt;
+        
+        <span class="co">// Ошибка компиляции!</span>
+        result.<span class="fu">start</span> = start.<span class="fu">clone</span>();
+        result.<span class="fu">end</span> = end.<span class="fu">clone</span>();
+        <span class="kw">return</span> result;
+    }
+}</code></pre></div>
+<p>...А никак.</p>
+<p>То есть, серьёзно, никак.</p>
+<p>Это фундаментальное ограничение полиморфного клонирования: оно несовместимо со стандартными языковыми средствами обеспечения неизменяемости. Псевдоконструктор <code>Object.clone</code> является <em>внеязыковым</em> средством создания новых экземпляров класса, и компилятор ничего не знает про особенности его работы. Компилятор видит только попытку перезаписать ссылки, помеченные как <code>final</code>, и отказывается компилировать такой код.</p>
+<p>К сожалению, единственный способ заставить этот код компилироваться — это убрать с полей ограничение <code>final</code>. Это ещё одна причина, мешающая сочетать полиморфное клонирование с хорошим проектированием иерархии классов.</p>
+<h2 id="полиморфное-клонирование-и-подклассы">Полиморфное клонирование и подклассы</h2>
+<p>Одно хорошее свойство полиморфного клонирования состоит в том, что в подклассах, не добавляющих новых ссылок на изменяемые объекты, мы &quot;бесплатно&quot; получаем правильную поддержку клонирования.</p>
+<p>Допустим, мы объявили подкласс класса <code>Line</code> с дополнительным полем — цветом линии:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> ColorLine <span class="kw">extends</span> Line {
+    <span class="kw">private</span> Color color;
+}</code></pre></div>
+<p>Если класс <code>Color</code> является неизменяемым, то полиморфное клонирование вернёт объект типа <code>ColorLine</code>, а не <code>Line</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">ColorLine original = &lt;...&gt;;
+Line copy = original.<span class="fu">clone</span>();
+System.<span class="fu">out</span>.<span class="fu">println</span>(copy.<span class="fu">getClass</span>());  <span class="co">// class ColorLine</span></code></pre></div>
+<p>Здесь есть одна тонкость. Класс <code>ColorLine</code> наследует метод <code>clone</code> от класса <code>Line</code>, поэтому он объявлен как возвращающий <code>Line</code>, а не <code>ColorLine</code>. Чтобы пользователю не приходилось каждый раз делать приведение типа, имеет смысл переопределить его тривиальной реализацией:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> ColorLine <span class="kw">extends</span> Line {
+    <span class="kw">private</span> Color color;
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> ColorLine <span class="fu">clone</span>() {
+        <span class="co">// Вызываем Line.clone() через синтаксис super</span>
+        <span class="kw">return</span> (ColorLine) <span class="kw">super</span>.<span class="fu">clone</span>();
+    }
+}</code></pre></div>
+<p>Конечно, любые ссылки на изменяемые объекты, добавленных в подклассе, нужно будет дополнительно скопировать явно, потому что реализация метода <code>clone</code> в суперклассе этого не сделает. Так, если бы класс <code>Color</code> был изменяемым, нам нужно было бы дополнительно скопировать объект <code>color</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> ColorLine <span class="kw">extends</span> Line {
+    <span class="kw">private</span> Color color;
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> ColorLine <span class="fu">clone</span>() {
+        <span class="co">// Вызываем Line.clone() через синтаксис super</span>
+        ColorLine result = (ColorLine) <span class="kw">super</span>.<span class="fu">clone</span>();
+        result.<span class="fu">color</span> = color.<span class="fu">clone</span>();
+        <span class="kw">return</span> result;
+    }
+}</code></pre></div>
+<p>Обратите внимание, что при переопределении публичного метода <code>clone</code> нам не приходится ловить исключение <code>CloneNotSupportedException</code>, потому что ранее при переопределении метода <code>Object.clone</code> в классе <code>Line</code> мы убрали это исключение из объявления метода.</p>
+</body>
+</html>
