@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Files</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Files</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#информация-о-файлах-и-каталогах">Информация о файлах и каталогах</a></li>
+<li><a href="#получение-содержимого-каталога">Получение содержимого каталога</a></li>
+<li><a href="#файловые-операции">Файловые операции</a></li>
+<li><a href="#однострочный-файловый-ввод-вывод">&quot;Однострочный&quot; файловый ввод-вывод</a></li>
+</ul>
+</div>
+<p>Класс: <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html"><code>java.nio.file.Files</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Класс, состоящий из статических методов для работы с файловой системой, включая обход каталогов, получение информации о файлах и каталогах, операции над файлами и каталогами как элементами ФС (создание, копирование, перемещение, удаление), а также файловый ввод-вывод.</p>
+<p>Все методы класса <code>Files</code> работают с объектами типа <code>Path</code>. Почти все эти методы также объявлены как <code>throws IOException</code>.</p>
+<h2 id="информация-о-файлах-и-каталогах">Информация о файлах и каталогах</h2>
+<p>Следующие методы возвращают некоторую информацию о переданном пути, позволяя узнать, указывает ли он вообще на какой-либо элемент ФС, а также узнать свойства этого элемента.</p>
+<dl>
+<dt><code>static boolean exists(Path path, LinkOption... options)</code></dt>
+<dd>Возвращает <code>true</code>, если путь указывает на существующий файл или каталог.
+</dd>
+<dt><code>static boolean notExists(Path path, LinkOption... options)</code></dt>
+<dd>Возвращает <code>true</code>, если путь указывает на несуществующий файл или каталог.
+</dd>
+<dt><code>static boolean isRegularFile(Path path, LinkOption... options)</code></dt>
+<dd>Возвращает <code>true</code>, если путь указывает на существующий файл (и это обычный файл, а не каталог или особый псевдофайл).
+</dd>
+<dt><code>static boolean isDirectory(Path path, LinkOption... options)</code></dt>
+<dd>Возвращает <code>true</code>, если путь указывает на существующий каталог (и это обычный каталог, а не файл или особый псевдофайл).
+</dd>
+<dt><code>static boolean isReadable(Path path)</code></dt>
+<dd>Возвращает <code>true</code>, если файл существует и доступен для чтения.
+</dd>
+<dt><code>static boolean isWritable(Path path)</code></dt>
+<dd>Возвращает <code>true</code>, если файл существует и доступен для записи.
+</dd>
+<dt><code>static boolean isExecutable(Path path)</code></dt>
+<dd>Возвращает <code>true</code>, если файл существует и доступен для выполнения.
+</dd>
+<dt><code>static long size(Path path) throws IOException</code></dt>
+<dd>Возвращает размер файла в байтах. Предполагает, что файл существует и доступен для чтения.
+</dd>
+</dl>
+<p>Необязательный список параметров <code>LinkOption... options</code> предназначен для работы с <em>символическими ссылками</em> (symbolic links, symlinks), и обычно вместо них можно ничего не указывать.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Files.<span class="fu">exists</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows</span><span class="ch">\\</span><span class="st">system32&quot;</span>))     <span class="co">// true</span>
+Files.<span class="fu">exists</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">file</span><span class="ch">\\</span><span class="st">not</span><span class="ch">\\</span><span class="st">found&quot;</span>))      <span class="co">// наверное, false</span>
+Files.<span class="fu">isReadable</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;/usr/bin/firefox&quot;</span>))      <span class="co">// true</span>
+Files.<span class="fu">isWritable</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;/usr/bin/firefox&quot;</span>))      <span class="co">// false, если вы не root</span>
+Files.<span class="fu">isExecutable</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;/usr/bin/firefox&quot;</span>))    <span class="co">// true</span>
+Files.<span class="fu">size</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;/home/user/eclipse/eclipse&quot;</span>))  <span class="co">// 79058</span></code></pre></div>
+<blockquote>
+<p>Будьте осторожны с этими методами в приложениях, чувствительных к безопасности. Результаты их выполнения <strong>сразу же устаревают</strong>. Дело в том, что файловая система является <em>разделяемым ресурсом</em>, совместно используемым всеми процессами и потоками в ОС. Состояние файла может измениться немедленно после получения информации о нём; файл может быть удалён, перемещён, его права доступа и размер могут измениться и т.д. Например, если звёзды сойдутся не так, следующий код упадёт по <code>NoSuchFileException</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path file = Paths.<span class="fu">get</span>(<span class="st">&quot;myfile.txt&quot;</span>);
+<span class="dt">byte</span>[] buffer = <span class="kw">null</span>;
+
+<span class="co">// Поток 1                                // Поток 2</span>
+<span class="kw">if</span> (Files.<span class="fu">isReadable</span>(file)) {
+    <span class="co">// тут управление получает поток 2    </span>
+                                          Files.<span class="fu">delete</span>(file);
+                                          <span class="co">// управление в поток 1</span>
+    buffer = Files.<span class="fu">readAllBytes</span>(file);
+}</code></pre></div>
+<p>Такая разновидность <em>состояния гонки</em> (race condition) называется ошибкой <em>TOCTTOU</em> (time of check to time of use — от времени проверки до времени использования). При операциях с файловой системой принято <em>просить прощения, а не разрешения</em> (ask for forgiveness, not permission), то есть не проверять, допустима ли операция, а пытаться выполнить операцию безусловно и обрабатывать исключение при провале:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">try</span> {
+    buffer = Files.<span class="fu">readAllBytes</span>(file);
+} <span class="kw">catch</span> (IOException e) {
+    <span class="co">// ...</span>
+}</code></pre></div>
+</blockquote>
+<h2 id="получение-содержимого-каталога">Получение содержимого каталога</h2>
+<p>Семейство методов <code>newDirectoryStream</code> открывает каталог и возвращает все найденные в нём элементы, включая файлы, подкаталоги и псевдофайлы.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">static</span> DirectoryStream&lt;Path&gt; <span class="fu">newDirectoryStream</span>(Path dir) <span class="kw">throws</span> IOException
+<span class="dt">static</span> DirectoryStream&lt;Path&gt; <span class="fu">newDirectoryStream</span>(Path dir, String glob)
+    <span class="kw">throws</span> IOException
+<span class="dt">static</span> DirectoryStream&lt;Path&gt; <span class="fu">newDirectoryStream</span>(Path dir,
+    DirectoryStream.<span class="fu">Filter</span>&lt;? <span class="kw">super</span> Path&gt; filter) <span class="kw">throws</span> IOException</code></pre></div>
+<p>Естественно, объект <code>dir</code> должен указывать на каталог, иначе нам прилетит <code>NotDirectoryException</code>.</p>
+<p>Разберёмся с этими методами по порядку.</p>
+<p>Все они возвращают объект типа <code>DirectoryStream&lt;Path&gt;</code>. Это несколько странный <code>Iterable&lt;Path&gt;</code>, по которому можно пройтись циклом for-each (или вручную итератором) только один раз, после чего его нужно закрыть методом <code>close</code>. Проще всего обеспечить его закрытие с помощью блока <code>try</code> с ресурсами:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path dir = Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">docs&quot;</span>);
+
+<span class="kw">try</span> (DirectoryStream&lt;Path&gt; files = Files.<span class="fu">newDirectoryStream</span>(dir)) {
+    <span class="kw">for</span> (Path file : files) {
+        System.<span class="fu">out</span>.<span class="fu">println</span>(file);
+    }
+}</code></pre></div>
+<p>Почему у <code>DirectoryStream</code> такой неудобный синтаксис? Дело в том, что возвращаемый им итератор ленивый: он не получает список всех файлов в каталоге сразу, а запрашивает имя каждого следующего файла у ФС при вызове <code>next</code>. Это сделано для оптимизации; если же мы действительно хотим запросить у ФС список именно <em>всех</em> файлов в каталоге, можно преобразовать <code>DirectoryStream</code> в <code>List</code>, с которым гораздо удобнее работать:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">void</span> List&lt;Path&gt; <span class="fu">listDirectory</span>(Path dir) <span class="kw">throws</span> IOException {
+    List&lt;Path&gt; result = <span class="kw">new</span> ArrayList&lt;&gt;();
+    
+    <span class="kw">try</span> (DirectoryStream&lt;Path&gt; files = Files.<span class="fu">newDirectoryStream</span>(dir)) {
+        files.<span class="fu">forEach</span>(result::add);
+    }
+    
+    <span class="kw">return</span> result;
+}</code></pre></div>
+<p>Полученный список можно, например, отсортировать — <code>DirectoryStream</code> возвращает элементы каталога без сортировки, в том же порядке, в котором их возвращают низкоуровневые системные вызовы ФС.</p>
+<p>Итак, мы разобрались с методом <code>newDirectoryStream</code> с одним параметром. Он возвращает <em>все</em> элементы каталога. Два оставшихся варианта метода фильтруют возвращаемую последовательность файлов. В частности, параметр <code>String glob</code> задаёт хорошо известные нам по файловым менеджерам файловые маски, а точнее, чуть более мощный их вариант, документацию по которым можно посмотреть в описании метода <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-"><code>FileSystem.getPathMatcher</code></a>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Files.<span class="fu">newDirectoryStream</span>(dir, <span class="st">&quot;*.txt&quot;</span>)         <span class="co">// все файлы .txt</span>
+Files.<span class="fu">newDirectoryStream</span>(dir, <span class="st">&quot;*.{html|pdf}&quot;</span>)  <span class="co">// все файлы .html и .pdf</span></code></pre></div>
+<blockquote>
+<p>В Windows по историческим причинам файловая маска <code>*.*</code> означает &quot;все файлы&quot;. В Java она имеет то же значение, что и в Unix: все файлы, содержащие точку в имени. Например, выражение</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Files.<span class="fu">newDirectoryStream</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;C:&quot;</span>), <span class="st">&quot;*.*&quot;</span>)</code></pre></div>
+<p>не найдёт файл <code>bootmgr</code> и каталоги <code>Windows</code>, <code>Program Files</code> и т.д., но найдёт файл <code>pagefile.sys</code>. Чтобы найти действительно <em>все</em> файлы, можно использовать файловую маску <code>*</code>, как и в Unix.</p>
+</blockquote>
+<p>Наконец, третий и последний вариант метода <code>newDirectoryStream</code> выглядит страшно, но на самом деле в нём нет ничего сложного. Вместо файловой маски третьим параметром передаётся объект интерфейса <code>DirectoryStream.Filter&lt;Path&gt;</code>, состоящего из единственного метода:</p>
+<p><code>boolean accept(Path entry)</code></p>
+<p><code>DirectoryStream</code> вернёт только те элементы каталога, для которых переданный фильтр вернёт <code>true</code>. Поскольку у этого интерфейса только один абстрактный метод, он является функциональным и может быть реализован лямбда-выражением:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="co">// Вернуть все файлы в каталоге, но не подкаталоги</span>
+Files.<span class="fu">newDirectoryStream</span>(dir, Files::isRegularFile)
+
+<span class="co">// Вернуть все подкаталоги в каталоге, но не файлы</span>
+Files.<span class="fu">newDirectoryStream</span>(dir, Files::isDirectory)
+
+<span class="co">// Вернуть все файлы, доступные для чтения и записи</span>
+Files.<span class="fu">newDirectoryStream</span>(dir,
+    file -&gt; Files.<span class="fu">isReadable</span>(file) &amp;&amp; Files.<span class="fu">isWritable</span>(file))
+    
+<span class="co">// Вернуть все файлы не менее 4 МБ размером.</span>
+<span class="co">// К сожалению, много писанины из-за IOException</span>
+Files.<span class="fu">newDirectoryStream</span>(dir, file -&gt; {
+    <span class="kw">try</span> {
+        <span class="kw">return</span> Files.<span class="fu">size</span>(file) &gt;= <span class="dv">4</span> * <span class="dv">1024</span> * <span class="dv">1024</span>;
+    } <span class="kw">catch</span> (IOException e) {
+        <span class="kw">throw</span> <span class="kw">new</span> <span class="fu">UncheckedIOException</span>(e);
+    }
+})</code></pre></div>
+<p>Класс <code>UncheckedIOException</code> специально предназначен для того, чтобы заворачивать проверяемое исключение <code>IOException</code> в непроверяемое при работе с интерфейсами, которые не могут бросать проверяемые исключения. Естественно, его не стоит забывать ловить во внешнем коде и обрабатывать (или разворачивать завёрнутый <code>IOException</code> через <code>getCause</code> и бросать во внешний код уже его.</p>
+<blockquote>
+<p>К сожалению, термин &quot;stream&quot; (поток) в Java 7 был перегружен, а в Java 8 — ещё более. Тип <code>DirectoryStream</code> не имеет отношения ни к потокам ввода-вывода <code>InputStream</code> и <code>OutputStream</code>, ни к потокам вычислений <code>Stream</code>. Кстати, в Java 8 можно пользоваться <code>Stream</code> вместо <code>DirectoryStream</code> с помощью метода <code>Files.list</code> и использовать при получении элементов каталога всю мощь нового потокового API:</p>
+<p><code>Stream&lt;Path&gt; list(Path dir) throws IOException</code></p>
+<p>Полученный поток <code>Stream</code> нужно закрыть, поскольку он оборачивает <code>DirectoryStream</code>. Единственная тонкость состоит в том, что его методы выбрасывают <code>UncheckedIOException</code>, который нужно разворачивать в обычный <code>IOException</code>.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Path&gt; <span class="fu">getSubdirectoriesSorted</span>(Path dir) <span class="kw">throws</span> IOException { 
+   <span class="kw">try</span> (Stream&lt;Path&gt; stream = Files.<span class="fu">list</span>(dir)) {
+       <span class="kw">return</span> stream.<span class="fu">filter</span>(Files::isDirectory).<span class="fu">sorted</span>()
+               .<span class="fu">collect</span>(Collectors.<span class="fu">toList</span>());
+   } <span class="kw">catch</span> (UncheckedIOException e) {
+       <span class="kw">throw</span> e.<span class="fu">getCause</span>();
+   }
+}</code></pre></div>
+</blockquote>
+<h2 id="файловые-операции">Файловые операции</h2>
+<p>Класс <code>Files</code> поддерживает все обычные операции над файлами и каталогами:</p>
+<dl>
+<dt><code>static void delete(Path path) throws IOException</code></dt>
+<dd>Удаляет файл или <strong>пустой</strong> каталог. Ругается (<code>NoSuchFileException</code>), если такого файла или каталога нет.
+</dd>
+<dt><code>static boolean deleteIfExists(Path path) throws IOException</code></dt>
+<dd>Удаляет файл или каталог, если они существуют. Возвращает <code>true</code>, если файл был удалён, и <code>false</code>, если он и не существовал.
+</dd>
+<dt><code>static void move(Path source, Path target, CopyOption... options) throws IOException</code></dt>
+<dd>Переименовывает файл или каталог и/или перемещает его в другой каталог.
+</dd>
+<dt><code>static Path createDirectory(Path dir, FileAttribute&lt;?&gt;... attrs) throws IOException</code></dt>
+<dd>Создаёт каталог, ругается (<code>FileAlreadyExistsException</code>), если он уже существует.
+</dd>
+<dt><code>static Path createDirectories(Path dir, FileAttribute&lt;?&gt;... attrs) throws IOException</code></dt>
+<dd>Создаёт каталог и все его родительские каталоги, по необходимости. Ничего не делает для уже существующих каталогов. (Аналог команды <code>mkdir -p</code> в Unix.)
+</dd>
+<dt><code>static Path createFile(Path path, FileAttribute&lt;?&gt;... attrs) throws IOException</code></dt>
+<dd>Создаёт пустой файл, ругается (<code>FileAlreadyExistsException</code>), если файл с таким именем уже существует.
+</dd>
+<dt><code>static Path createTempDirectory(Path dir, String prefix, FileAttribute&lt;?&gt;... attrs)</code><br /><code>    throws IOException</code><br /><code>static Path createTempDirectory(String prefix, FileAttribute&lt;?&gt;... attrs)</code><br /><code>    throws IOException</code><br /><code>static Path createTempFile(Path dir, String prefix, String suffix,</code><br /><code>    FileAttribute&lt;?&gt;... attrs) throws IOException</code><br /><code>static Path createTempFile(String prefix, String suffix, FileAttribute&lt;?&gt;... attrs)</code><br /><code>    throws IOException</code></dt>
+<dd>Создание временных файлов и каталогов. Удалять их придётся вручную. Необязательный первый параметр типа <code>Path</code> задаёт каталог, в котором будет создан временный файл или каталог. Если он не задан, используется стандартный системный каталог для временных файлов (<code>/tmp</code> в Unix, <code>%TEMP%</code> в Windows).
+</dd>
+<dt><code>static void copy(Path source, Path target, CopyOption... options) throws IOException</code><br /><code>static void copy(InputStream in, Path target, CopyOption... options) throws IOException</code><br /><code>static void copy(Path source, OutputStream out, CopyOption... options) throws IOException</code></dt>
+<dd>Копирует файл, либо перезаписывает файл содержимым потока ввода, либо записывает содержимое файла в поток вывода.
+</dd>
+</dl>
+<p>В методах <code>move</code> и <code>copy</code> можно использовать следующие необязательные константы после имени файла:</p>
+<dl>
+<dt><code>StandardCopyOption.ATOMIC_MOVE</code></dt>
+<dd>По возможности перемещает файл как атомарное действие. Это возможно только в случае, если файл перемещается на тот же раздел диска.
+</dd>
+<dt><code>StandardCopyOption.COPY_ATTRIBUTES</code></dt>
+<dd>Копирует не только содержимое, но и атрибуты старого файла в новый.
+</dd>
+<dt><code>StandardCopyOption.REPLACE_EXISTING</code></dt>
+<dd>Перезаписывать файл, если он уже существует на новом месте. По умолчанию, если файл существует, методы <code>move</code> и <code>copy</code> выбрасывают <code>FileAlreadyExistsException</code>.
+</dd>
+</dl>
+<h2 id="однострочный-файловый-ввод-вывод">&quot;Однострочный&quot; файловый ввод-вывод</h2>
+<p>В классе <code>Files</code> имеются удобные методы, позволяющие прочитать или записать всё содержимое файла за одну операцию. Эти методы удобны тем, что при их использовании не приходится явно работать с потоками ввода-вывода и закрывать их методом <code>close</code>. Но при этом, конечно, эти методы менее эффективны по потреблению памяти, чем более низкоуровневые операции ввода-вывода, потому что читают всё содержимое файла в память.</p>
+<dl>
+<dt><code>static byte[] readAllBytes(Path file) throws IOException</code></dt>
+<dd>Читает всё содержимое файла как массив байт.
+</dd>
+<dt><code>static List&lt;String&gt; readAllLines(Path file) throws IOException</code><br /><code>static List&lt;String&gt; readAllLines(Path file, Charset cs) throws IOException</code></dt>
+<dd>Читает всё содержимое файла как список строк в указанной кодировке (по умолчанию — UTF-8).
+</dd>
+</dl>
+<p>Вот так можно вывести всё содержимое текстового файла в консоль:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path file = Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">file.txt&quot;</span>);
+Files.<span class="fu">readAllLines</span>(file).<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);</code></pre></div>
+<p>А что делать, если нужно прочитать всё содержимое файла в виде одной строки? Здесь есть два способа:</p>
+<ul>
+<li>Создать строку из массива байт с помощью конструктора класса <code>String</code>:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">new</span> String(Files.<span class="fu">readAllBytes</span>(file), StandardCharsets.<span class="fu">UTF_8</span>)</code></pre></div>
+<ul>
+<li>Склеить прочитанные строки статическим методом <code>String.join</code>:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String.<span class="fu">join</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, Files.<span class="fu">readAllLines</span>(file))</code></pre></div>
+<p>Разница в этих методах состоит в том, что в первом случае строка будет раскодирована в точности из той последовательности байт, которая содержалась в исходном файле, и переводы строки будут зависеть от ОС, в которой этот файл был создан (<code>&quot;\n&quot;</code> для Unix, <code>&quot;\r\n&quot;</code> для Windows), а во втором случае строки будут склеены в точности переданной строкой. Кстати, для получения системного разделителя строк можно использовать статический метод <code>System.lineSeparator()</code>.</p>
+<p>Аналогично чтению выполняется и запись массива байт или списка строк:</p>
+<p><code>static Path write(Path path, byte[] bytes, OpenOption... options) throws IOException</code></p>
+<p><code>static Path write(Path path, Iterable&lt;? extends CharSequence&gt;, OpenOption... options)</code><br /><code>    throws IOException</code></p>
+<p><code>static Path write(Path path, Iterable&lt;? extends CharSequence&gt;, Charset cs,</code><br /><code>     OpenOption... options) throws IOException</code></p>
+<p>(Не обращайте пока внимания на страшное объявление <code>Iterable&lt;? extends CharSequence&gt;</code>. Старый добрый <code>List&lt;String&gt;</code> вполне подойдёт.)</p>
+<p>Последний список параметров <code>OpenOption</code> можно оставить пустым.</p>
+<p>Вот так мы можем программно сгенерировать, откомпилировать и запустить Java-файл:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; javaSource = Arrays.<span class="fu">asList</span>(
+    <span class="st">&quot;public class Hello {&quot;</span>,
+    <span class="st">&quot;    public static void main(String[] args) {&quot;</span>,
+    <span class="st">&quot;        System.out.println(</span><span class="ch">\&quot;</span><span class="st">Hello World!</span><span class="ch">\&quot;</span><span class="st">);&quot;</span>,
+    <span class="st">&quot;    }&quot;</span>,
+    <span class="st">&quot;}&quot;</span>
+);
+
+Path file = Paths.<span class="fu">get</span>(<span class="st">&quot;Hello.java&quot;</span>);
+Files.<span class="fu">write</span>(file, javaSource);
+
+JavaCompiler compiler = ToolProvider.<span class="fu">getSystemJavaCompiler</span>();
+compiler.<span class="fu">run</span>(<span class="kw">null</span>, <span class="kw">null</span>, <span class="kw">null</span>, file.<span class="fu">toString</span>());
+
+<span class="kw">new</span> ProcessBuilder(<span class="st">&quot;java&quot;</span>, <span class="st">&quot;Hello&quot;</span>)
+    .<span class="fu">directory</span>(file.<span class="fu">getParent</span>().<span class="fu">toFile</span>())
+    .<span class="fu">inheritIO</span>()
+    .<span class="fu">start</span>();</code></pre></div>
+<p>Более подробно файловый ввод-вывод и прямое использование объектов типа <code>InputStream</code>, <code>OutputStream</code>, <code>Reader</code> и <code>Writer</code> мы рассмотрим значительно позже.</p>
+</body>
+</html>
