@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Path</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Path</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#создание-путей">Создание путей</a></li>
+<li><a href="#строковое-представление">Строковое представление</a></li>
+<li><a href="#абсолютные-и-относительные-пути">Абсолютные и относительные пути</a></li>
+<li><a href="#переход-вверх-и-вниз-по-иерархии-фс">Переход вверх и вниз по иерархии ФС</a></li>
+<li><a href="#доступ-к-компонентам-пути">Доступ к компонентам пути</a></li>
+<li><a href="#получение-имени-файла-и-каталога">Получение имени файла и каталога</a></li>
+<li><a href="#работа-с-расширениями">Работа с расширениями</a></li>
+<li><a href="#взаимодействие-со-старыми-api">Взаимодействие со старыми API</a></li>
+</ul>
+</div>
+<p>Интерфейс: <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html"><code>java.nio.file.Path</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Представляет собой абстракцию пути к элементу файловой системы (файлу, каталогу или чему-то ещё). Понятие &quot;файловой системы&quot; здесь можно трактовать достаточно широко, и это не обязательно именно дисковая файловая система. Например, в стандартной библиотеке есть реализация, представляющая ZIP-архив как файловую систему.</p>
+<p>Класс <code>Path</code> предназначен только для манипуляции путями как синтаксическими конструкциями, и вовсе не обязательно, что файл (или другой элемент ФС), на который указывает путь, действительно существует. Объект <code>Path</code> проще всего рассматривать как <em>ссылку</em> на элемент ФС, которая сама по себе не умеет работать с тем, на что ссылается. Для операций с самой ФС используется класс <code>Files</code>, принимающий параметры типа <code>Path</code>.</p>
+<p>Здесь мы рассмотрим только операции со стандартной ФС.</p>
+<h2 id="создание-путей">Создание путей</h2>
+<p>Чтобы создать объект типа <code>Path</code> с нуля, используется статический метод <code>get</code> в классе <code>Paths</code>:</p>
+<p><code>static Path get(String first, String... more)</code></p>
+<p>Этот метод принимает один и более компонентов пути, разбивает их на отдельные подкомпоненты по платформозависимым разделителям (<code>/</code> для Unix, <code>\</code> для Windows), и из полученных компонентов создаёт объект типа <code>Path</code>.</p>
+<p>Например, на платформе Windows все приведённые примеры эквивалентны:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path p1 = Paths.<span class="fu">get</span>(<span class="st">&quot;C:/windows/explorer.exe&quot;</span>);
+Path p2 = Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows</span><span class="ch">\\</span><span class="st">explorer.exe&quot;</span>);
+Path p3 = Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows&quot;</span>, <span class="st">&quot;explorer.exe&quot;</span>);
+Path p4 = Paths.<span class="fu">get</span>(<span class="st">&quot;C:&quot;</span>, <span class="st">&quot;windows&quot;</span>, <span class="st">&quot;explorer.exe&quot;</span>);</code></pre></div>
+<blockquote>
+<p>Обратите внимание, что обратная косая черта должна экранироваться. К сожалению, в Java нет способа отменить экранирование для более короткой записи Windows-путей.</p>
+</blockquote>
+<p>Объекты класса <code>Path</code> являются неизменяемыми. Все операции с путями возвращают новые объекты <code>Path</code>.</p>
+<h2 id="строковое-представление">Строковое представление</h2>
+<p>У класса <code>Path</code> есть вполне привычный метод <code>toString()</code>, возвращающий представление пути в виде строки, используя системный разделитель компонентов пути.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path path = Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows</span><span class="ch">\\</span><span class="st">system32&quot;</span>);
+System.<span class="fu">out</span>.<span class="fu">println</span>(path);
+<span class="co">// Или, что то же самое:</span>
+<span class="co">// System.out.println(path.toString())</span></code></pre></div>
+<p>Результат:</p>
+<pre><code>C:\windows\system32</code></pre>
+<h2 id="абсолютные-и-относительные-пути">Абсолютные и относительные пути</h2>
+<p>Приведённый выше пример пути является <em>абсолютным путём</em>, потому что он начинается с корня ФС. Абсолютный путь всегда однозначно идентифицирует элемент ФС, независимо от того, какой каталог является текущим каталогом программы.</p>
+<p>В Unix абсолютные пути начинаются с косой черты, обозначающей корень файловой системы, а в Windows — с буквы диска. Например, следующие два пути являются абсолютными:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path unixAbsPath = Paths.<span class="fu">get</span>(<span class="st">&quot;/usr/bin/firefox&quot;</span>);
+Path winAbsPath = Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Mozilla Firefox</span><span class="ch">\\</span><span class="st">firefox.exe&quot;</span>);</code></pre></div>
+<p><em>Относительные пути</em> — это пути, ведущие отсчёт от какого-то каталога. По умолчанию при выполнении операций ФС над относительными путями они разрешаются относительно <em>текущего каталога</em> (current directory), также называемого <em>рабочим каталогом</em> (working directory). Метод <code>toAbsolutePath()</code> позволяет преобразовать относительный путь в абсолютный, при этом он разрешается относительно текущего каталога.</p>
+<p>Пусть в каталоге <code>/home/user/java</code> лежит файл <code>AbsolutePath.class</code>, откомпилированный из такого файла:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import java.nio.file.Path;</span>
+<span class="kw">import java.nio.file.Paths;</span>
+
+<span class="kw">public</span> <span class="kw">class</span> AbsolutePath {
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+        Path relPath = Paths.<span class="fu">get</span>(<span class="st">&quot;lib/opencsv.jar&quot;</span>);
+        Path absPath = relPath.<span class="fu">toAbsolutePath</span>();
+        System.<span class="fu">out</span>.<span class="fu">println</span>(absPath);
+    }
+}</code></pre></div>
+<p>Тогда мы получим такой результат при запуске этой программы из командной строки (напомним, что команда <code>cd</code> устанавливает текущий каталог):</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> /home/user/java
+$ <span class="kw">java</span> AbsolutePath
+<span class="kw">/home/user/java/lib/opencsv.jar</span>
+$ <span class="kw">cd</span> /tmp
+$ <span class="kw">java</span> -cp /home/user/java AbsolutePath
+<span class="kw">/tmp/lib/opencsv.jar</span></code></pre></div>
+<blockquote>
+<p>При задании относительных путей из соображений переносимости нежелательно использовать разделитель путей Windows <code>\</code>, если только не известно точно, что программа будет запускаться только под Windows. Windows понимает разделитель путей Unix <code>/</code>, а вот обратное неверно. Ещё правильнее использовать статический метод <code>Paths.get</code> с несколькими параметрами, чтобы не завязываться на конкретный платформозависимый разделитель, а в случае необходимости всё-таки получить этот разделитель в виде строки можно воспользоваться методом <code>FileSystem.getSeparator</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">System.<span class="fu">out</span>.<span class="fu">println</span>(FileSystem.<span class="fu">getDefault</span>().<span class="fu">getSeparator</span>());
+<span class="co">// Печатает / под Unix и \ под Windows</span></code></pre></div>
+</blockquote>
+<p>Для преобразования относительного пути в абсолютный относительно не текущего каталога, а какого-то другого, можно воспользоваться методом <code>resolve</code>. Его нужно вызвать у того пути, относительно которого мы разрешаем относительный путь. У метода <code>resolve</code> есть две версии: одна принимает <code>Path</code>, а вторая принимает <code>String</code> и рассматривает эту строку как путь, который предстоит разрешить.</p>
+<p><code>Path resolve(Path other)</code></p>
+<p><code>Path resolve(String other)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path configDir = Paths.<span class="fu">get</span>(<span class="st">&quot;/etc&quot;</span>);
+System.<span class="fu">out</span>.<span class="fu">println</span>(configDir.<span class="fu">resolve</span>(<span class="st">&quot;passwd&quot;</span>));
+<span class="co">// /etc/passwd</span>
+Path apacheConf = Paths.<span class="fu">get</span>(<span class="st">&quot;apache2&quot;</span>, <span class="st">&quot;apache2.conf&quot;</span>);
+System.<span class="fu">out</span>.<span class="fu">println</span>(configDir.<span class="fu">resolve</span>(apacheConf));
+<span class="co">// /etc/apache2/apache2.conf</span></code></pre></div>
+<p>Обратную задачу решает метод <code>relativize</code>, превращающий переданный параметром абсолютный путь в относительный относительно того пути, у которого этот метод вызывается.</p>
+<p><code>Path relativize(Path other)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path homeDir = Paths.<span class="fu">get</span>(<span class="st">&quot;/home/user&quot;</span>);
+Path movie = Paths.<span class="fu">get</span>(<span class="st">&quot;/home/user/Videos/JavaLesson.mkv&quot;</span>);
+System.<span class="fu">out</span>.<span class="fu">println</span>(homeDir.<span class="fu">relativize</span>(movie));
+<span class="co">// Videos/JavaLesson.mkv</span></code></pre></div>
+<h2 id="переход-вверх-и-вниз-по-иерархии-фс">Переход вверх и вниз по иерархии ФС</h2>
+<p>Метод <code>getParent</code> возвращает родительский элемент ФС (как правило, каталог), или <code>null</code>, если такового не существует.</p>
+<p><code>Path getParent()</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">System.<span class="fu">out</span>.<span class="fu">println</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows&quot;</span>).<span class="fu">getParent</span>());
+<span class="co">// C:</span>
+System.<span class="fu">out</span>.<span class="fu">println</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;C:&quot;</span>).<span class="fu">getParent</span>());
+<span class="co">// null</span></code></pre></div>
+<p>А метод <code>resolve</code> можно использовать не только для абсолютизации путей, но и для получения пути к какому-либо элементу каталога или какого-то его подкаталога ещё ниже по иерархии ФС:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows&quot;</span>).<span class="fu">resolve</span>(<span class="st">&quot;explorer.exe&quot;</span>)
+<span class="co">// C:\windows\explorer.exe</span>
+Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows&quot;</span>).<span class="fu">resolve</span>(<span class="st">&quot;system32</span><span class="ch">\\</span><span class="st">user32.dll&quot;</span>)
+<span class="co">// C:\windows\system32\user32.dll</span></code></pre></div>
+<p>Есть также метод <code>resolveSibling</code>, позволяющий получить &quot;сестринский&quot; элемент ФС, то есть разрешающий переданный путь относительно родительского элемента ФС.</p>
+<p><code>Path resolveSibling(Path other)</code></p>
+<p><code>Path resolveSibling(String other)</code></p>
+<p>Например, он позволяет получить путь к другому файлу в том же каталоге:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path dll = Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows\system32</span><span class="ch">\\</span><span class="st">user32.dll&quot;</span>)
+System.<span class="fu">out</span>.<span class="fu">println</span>(dll.<span class="fu">resolveSibling</span>(<span class="st">&quot;kernel32.dll&quot;</span>)
+<span class="co">// C:\windows\system32\kernel32.dll</span></code></pre></div>
+<h2 id="доступ-к-компонентам-пути">Доступ к компонентам пути</h2>
+<p>Методы <code>getNameCount</code> и <code>getName</code> позволяют пройтись по всем компонентам пути, представленного объектом <code>Path</code>. Эти компоненты сами имеют тип <code>Path</code>.</p>
+<p><code>int getNameCount()</code></p>
+<p><code>Path getName(int index)</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path path = Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">windows</span><span class="ch">\e</span><span class="st">xplorer.exe&quot;</span>);
+
+<span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; path.<span class="fu">getNameCount</span>(); i++) {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(path.<span class="fu">getName</span>(i));
+}</code></pre></div>
+<p>Результат:</p>
+<pre><code>C:
+windows
+explorer.exe</code></pre>
+<p>Кроме того, класс <code>Path</code> реализует интерфейс <code>Iterable&lt;Path&gt;</code> и, следовательно, поддержку цикла for-each, поэтому то же самое делает и такой код:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">for</span> (Path component: path) {
+    System.<span class="fu">out</span>.<span class="fu">println</span>(component);
+}</code></pre></div>
+<p>и даже</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">path.<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);</code></pre></div>
+<h2 id="получение-имени-файла-и-каталога">Получение имени файла и каталога</h2>
+<p>Метод <code>getFileName</code> возвращает путь из одного компонента, соответствующего последнему компоненту исходного пути. Обычно это имя файла или другого элемента ФС, на который указывает объект <code>Path</code>. Обратите внимание, что этот метод возвращает <code>Path</code>, а не <code>String</code>.</p>
+<p><code>Path getFileName()</code></p>
+<p>Например:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Paths.<span class="fu">get</span>(<span class="st">&quot;/home/user/Pictures/kitty.jpg&quot;</span>).<span class="fu">getFileName</span>()
+<span class="co">// kitty.jpg</span>
+Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">games\World of Warcraft&quot;</span>).<span class="fu">getFileName</span>()
+<span class="co">// World of Warcraft</span></code></pre></div>
+<p>Как мы знаем, получить путь к каталогу, в котором находится файл, можно с помощью <code>getParent</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Paths.<span class="fu">get</span>(<span class="st">&quot;/home/user/Pictures/kitty.jpg&quot;</span>).<span class="fu">getParent</span>()
+<span class="co">// /home/user</span>
+Paths.<span class="fu">get</span>(<span class="st">&quot;C:</span><span class="ch">\\</span><span class="st">games\World of Warcraft&quot;</span>).<span class="fu">getParent</span>()
+<span class="co">// C:\games</span></code></pre></div>
+<h2 id="работа-с-расширениями">Работа с расширениями</h2>
+<p>К сожалению, класс <code>Path</code> сам по себе не предоставляет удобных способов работы с расширениями. В некотором смысле это логично, ведь понятие расширения существует только для приложений, работающих с файлами, а для самой ФС это всего лишь часть имени файла. Чтобы отделить расширение, придётся работать с именем файла как со строкой.</p>
+<p>Прежде всего эту строку нужно получить:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String fileNameStr = path.<span class="fu">getFileName</span>().<span class="fu">toString</span>();</code></pre></div>
+<p>После чего работать с расширениями можно обычными строковыми методами:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">boolean</span> isPng = fileNameStr.<span class="fu">toLowerCase</span>().<span class="fu">endsWith</span>(<span class="st">&quot;.png&quot;</span>);</code></pre></div>
+<blockquote>
+<p>Обратите внимание на вызов <code>toLowerCase</code>. Это гарантирует, что мы проверим имя файла на нужное расширение в любом регистре (<code>.png</code>, <code>.PNG</code>, <code>.Png</code> и т.д.).</p>
+</blockquote>
+<blockquote>
+<p>У интерфейса <code>Path</code> тоже есть метод <code>endsWith</code>, но он проверяет, заканчивается ли <em>путь</em> данным компонентом пути, а не заканчивается ли <em>строка имени файла</em> данной строкой. Не путайте!</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Paths.<span class="fu">get</span>(<span class="st">&quot;/home/user/report.txt&quot;</span>).<span class="fu">endsWith</span>(<span class="st">&quot;report.txt&quot;</span>)  <span class="co">// true</span>
+Paths.<span class="fu">get</span>(<span class="st">&quot;report.txt&quot;</span>).<span class="fu">endsWith</span>(<span class="st">&quot;.txt&quot;</span>)  <span class="co">// false</span>
+Paths.<span class="fu">get</span>(<span class="st">&quot;report.txt&quot;</span>).<span class="fu">toString</span>().<span class="fu">endsWith</span>(<span class="st">&quot;.txt&quot;</span>)  <span class="co">// true</span></code></pre></div>
+</blockquote>
+<p>Наконец, можно написать свой метод, который возвращает расширение имени файла или пустую строку, если у имени файла нет расширения:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> String <span class="fu">getExtension</span>(Path path) {
+    String fileNameStr = path.<span class="fu">getFileName</span>().<span class="fu">toString</span>();
+    <span class="dt">int</span> lastDot = fileNameStr.<span class="fu">lastIndexOf</span>(&#39;.&#39;);
+    
+    <span class="kw">if</span> (lastDot == -<span class="dv">1</span>) {
+        <span class="kw">return</span> <span class="st">&quot;&quot;</span>;
+    } <span class="kw">else</span> {
+        <span class="kw">return</span> fileNameStr.<span class="fu">substring</span>(lastDot + <span class="dv">1</span>);
+    }
+}</code></pre></div>
+<h2 id="взаимодействие-со-старыми-api">Взаимодействие со старыми API</h2>
+<p>Интерфейс <code>Path</code> появился в Java 7. Старые API, спроектированные для Java 6 и ниже, обычно используют вместо него более старый класс <code>File</code>, существовавший аж в Java 1.0. Он менее удобен, чем <code>Path</code>, потому что поддерживает только стандартную ФС и нарушает принцип единственности ответственности, сочетая в себе методы для синтаксической манипуляции путями и методы доступа к ФС.</p>
+<p>Если нужно передать объект <code>Path</code> в старое API, используйте метод <code>toFile</code>:</p>
+<p><code>File toFile()</code></p>
+<p>И, получая объекты <code>File</code> из старого API, преобразуйте их в <code>Path</code>:</p>
+<p><code>Path toPath()</code></p>
+<p>К примеру, класс <code>ImageIO</code>, отвечающий за загрузку, сохранение и преобразование изображений, к сожалению, так и не был обновлён для поддержки параметров типа <code>Path</code>. Вот так с помощью <code>ImageIO</code> можно преобразовать любой поддерживаемый формат изображений в формат PNG:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Path source = Paths.<span class="fu">get</span>(<span class="st">&quot;/home/user/Pictures/diagram.bmp&quot;</span>);
+BufferedImage image = ImageIO.<span class="fu">read</span>(source.<span class="fu">toFile</span>());
+
+Path dest = Paths.<span class="fu">get</span>(<span class="st">&quot;/home/user/Pictures/diagram.png&quot;</span>);
+ImageIO.<span class="fu">write</span>(image, <span class="st">&quot;bmp&quot;</span>, dest.<span class="fu">toFile</span>());</code></pre></div>
+</body>
+</html>
