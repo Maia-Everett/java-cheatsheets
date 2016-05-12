@@ -58,6 +58,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#получение-содержимого-каталога">Получение содержимого каталога</a></li>
 <li><a href="#файловые-операции">Файловые операции</a></li>
 <li><a href="#однострочный-файловый-ввод-вывод">&quot;Однострочный&quot; файловый ввод-вывод</a></li>
+<li><a href="#текстовый-ввод-вывод">Текстовый ввод-вывод</a></li>
 </ul>
 </div>
 <p>Класс: <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html"><code>java.nio.file.Files</code></a></p>
@@ -278,6 +279,38 @@ compiler.<span class="fu">run</span>(<span class="kw">null</span>, <span class="
     .<span class="fu">directory</span>(file.<span class="fu">getParent</span>().<span class="fu">toFile</span>())
     .<span class="fu">inheritIO</span>()
     .<span class="fu">start</span>();</code></pre></div>
-<p>Более подробно файловый ввод-вывод и прямое использование объектов типа <code>InputStream</code>, <code>OutputStream</code>, <code>Reader</code> и <code>Writer</code> мы рассмотрим значительно позже.</p>
+<h2 id="текстовый-ввод-вывод">Текстовый ввод-вывод</h2>
+<p>Для построчного текстового ввода-вывода в Java служат интерфейсы <code>Reader</code> и <code>Writer</code>. В классе <code>Files</code> есть статические методы, возвращающие буферизованные реализации этих интерфейсов: <code>BufferedReader</code> и <code>BufferedWriter</code>.</p>
+<p><code>static BufferedReader newBufferedReader(Path path) throws IOException</code></p>
+<p><code>static BufferedReader newBufferedReader(Path path, Charset cs,</code><br /><code>    OpenOption... options) throws IOException</code></p>
+<p>Если кодировка не задана, используется UTF-8. После использования полученный объект нужно закрыть. Проще всего это сделать через блок <code>try</code> с ресурсами:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">try</span> (BufferedReader br = Files.<span class="fu">newBufferedReader</span>(file)) {
+    String line;
+    
+    <span class="kw">while</span> ((line = br.<span class="fu">readLine</span>()) != <span class="kw">null</span>) {
+        System.<span class="fu">out</span>.<span class="fu">println</span>(line);
+    }
+}</code></pre></div>
+<p>Для удобства можно обернуть возвращённый <code>BufferedReader</code> в более мощный класс <code>Scanner</code> и закрывать уже его:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">try</span> (Scanner sc = <span class="kw">new</span> Scanner(Files.<span class="fu">newBufferedReader</span>(file))) {
+    <span class="kw">while</span> (sc.<span class="fu">hasNextLine</span>()) {
+        System.<span class="fu">out</span>.<span class="fu">println</span>(sc.<span class="fu">nextLine</span>());
+    }
+}</code></pre></div>
+<p>Аналогично <code>BufferedReader</code> можно пользоваться классом <code>BufferedWriter</code> для записи строк в файл.</p>
+<p><code>static BufferedWriter newBufferedWriter(Path path,</code><br /><code>    OpenOption... options) throws IOException</code></p>
+<p><code>static BufferedWriter newBufferedWriter(Path path, Charset cs,</code><br /><code>    OpenOption... options) throws IOException</code></p>
+<p>Как и в случае <code>newBufferedReader</code>, по умолчанию используется кодировка UTF-8. По умолчанию, если параметры <code>OpenOption</code> не заданы, файл создаётся, если он не существует, и очищается, если существует.</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">try</span> (BufferedWriter bw = Files.<span class="fu">newBufferedWriter</span>(file)) {
+    bw.<span class="fu">write</span>(<span class="st">&quot;Строка 1</span><span class="ch">\n</span><span class="st">&quot;</span>);
+    bw.<span class="fu">write</span>(<span class="st">&quot;Строка 2</span><span class="ch">\n</span><span class="st">&quot;</span>);
+    bw.<span class="fu">write</span>(<span class="st">&quot;Строка 3</span><span class="ch">\n</span><span class="st">&quot;</span>);
+}</code></pre></div>
+<p>Класс <code>BufferedWriter</code> не очень удобен для использования: он позволяет записывать только целые строки и заставляет явно добавлять перевод строки к каждой из них. Для удобства можно обернуть его в класс <code>PrintWriter</code>, имеющий привычные методы <code>print</code>, <code>println</code> и <code>printf</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">try</span> (PrintWriter pw = <span class="kw">new</span> PrintWriter(Files.<span class="fu">newBufferedWriter</span>(file))) {
+    pw.<span class="fu">print</span>(<span class="st">&quot;Строка 1</span><span class="ch">\n</span><span class="st">&quot;</span>);
+    pw.<span class="fu">println</span>(<span class="st">&quot;Строка 2&quot;</span>);
+    pw<span class="fu">.printf</span>(<span class="st">&quot;Строка </span><span class="ch">%d\n</span><span class="st">&quot;</span>, <span class="dv">3</span>);
+}</code></pre></div>
 </body>
 </html>

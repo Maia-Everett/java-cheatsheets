@@ -335,5 +335,63 @@ new ProcessBuilder("java", "Hello")
 	.start();
 ```
 
-Более подробно файловый ввод-вывод и прямое использование объектов типа `InputStream`, `OutputStream`, `Reader` и
-`Writer` мы рассмотрим значительно позже.
+## Текстовый ввод-вывод
+
+Для построчного текстового ввода-вывода в Java служат интерфейсы `Reader` и `Writer`. В классе `Files` есть статические
+методы, возвращающие буферизованные реализации этих интерфейсов: `BufferedReader` и `BufferedWriter`.
+
+`static BufferedReader newBufferedReader(Path path) throws IOException`
+
+`static BufferedReader newBufferedReader(Path path, Charset cs,`<br /><code>&nbsp;&nbsp;&nbsp;&nbsp;OpenOption... options) throws IOException</code>
+
+Если кодировка не задана, используется UTF-8. После использования полученный объект нужно закрыть. Проще всего это
+сделать через блок `try` с ресурсами:
+
+```java
+try (BufferedReader br = Files.newBufferedReader(file)) {
+	String line;
+	
+	while ((line = br.readLine()) != null) {
+		System.out.println(line);
+	}
+}
+```
+
+Для удобства можно обернуть возвращённый `BufferedReader` в более мощный класс `Scanner` и закрывать уже его:
+
+```java
+try (Scanner sc = new Scanner(Files.newBufferedReader(file))) {
+	while (sc.hasNextLine()) {
+		System.out.println(sc.nextLine());
+	}
+}
+```
+
+Аналогично `BufferedReader` можно пользоваться классом `BufferedWriter` для записи строк в файл.
+
+`static BufferedWriter newBufferedWriter(Path path,`<br /><code>&nbsp;&nbsp;&nbsp;&nbsp;OpenOption... options) throws IOException</code>
+
+`static BufferedWriter newBufferedWriter(Path path, Charset cs,`<br /><code>&nbsp;&nbsp;&nbsp;&nbsp;OpenOption... options) throws IOException</code>
+                
+Как и в случае `newBufferedReader`, по умолчанию используется кодировка UTF-8. По умолчанию, если параметры `OpenOption`
+не заданы, файл создаётся, если он не существует, и очищается, если существует.
+
+```java
+try (BufferedWriter bw = Files.newBufferedWriter(file)) {
+	bw.write("Строка 1\n");
+	bw.write("Строка 2\n");
+	bw.write("Строка 3\n");
+}
+```
+
+Класс `BufferedWriter` не очень удобен для использования: он позволяет записывать только целые строки и заставляет явно
+добавлять перевод строки к каждой из них. Для удобства можно обернуть его в класс `PrintWriter`, имеющий привычные
+методы `print`, `println` и `printf`:
+
+```java
+try (PrintWriter pw = new PrintWriter(Files.newBufferedWriter(file))) {
+	pw.print("Строка 1\n");
+	pw.println("Строка 2");
+	pw.printf("Строка %d\n", 3);
+}
+```
