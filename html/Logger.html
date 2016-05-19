@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Logger</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Logger</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#подключение-библиотеки-slf4j">Подключение библиотеки SLF4J</a></li>
+<li><a href="#пять-уровней-логирования">Пять уровней логирования</a></li>
+<li><a href="#получение-объекта-логгера">Получение объекта-логгера</a></li>
+<li><a href="#логирование-сообщений">Логирование сообщений</a></li>
+<li><a href="#оптимизация-логирования-с-дорогими-операциями">Оптимизация логирования с дорогими операциями</a></li>
+<li><a href="#логирование-исключений">Логирование исключений</a></li>
+</ul>
+</div>
+<p>Интерфейс: <a href="http://www.slf4j.org/api/org/slf4j/Logger.html">org.slf4j.Logger</a></p>
+<h2 id="описание">Описание</h2>
+<p>Абстрактный интерфейс для логирования сообщений, часть абстрактного API для логирования SLF4J, без привязки к конкретной реализации этого API.</p>
+<h2 id="подключение-библиотеки-slf4j">Подключение библиотеки SLF4J</h2>
+<p>В составе JDK есть собственнный пакет логирования (<code>java.util.logging</code>), но у него есть недостаток: он привязан к одной конкретной реализации логирования, к той, которая содержится в самом JDK. Разработчики приложений могут предпочесть ей стороннюю библиотеку логирования, обладающую расширенными возможностями; для разработчиков же библиотек, использующих логирование, нежелательно привязываться к конкретной реализации логирования, а желательно оставлять выбор реализации за разработчиком приложения, использующего эту библиотеку.</p>
+<p>SLF4J — это де факто стандарт для абстрактного API логирования. Библиотеки, использующие логирование, добавляют в зависимости крошечную библиотеку <code>slf4j-api</code>, содержащую только интерфейсы самого API логирования. Приложения же при развёртывании поставляют две библиотеки: само API и одну из его реализаций.</p>
+<p>Реализаций SLF4J API существует несколько. Для учебных примеров нам вполне подойдёт простая реализация <code>slf4j-simple</code>, которая просто записывает все сообщения логирования в один файл или в консоль (по умолчанию — <code>System.err</code>). Для сеьёзных проектов имеет смысл посмотреть на одну из промышленных библиотек логирования. Например, <code>Logback</code> — эталонная реализация SLF4J API от тех же разработчиков — это мощная библиотека с гибкими средствами конфигурации, форматирования и направления сообщений логирования в консоль, файлы, по почте или в определённые пользователем приёмники сообщений.</p>
+<p>На первых порах нам достаточно будет скачать дистрибутив SLF4J с сайта <a href="http://slf4j.org/download.html">slf4j.org</a>. В архиве содержится множество JAR-файлов, но нам из них понадобятся только два: <code>slf4j-api-1.x.x.jar</code> (собственно API) и <code>slf4j-simple-1.x.x.jar</code> (простая реализация). Чтобы подключить их к проекту Eclipse, скопируйте из в папку проекта, выделите оба файла и в их контекстном меню выберите <em>Build Path → Add to Build Path</em>.</p>
+<blockquote>
+<p>Если подключить к проекту только библиотеку <code>slf4j-api</code> и не подключить никакую реализацию, то при создании первого логгера SLF4J выдаст не очень вразумительное предупреждение.</p>
+<pre><code>SLF4J: Failed to load class &quot;org.slf4j.impl.StaticLoggerBinder&quot;.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.</code></pre>
+<p>Имеется в виду, что при отсутствии в classpath какой-либо другой реализации выбирается реализация, не выполняющая никаких операций (no-operation) и просто игнорирующая все передаваемые логгеру сообщения.</p>
+</blockquote>
+<h2 id="пять-уровней-логирования">Пять уровней логирования</h2>
+<p>В SLF4J API каждое сообщение логирования принадлежит к одному из пяти уровней, перечисленных в перечислимом типе <a href="http://www.slf4j.org/api/org/slf4j/event/Level.html">Level</a>. Их интерпретация отдаётся на откуп разработчику, но есть сложившиеся соглашения о том, какой уровень для каких случаев использовать.</p>
+<p>Эти пять уровней соответствуют пяти из семи уровней (<a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html">Level</a>) стандартного пакета <code>java.util.logging</code>. Реализация <code>slf4j-jdk14</code>, оборачивающая SLF4J API поверх <code>java.util.logging</code>, отображает их стандартным образом. Два оставшихся уровня — <code>CONFIG</code> и <code>FINER</code> — недоступны через SLF4J API.</p>
+<dl>
+<dt><code>ERROR</code> (ошибка)</dt>
+<dd>Обычно используется для сообщений о фатальных ошибках, при которых выполнение текущей операции аварийно обрывается. Также на этом уровне обычно логируются исключения. В реализации <code>slf4j-jdk14</code> отображается в уровень <code>SEVERE</code>.
+</dd>
+<dt><code>WARN</code> (предупреждение)</dt>
+<dd>Обычно используется для предупреждений, после которых выполнение текущей операции продолжается, но может привести к неожиданным для пользователя результатам. В реализации <code>slf4j-jdk14</code> отображается в уровень <code>WARNING</code>.
+</dd>
+<dt><code>INFO</code> (информация)</dt>
+<dd>Обычно используется для сообщений, представляющих интерфейс для конечного пользователя. В реализации <code>slf4j-jdk14</code> отображается в уровень <code>INFO</code>.
+</dd>
+<dt><code>DEBUG</code> (отладка)</dt>
+<dd>Обычно используется для отладочных сообщений, представляющих интерфейс только для разработчика. В реализации <code>slf4j-jdk14</code> отображается в уровень <code>FINE</code>.
+</dd>
+<dt><code>TRACE</code> (трассировка)</dt>
+<dd>Обычно используется для массового потока отладочных сообщений, позволяющих анализировать выполнение программы по шагам — например, сообщений о входе в метод и выходе из него. В реализации <code>slf4j-jdk14</code> отображается в уровень <code>FINEST</code>.
+</dd>
+</dl>
+<h2 id="получение-объекта-логгера">Получение объекта-логгера</h2>
+<p>Для получения объекта типа <code>Logger</code> с определённым именем используются семейство фабричных методов <code>LoggerFactory.getLogger</code>:</p>
+<p><code>static Logger getLogger(String name)</code></p>
+<p><code>static Logger getLogger(Class&lt;?&gt; clazz)</code></p>
+<p>В случае вызова метода <code>getLogger</code> с параметром <code>Class</code> возвращается логгер с именем, равным полному имени переданного класса. Например, в следующем коде</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package com.mycompany;</span>
+
+<span class="kw">import org.slf4j.Logger;</span>
+<span class="kw">import org.slf4j.LoggerFactory;</span>
+
+<span class="kw">public</span> <span class="kw">class</span> MyClass {
+    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> Logger log = LoggerFactory.<span class="fu">getLogger</span>(MyClass.<span class="fu">class</span>);
+}</code></pre></div>
+<p>имя логгера, присвоенного полю <code>log</code>, будет равно <code>com.mycompany.MyClass</code>.</p>
+<p>Показанный код является стандартной идиомой для создания логгеров: каждый класс содержит в себе собственную ссылку на используемый им логгер в <code>private static final</code>-поле.</p>
+<blockquote>
+<p>Будьте внимательны при импорте типа <code>Logger</code>. Убедитесь, что вы импортируете тип <code>Logger</code> из библиотеки SLF4J (<code>org.slf4j.Logger</code>), а не из стандартной библиотеки (<code>java.util.logging.Logger</code>).</p>
+</blockquote>
+<h2 id="логирование-сообщений">Логирование сообщений</h2>
+<p>Для каждого уровня логирования в интерфейсе <code>Logger</code> есть одноимённый метод для логирования сообщения на этом уровне:</p>
+<p><code>void error(String format, Object... arguments)</code></p>
+<p><code>void warn(String format, Object... arguments)</code></p>
+<p><code>void info(String format, Object... arguments)</code></p>
+<p><code>void debug(String format, Object... arguments)</code></p>
+<p><code>void trace(String format, Object... arguments)</code></p>
+<p>Каждый метод принимает сообщение и необязательный список аргументов форматирования — идиома, похожая на <code>printf</code>, но использующая для форматирования другой синтаксис. Строковое представление каждого аргумента форматирования подставляется в строку вместо соответствующего по счёту вхождения пары фигурных скобок <code>{}</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">log.<span class="fu">error</span>(<span class="st">&quot;Index out of bounds (index: {}, size: {})&quot;</span>, -<span class="dv">1</span>, <span class="dv">2</span>);
+<span class="co">// Index out of bounds (index: -1, size: 2)</span></code></pre></div>
+<p>Если пар фигурных скобок больше, чем аргументов форматирования, лишние пары не заменяются:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">log.<span class="fu">info</span>(<span class="st">&quot;Я люблю {} и {}&quot;</span>, <span class="st">&quot;яблоки&quot;</span>);
+<span class="co">// Я люблю яблоки и {}</span></code></pre></div>
+<p>Наконец, каждый аргумент форматирования (как и в <code>printf</code> при использовании <code>%s</code>) преобразуется в строку с помощью <code>String.valueOf</code>, поэтому значения <code>null</code> подставляются в виде строки <code>&quot;null&quot;</code>, а для остальных объектов вызывается <code>toString</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">log.<span class="fu">info</span>(<span class="st">&quot;Сегодня {}&quot;</span>, LocalDate.<span class="fu">now</span>());
+<span class="co">// Сегодня 2016-05-19</span>
+
+log.<span class="fu">info</span>(<span class="st">&quot;Нулевая ссылка отображается как {}&quot;</span>, <span class="kw">null</span>);
+<span class="co">// Нулевая ссылка отображается как null</span></code></pre></div>
+<p>Зачем в SLF4J используется свой собственный формат сообщений, когда есть <code>String.format</code>? Дело в том, что SLF4J API был спроектирован до выхода Java 5, то есть до появления <code>String.format</code>. Кроме того, логирование критично к производительности, и такой простой формат сообщений значительно быстрее, чем полные возможности <code>String.format</code>. Но, конечно, ничто не запрещает использовать свои собственные средства форматирования вместо встроенных:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">log.<span class="fu">info</span>(String<span class="fu">.format</span>(<span class="st">&quot;</span><span class="ch">%04d</span><span class="st">&quot;</span>, <span class="dv">42</span>));
+<span class="co">// 0042</span></code></pre></div>
+<p>Другая причина состоит в том, что форматирование сообщений в SLF4J осуществляется лениво, только в том случае, если соответствующий уровень логирования включён в конфигурации логирования. Это позволяет избежать лишнего форматирования строк, которые на самом деле никуда не будут выведены.</p>
+<h2 id="оптимизация-логирования-с-дорогими-операциями">Оптимизация логирования с дорогими операциями</h2>
+<p>Представим себе, что сообщение логирования выводит результат какой-нибудь дорогой операции, которая может замедлить работу приложения. Конечно, использование стандартных средств форматирования SLF4J позволит избежать лишнего слияния строк и строковых представлений объектов, но сами объекты при этом будут созданы:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="co">// Неоптимальное логирование с дорогими операциями - не делайте так!</span>
+List&lt;String&gt; words = <span class="fu">getWords</span>();
+log.<span class="fu">debug</span>(<span class="st">&quot;Words in sorted order: {}&quot;</span>,
+        words.<span class="fu">stream</span>().<span class="fu">sorted</span>().<span class="fu">collect</span>(Collectors.<span class="fu">joining</span>(<span class="st">&quot;, &quot;</span>)));</code></pre></div>
+<p>В нашем случае, даже если уровень <code>DEBUG</code> отключён в настройках логирования, операции сортировки и слияния списка слов всё равно будут выполнены — вхолостую. Имеет смысл выполнять их только в случае, если соответствующий уровень логирования включён. Для такой проверки в классе <code>Logger</code> имеется пять методов, по одному на каждый уровень:</p>
+<p><code>boolean isErrorEnabled()</code></p>
+<p><code>boolean isWarnEnabled()</code></p>
+<p><code>boolean isInfoEnabled()</code></p>
+<p><code>boolean isDebugEnabled()</code></p>
+<p><code>boolean isTraceEnabled()</code></p>
+<p>Пользуясь этим средством, мы могли бы оптимизировать свой код:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; words = <span class="fu">getWords</span>();
+
+<span class="kw">if</span> (log.<span class="fu">isDebugEnabled</span>()) {
+    log.<span class="fu">debug</span>(<span class="st">&quot;Words in sorted order: {}&quot;</span>,
+            words.<span class="fu">stream</span>().<span class="fu">sorted</span>().<span class="fu">collect</span>(Collectors.<span class="fu">joining</span>(<span class="st">&quot;, &quot;</span>)));
+}</code></pre></div>
+<h2 id="логирование-исключений">Логирование исключений</h2>
+<p>Для каждого из пяти уровней есть ещё одна форма методов логирования, принимающая вместо списка аргументов форматирования один параметр типа <code>Throwable</code> (хотя на практике, как правило, исключения логируются только на уровне <code>ERROR</code>):</p>
+<p><code>void error(String msg, Throwable t)</code></p>
+<p><code>void warn(String msg, Throwable t)</code></p>
+<p><code>void info(String msg, Throwable t)</code></p>
+<p><code>void debug(String msg, Throwable t)</code></p>
+<p><code>void trace(String msg, Throwable t)</code></p>
+<p>Эти методы не поддерживают форматирование сообщений (хотя для него всегда можно использовать сторонние средства форматирования, например, <code>String.format</code>). Эта форма методов логирования записывает в лог сначала сообщение, переданное первым параметром, а затем — сообщение и трассировку стека для переданного исключения.</p>
+<p>Например, следующий код</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> ExceptionLogging {
+    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> Logger log =
+            LoggerFactory.<span class="fu">getLogger</span>(ExceptionLogging.<span class="fu">class</span>);
+
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+        <span class="kw">try</span> {
+            Files.<span class="fu">size</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;/invalid/invalid&quot;</span>));
+        } <span class="kw">catch</span> (<span class="dt">final</span> IOException e) {
+            log.<span class="fu">error</span>(<span class="st">&quot;Не удалось получить размер файла&quot;</span>, e);
+        }
+    }
+
+}</code></pre></div>
+<p>запишет в лог сообщение наподобие этого:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">[main] ERROR ExceptionLogging - Не удалось получить размер файла
+java.<span class="fu">nio</span>.<span class="fu">file</span>.<span class="fu">NoSuchFileException</span>: /invalid/invalid
+    at sun.<span class="fu">nio</span>.<span class="fu">fs</span>.<span class="fu">UnixException</span>.<span class="fu">translateToIOException</span>(UnixException.<span class="fu">java</span>:<span class="dv">86</span>)
+    at sun.<span class="fu">nio</span>.<span class="fu">fs</span>.<span class="fu">UnixException</span>.<span class="fu">rethrowAsIOException</span>(UnixException.<span class="fu">java</span>:<span class="dv">102</span>)
+    at sun.<span class="fu">nio</span>.<span class="fu">fs</span>.<span class="fu">UnixException</span>.<span class="fu">rethrowAsIOException</span>(UnixException.<span class="fu">java</span>:<span class="dv">107</span>)
+    at sun.<span class="fu">nio</span>.<span class="fu">fs</span>.<span class="fu">UnixFileAttributeViews</span>$Basic.<span class="fu">readAttributes</span>(UnixFileAttributeViews.<span class="fu">java</span>:<span class="dv">55</span>)
+    at sun.<span class="fu">nio</span>.<span class="fu">fs</span>.<span class="fu">UnixFileSystemProvider</span>.<span class="fu">readAttributes</span>(UnixFileSystemProvider.<span class="fu">java</span>:<span class="dv">144</span>)
+    at sun.<span class="fu">nio</span>.<span class="fu">fs</span>.<span class="fu">LinuxFileSystemProvider</span>.<span class="fu">readAttributes</span>(LinuxFileSystemProvider.<span class="fu">java</span>:<span class="dv">99</span>)
+    at java.<span class="fu">nio</span>.<span class="fu">file</span>.<span class="fu">Files</span>.<span class="fu">readAttributes</span>(Files.<span class="fu">java</span>:<span class="dv">1737</span>)
+    at java.<span class="fu">nio</span>.<span class="fu">file</span>.<span class="fu">Files</span>.<span class="fu">size</span>(Files.<span class="fu">java</span>:<span class="dv">2332</span>)
+    at ExceptionLogging.<span class="fu">main</span>(ExceptionLogging.<span class="fu">java</span>:<span class="dv">15</span>)</code></pre></div>
+</body>
+</html>
