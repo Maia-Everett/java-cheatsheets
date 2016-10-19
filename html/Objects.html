@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Objects</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Objects</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#описание">Описание</a></li>
+<li><a href="#нулебезопасность">Нулебезопасность</a></li>
+<li><a href="#нулебезопасные-equals-и-hashcode">Нулебезопасные <code>equals</code> и <code>hashCode</code></a></li>
+<li><a href="#нулебезопасный-tostring">Нулебезопасный <code>toString</code></a></li>
+<li><a href="#проверка-предусловий">Проверка предусловий</a></li>
+<li><a href="#предикаты-для-проверки-на-null-и-не-null">Предикаты для проверки на <code>null</code> и не-<code>null</code></a></li>
+<li><a href="#хэш-код-последовательности-значений">Хэш-код последовательности значений</a></li>
+</ul>
+</div>
+<p>Класс: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Objects.html"><code>java.util.Objects</code></a></p>
+<h2 id="описание">Описание</h2>
+<p>Класс-утилита, предоставляющий чисто статические методы для работы с объектами и массивами объектов, бо́льшая часть которых предназначена для обеспечения <em>нулебезопасности</em> (null safety).</p>
+<h2 id="нулебезопасность">Нулебезопасность</h2>
+<p>Исключение <code>NullPointerException</code> — достаточно распространённый бич программ, работающих с API, которые могут возвращать <code>null</code> как признак отсутствия значения, если клиентский код забывает проверить результат на <code>null</code>. Например, что, если мы пишем вики-движок, который должен открыть страницу редактирования, когда в URL страницы встречается параметр запроса (query parameter) <code>action=edit</code>?</p>
+<p><code>http://example.com/wiki/Article_name?action=edit</code></p>
+<p>Наивное сравнение строк на равенство таит в себе ошибку:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">String action = request.<span class="fu">getParameter</span>(<span class="st">&quot;action&quot;</span>);
+
+<span class="co">// Не нулебезопасно - никогда так не делайте!</span>
+<span class="kw">if</span> (action.<span class="fu">equals</span>(<span class="st">&quot;edit&quot;</span>)) {
+    <span class="co">// вывести страницу редактирования</span>
+}</code></pre></div>
+<p>Если в URL страницы вообще не окажется параметра <code>action</code>, то метод <code>getParameter</code> вернёт <code>null</code>, и вместо красивого экрана редактирования пользователь увидит страницу трассировки стека для нашего любимого исключения... правильно, <code>NullPointerException</code>.</p>
+<p>У опытных программистов уже выработался рефлекс в сравнении со строковой константой ставить её на первое место: <code>&quot;edit&quot;.equals(action)</code>. Но что, если обе ссылки на сравниваемые объекты могут быть равны <code>null</code>? Что, если нужно вызвать другой метод у ссылки, которая может быть равна <code>null</code>?</p>
+<p>Наконец, значения <code>null</code> создают неудобства при работе с функциональными интерфейсами:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="co">// Ой, сломались</span>
+Stream&lt;String&gt; stringValues = Stream.<span class="fu">of</span>(<span class="dv">42</span>, <span class="kw">null</span>, <span class="st">&quot;test&quot;</span>).<span class="fu">map</span>(Object::toString);</code></pre></div>
+<p>Класс <code>Objects</code> предоставляет статические нулебезопасные аналоги для трёх методов, поддерживаемых всеми объектами: <code>equals</code>, <code>hashCode</code> и <code>toString</code>.</p>
+<table class="table-striped table-padded">
+<tr>
+<th>
+Обычный вызов
+</th>
+<th>
+Нулебезопасный вызов
+</th>
+</tr>
+<tr>
+<td>
+<code>a.equals(b)</code>
+</td>
+<td>
+<code>Objects.equals(a, b)</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>a.hashCode()</code>
+</td>
+<td>
+<code>Objects.hashCode(a)</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>a.toString()</code>
+</td>
+<td>
+<code>Objects.toString(a)</code>
+</td>
+</tr>
+</table>
+<p>Все они делают что-то осмысленное, если <code>a == null</code>.</p>
+<h2 id="нулебезопасные-equals-и-hashcode">Нулебезопасные <code>equals</code> и <code>hashCode</code></h2>
+<p>Вызов <code>Objects.equals(a, b)</code> возвращает <code>true</code> тогда и только тогда, когда:</p>
+<ul>
+<li>либо <code>a == null</code> и <code>b == null</code>;</li>
+<li>либо <code>a != null</code> и <code>a.equals(b)</code>.</li>
+</ul>
+<p>Вызов <code>Objects.hashCode(a)</code> возвращает <code>a.hashCode()</code>, если <code>a != null</code>, и <code>0</code> иначе. То есть, по сути, <code>0</code> считается хэш-кодом значения <code>null</code>.</p>
+<h2 id="нулебезопасный-tostring">Нулебезопасный <code>toString</code></h2>
+<p>Вызов <code>Objects.toString(a)</code> возвращает <code>a.toString()</code>, если <code>a != null</code>, и строку из четырёх символов <code>&quot;null&quot;</code> иначе.</p>
+<p>Иначе говоря, этот метод полностью аналогичен <code>String.valueOf</code> (на самом деле его он и вызывает) и возвращает ту строку, которую печатают <code>print(a)</code> и <code>println(a)</code>. Следующие три вызова всегда выводят одну и ту же строку:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Object x = ...;
+System.<span class="fu">out</span>.<span class="fu">println</span>(x);
+System.<span class="fu">out</span>.<span class="fu">println</span>(String.<span class="fu">valueOf</span>(x));
+System.<span class="fu">out</span>.<span class="fu">println</span>(Objects.<span class="fu">toString</span>(x));</code></pre></div>
+<p>Интересен второй вариант метода <code>Objects.toString</code> с двумя параметрами:</p>
+<p><code>static String toString(Object o, String nullDefault)</code></p>
+<p>Если первым параметром передать <code>null</code>, то он вернёт строку, переданную вторым параметром. Это может быть полезно, например, если требуется обрабатывать значения <code>null</code> как пустые строки (некоторые СУБД и библиотеки графического интерфейса не делают между ними различий).</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="co">// Преобразовать все null в пустые строки</span>
+<span class="kw">public</span> Stream&lt;String&gt; <span class="fu">nullStringsToEmpty</span>(Stream&lt;String&gt; input) {
+    <span class="kw">return</span> input.<span class="fu">map</span>(str -&gt; Objects.<span class="fu">toString</span>(str, <span class="st">&quot;&quot;</span>));
+}</code></pre></div>
+<p>Ещё один часто встречающийся случай — использование <code>null</code> как признака отсутствия значения (начиная с Java 8, для значений, которые могут отсутствовать, лучше использовать <code>Optional</code>, но уже существует большое количество старого кода, в котором используется такая идиома). Например, пусть мы храним список людей с датами рождения, но не все даты рождения известны:</p>
+<div id="class-person">
+
+</div>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> Person {
+    <span class="kw">private</span> <span class="dt">final</span> String name;
+    <span class="kw">private</span> <span class="dt">final</span> LocalDate dateOfBirth;
+    
+    <span class="kw">public</span> <span class="fu">Person</span>(<span class="dt">final</span> String name, <span class="dt">final</span> LocalDate dateOfBirth) {
+        <span class="kw">this</span>.<span class="fu">name</span> = name;
+        <span class="kw">this</span>.<span class="fu">dateOfBirth</span> = dateOfBirth;
+    }
+
+    <span class="kw">public</span> String <span class="fu">getName</span>() { <span class="kw">return</span> name; }
+    <span class="kw">public</span> LocalDate getDateOfBirth { <span class="kw">return</span> dateOfBirth; }
+}
+
+List&lt;Person&gt; greatConquerors = <span class="kw">new</span> ArrayList&lt;&gt;();
+IsoChronology chrono = IsoChronology.<span class="fu">INSTANCE</span>;
+
+greatConquerors.<span class="fu">add</span>(<span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Александр Македонский&quot;</span>,
+        chrono.<span class="fu">date</span>(IsoEra.<span class="fu">BCE</span>, <span class="dv">356</span>, Month.<span class="fu">JULY</span>, <span class="dv">20</span>)));
+greatConquerors.<span class="fu">add</span>(<span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Чингисхан&quot;</span>, <span class="kw">null</span>));
+greatConquerors.<span class="fu">add</span>(<span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Наполеон Бонапарт&quot;</span>,
+        chrono.<span class="fu">date</span>(<span class="dv">1769</span>, Month.<span class="fu">AUGUST</span>, <span class="dv">15</span>));</code></pre></div>
+<p>Тогда при выводе нашего списка мы можем подставить специальную строку для неизвестных значений:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">for</span> (Person p : greatConquerors) {
+    System.<span class="fu">out.printf</span>(<span class="st">&quot;Завоеватель: </span><span class="ch">%s</span><span class="st">, дата рождения: </span><span class="ch">%s\n</span><span class="st">&quot;</span>,
+            p.<span class="fu">getName</span>(), Objects.<span class="fu">toString</span>(p.<span class="fu">getDateOfBirth</span>(), <span class="st">&quot;неизвестна&quot;</span>));
+}</code></pre></div>
+<h2 id="проверка-предусловий">Проверка предусловий</h2>
+<p>К сожалению, язык Java не позволяет на синтаксическом уровне запретить передавать <code>null</code> в качестве параметра методов. Остаётся только описать в документации, какие параметры метода могут и не могут принимать <code>null</code> в качестве допустимого значения.</p>
+<p>Желательно, чтобы метод выбрасывал исключение сразу же, как только он увидит, что значения его параметров недопустимы. Это частный случай более общего принципа, предписывающего сигнализировать об ошибке как можно раньше <em>(fail-fast)</em> вместо того, чтобы продолжать выполнение и получить ошибку или, того хуже, некорректный результат работы метода где-нибудь дальше.</p>
+<p>Семейство методов <code>requireNonNull</code> служит для подобной <em>проверки предусловий</em> и, как правило, вызывается в самом начале метода.</p>
+<p><code>static &lt;T&gt; T requireNonNull(T obj)</code></p>
+<p><code>static &lt;T&gt; T requireNonNull(T obj, String message)</code></p>
+<p><code>static &lt;T&gt; T requireNonNull(T obj, Supplier&lt;String&gt; messageSupplier)</code></p>
+<p>Эти методы принимают ссылку на объект, возвращают её же и выбрасывают <code>NullPointerException</code> в случае, если она равна <code>null</code>. Можно задать сообщение (при желании — составляемое только по необходимости через <code>Supplier</code>) для выбрасываемого исключения.</p>
+<p>Например, можно вставить такую проверку в конструктор <a href="#class-person">класса Person</a>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="fu">Person</span>(String name, LocalDate dateOfBirth) {
+    <span class="kw">this</span>.<span class="fu">name</span> = Objects.<span class="fu">requireNonNull</span>(name, <span class="st">&quot;Name cannot be null&quot;</span>);
+    <span class="kw">this</span>.<span class="fu">dateOfBirth</span> = dateOfBirth;
+}</code></pre></div>
+<blockquote>
+<p>В библиотеке Guava есть класс <code>Preconditions</code>, методы которого позволяют подобным образом проводить не только проверку параметров на <code>null</code>, но и другие предусловия, выбрасывая для них нужный тип исключения, включая проверки на диапазон индексов (<code>IndexOutOfBoundsException</code>) и проверки произвольных ограничений на значения параметров (<code>IllegalArgumentException</code>).</p>
+</blockquote>
+<h2 id="предикаты-для-проверки-на-null-и-не-null">Предикаты для проверки на <code>null</code> и не-<code>null</code></h2>
+<p>В классе <code>Objects</code> есть ещё два статических метода, связанных с <code>null</code>:</p>
+<p><code>static boolean isNull(Object obj)</code></p>
+<p><code>static boolean nonNull(Object obj)</code></p>
+<p>Они эквивалентны соответственно <code>obj == null</code> и <code>obj != null</code> и применяются в основном для удобства операций с функциональными интерфейсами типа <code>Predicate</code>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;Object&gt; values = Arrays.<span class="fu">asList</span>(<span class="dv">42</span>, <span class="kw">null</span>, <span class="kw">null</span>, <span class="st">&quot;test&quot;</span>);
+values.<span class="fu">stream</span>().<span class="fu">filter</span>(Objects::isNull)   <span class="co">// null, null</span>
+values.<span class="fu">stream</span>().<span class="fu">filter</span>(x -&gt; x == <span class="kw">null</span>)    <span class="co">// null, null</span>
+values.<span class="fu">stream</span>().<span class="fu">filter</span>(Objects::nonNull)  <span class="co">// 42, &quot;test&quot;</span>
+values.<span class="fu">stream</span>().<span class="fu">filter</span>(x -&gt; x != <span class="kw">null</span>)    <span class="co">// 42, &quot;test&quot;</span></code></pre></div>
+<h2 id="хэш-код-последовательности-значений">Хэш-код последовательности значений</h2>
+<p>Последний заслуживающий интереса метод класса <code>Objects</code> никак не связан с проверками на <code>null</code>.</p>
+<p><code>static int hash(Object... values)</code></p>
+<p>Он предназначен для удобства вычисления одного <code>hashCode</code> сразу по нескольким значениям. Как правило, он применяется для реализации <code>hashCode</code> в классах, объединяющих несколько значений. Например, мы могли бы так реализовать методы <code>equals</code> и <code>hashCode</code> для <a href="#class-person">класса Person</a>:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> Person {
+    <span class="kw">private</span> <span class="dt">final</span> String name;
+    <span class="kw">private</span> <span class="dt">final</span> LocalDate dateOfBirth;
+    ...
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span>(Object other) {
+        <span class="kw">if</span> (<span class="kw">this</span> == other) {
+            <span class="kw">return</span> <span class="kw">true</span>;
+        }
+        
+        <span class="kw">if</span> (!(other <span class="kw">instanceof</span> Person)) {
+            <span class="kw">return</span> <span class="kw">false</span>;
+        }
+        
+        Person p = (Person) other;
+        <span class="kw">return</span> name.<span class="fu">equals</span>(p.<span class="fu">name</span>) &amp;&amp; Objects.<span class="fu">equals</span>(dateOfBirth, p.<span class="fu">dateOfBirth</span>);
+    }
+    
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">hashCode</span>() {
+        <span class="kw">return</span> Objects.<span class="fu">hash</span>(name, dateOfBirth);
+    }
+}</code></pre></div>
+<p>При этом следующие три вызова всегда дают один и тот же результат:</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Objects.<span class="fu">hash</span>(obj1, ..., objN)
+Arrays.<span class="fu">hashCode</span>(<span class="kw">new</span> Object[] { obj1, ..., objN })
+Arrays.<span class="fu">asList</span>(obj1, ..., objN).<span class="fu">hashCode</span>()</code></pre></div>
+<blockquote>
+<p>Не путайте методы <code>Objects.hash</code> и <code>Objects.hashCode</code>. Если <code>Objects.hash</code> вызвать с одним параметром (например, <code>x</code>), он вернёт значение, отличающееся от результата <code>Objects.hashCode(x)</code> (которое, как мы помним, возвращает <code>x.hashCode()</code> либо <code>0</code> для <code>null</code>). Иначе говоря, <code>Objects.hash(x) != Objects.hashCode(x)</code>.</p>
+</blockquote>
+</body>
+</html>
