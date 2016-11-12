@@ -243,7 +243,7 @@ Files.newDirectoryStream(dir, file -> {
 каталог, в котором будет создан временный файл или каталог. Если он не задан, используется стандартный системный каталог
 для временных файлов (`/tmp` в Unix, `%TEMP%` в Windows).
 
-`static void copy(Path source, Path target, CopyOption... options) throws IOException`<br />`static void copy(InputStream in, Path target, CopyOption... options) throws IOException`<br />`static void copy(Path source, OutputStream out, CopyOption... options) throws IOException`
+`static void copy(Path source, Path target, CopyOption... options)`<br /><code>&nbsp;&nbsp;&nbsp;&nbsp;throws IOException</code><br />`static void copy(InputStream in, Path target, CopyOption... options)`<br /><code>&nbsp;&nbsp;&nbsp;&nbsp;throws IOException</code><br />`static void copy(Path source, OutputStream out, CopyOption... options)`<br /><code>&nbsp;&nbsp;&nbsp;&nbsp;throws IOException</code>
 : Копирует файл, либо перезаписывает файл содержимым потока ввода, либо записывает содержимое файла в поток вывода.
 
 В методах `move` и `copy` можно использовать следующие необязательные константы после имени файла:

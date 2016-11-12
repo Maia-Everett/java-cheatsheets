@@ -1,6 +1,6 @@
 body {
 	font-family: Lato;
-	font-size: 13pt;
+	font-size: 12pt;
 	color: #111;
 }
 
@@ -22,7 +22,7 @@ p, ul {
 	body {
 		margin: 0 auto 2em auto;
 		padding: 1em;
-		max-width: 894px;
+		max-width: 780px;
 	}
 }
 
@@ -32,7 +32,7 @@ code {
 	background-color: #f5f5f5;
 }
 
-pre {
+p > code, li > code, pre {
 	font-size: 11pt;
 }
 
@@ -58,6 +58,7 @@ blockquote {
 	color: #555;
 	background: #f8f8f8;
 	min-height: 4em;
+	font-size: inherit;
 }
 
 blockquote::before {
