@@ -39,7 +39,8 @@ SLF4J &mdash; это де факто стандарт для абстрактн�
 > ```
 > SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 > SLF4J: Defaulting to no-operation (NOP) logger implementation
-> SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+> SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further
+> details.
 > ```
 >
 > Имеется в виду, что при отсутствии в classpath какой-либо другой реализации выбирается реализация, не выполняющая
