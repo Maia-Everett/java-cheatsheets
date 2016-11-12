@@ -1,6 +1,7 @@
 SOURCES = $(shell echo *.md)
 HTMLS = $(SOURCES:%.md=html/%.html)
 PDFS = $(SOURCES:%.md=pdf/%.pdf)
+DPI := $(shell xrdb -q | grep dpi | egrep -o "[0-9]+")
 
 all: $(HTMLS)
 
