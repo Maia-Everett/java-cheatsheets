@@ -11,8 +11,10 @@ html/%.html: %.md
 	pandoc $< -f markdown -t html -c css/bootstrap.css -c css/style.css -c css/font-awesome.css -s --toc -o $@
 
 pdf/%.pdf: html/%.html
-	mkdir -p pdf
-	wkhtmltopdf --enable-internal-links --zoom 0.8 $< $@
+	mkdir -p pdf/`dirname $<`
+	echo 'Xft.dpi: 96' | xrdb -override
+	wkhtmltopdf --enable-internal-links -s b5 $< $@
+	echo 'Xft.dpi: $(DPI)' | xrdb -override
 
 clean:
 	rm $(HTMLS) $(PDFS)
