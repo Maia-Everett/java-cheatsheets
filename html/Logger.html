@@ -54,7 +54,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="TOC">
 <ul>
 <li><a href="#описание">Описание</a></li>
-<li><a href="#подключение-библиотеки-slf4j">Подключение библиотеки SLF4J</a></li>
+<li><a href="#подключение-библиотеки-slf4j-gradle">Подключение библиотеки SLF4J: Gradle</a></li>
+<li><a href="#подключение-библиотеки-slf4j-вручную">Подключение библиотеки SLF4J вручную</a></li>
 <li><a href="#пять-уровней-логирования">Пять уровней логирования</a></li>
 <li><a href="#получение-объекта-логгера">Получение объекта-логгера</a></li>
 <li><a href="#логирование-сообщений">Логирование сообщений</a></li>
@@ -65,7 +66,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Интерфейс: <a href="http://www.slf4j.org/api/org/slf4j/Logger.html">org.slf4j.Logger</a></p>
 <h2 id="описание">Описание</h2>
 <p>Абстрактный интерфейс для логирования сообщений, часть абстрактного API для логирования SLF4J, без привязки к конкретной реализации этого API.</p>
-<h2 id="подключение-библиотеки-slf4j">Подключение библиотеки SLF4J</h2>
+<h2 id="подключение-библиотеки-slf4j-gradle">Подключение библиотеки SLF4J: Gradle</h2>
+<p>Посмотреть последнюю версию <a href="https://www.slf4j.org/download.html">здесь</a> (сейчас это 1.7.25).</p>
+<p>Добавить в <code>build.gradle</code> зависимость от SLF4J API:</p>
+<pre><code>compile &#39;org.slf4j:slf4j-api:НомерВерсии&#39;</code></pre>
+<p>И одну из реализаций (для Android это <code>slf4j-android</code>, для простых учебных Java-проектов подойдёт <code>slf4j-simple</code>).</p>
+<pre><code>compile &#39;org.slf4j:slf4j-android:НомерВерсии&#39;</code></pre>
+<h2 id="подключение-библиотеки-slf4j-вручную">Подключение библиотеки SLF4J вручную</h2>
 <p>В составе JDK есть собственнный пакет логирования (<code>java.util.logging</code>), но у него есть недостаток: он привязан к одной конкретной реализации логирования, к той, которая содержится в самом JDK. Разработчики приложений могут предпочесть ей стороннюю библиотеку логирования, обладающую расширенными возможностями; для разработчиков же библиотек, использующих логирование, нежелательно привязываться к конкретной реализации логирования, а желательно оставлять выбор реализации за разработчиком приложения, использующего эту библиотеку.</p>
 <p>SLF4J — это де факто стандарт для абстрактного API логирования. Библиотеки, использующие логирование, добавляют в зависимости крошечную библиотеку <code>slf4j-api</code>, содержащую только интерфейсы самого API логирования. Приложения же при развёртывании поставляют две библиотеки: само API и одну из его реализаций.</p>
 <p>Реализаций SLF4J API существует несколько. Для учебных примеров нам вполне подойдёт простая реализация <code>slf4j-simple</code>, которая просто записывает все сообщения логирования в один файл или в консоль (по умолчанию — <code>System.err</code>). Для сеьёзных проектов имеет смысл посмотреть на одну из промышленных библиотек логирования. Например, <code>Logback</code> — эталонная реализация SLF4J API от тех же разработчиков — это мощная библиотека с гибкими средствами конфигурации, форматирования и направления сообщений логирования в консоль, файлы, по почте или в определённые пользователем приёмники сообщений.</p>
@@ -103,13 +110,13 @@ details.</code></pre>
 <p><code>static Logger getLogger(String name)</code></p>
 <p><code>static Logger getLogger(Class&lt;?&gt; clazz)</code></p>
 <p>В случае вызова метода <code>getLogger</code> с параметром <code>Class</code> возвращается логгер с именем, равным полному имени переданного класса. Например, в следующем коде</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package com.mycompany;</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package</span><span class="im"> com.mycompany;</span>
 
-<span class="kw">import org.slf4j.Logger;</span>
-<span class="kw">import org.slf4j.LoggerFactory;</span>
+<span class="kw">import</span><span class="im"> org.slf4j.Logger;</span>
+<span class="kw">import</span><span class="im"> org.slf4j.LoggerFactory;</span>
 
 <span class="kw">public</span> <span class="kw">class</span> MyClass {
-    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> Logger log = LoggerFactory.<span class="fu">getLogger</span>(MyClass.<span class="fu">class</span>);
+    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> <span class="bu">Logger</span> log = LoggerFactory.<span class="fu">getLogger</span>(MyClass.<span class="fu">class</span>);
 }</code></pre></div>
 <p>имя логгера, присвоенного полю <code>log</code>, будет равно <code>com.mycompany.MyClass</code>.</p>
 <p>Показанный код является стандартной идиомой для создания логгеров: каждый класс содержит в себе собственную ссылку на используемый им логгер в <code>private static final</code>-поле.</p>
@@ -136,13 +143,13 @@ details.</code></pre>
 log.<span class="fu">info</span>(<span class="st">&quot;Нулевая ссылка отображается как {}&quot;</span>, <span class="kw">null</span>);
 <span class="co">// Нулевая ссылка отображается как null</span></code></pre></div>
 <p>Зачем в SLF4J используется свой собственный формат сообщений, когда есть <code>String.format</code>? Дело в том, что SLF4J API был спроектирован до выхода Java 5, то есть до появления <code>String.format</code>. Кроме того, логирование критично к производительности, и такой простой формат сообщений значительно быстрее, чем полные возможности <code>String.format</code>. Но, конечно, ничто не запрещает использовать свои собственные средства форматирования вместо встроенных:</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">log.<span class="fu">info</span>(String<span class="fu">.format</span>(<span class="st">&quot;</span><span class="ch">%04d</span><span class="st">&quot;</span>, <span class="dv">42</span>));
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">log.<span class="fu">info</span>(<span class="bu">String</span><span class="fu">.format</span>(<span class="st">&quot;</span><span class="sc">%04d</span><span class="st">&quot;</span>, <span class="dv">42</span>));
 <span class="co">// 0042</span></code></pre></div>
 <p>Другая причина состоит в том, что форматирование сообщений в SLF4J осуществляется лениво, только в том случае, если соответствующий уровень логирования включён в конфигурации логирования. Это позволяет избежать лишнего форматирования строк, которые на самом деле никуда не будут выведены.</p>
 <h2 id="оптимизация-логирования-с-дорогими-операциями">Оптимизация логирования с дорогими операциями</h2>
 <p>Представим себе, что сообщение логирования выводит результат какой-нибудь дорогой операции, которая может замедлить работу приложения. Конечно, использование стандартных средств форматирования SLF4J позволит избежать лишнего слияния строк и строковых представлений объектов, но сами объекты при этом будут созданы:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="co">// Неоптимальное логирование с дорогими операциями - не делайте так!</span>
-List&lt;String&gt; words = <span class="fu">getWords</span>();
+<span class="bu">List</span>&lt;<span class="bu">String</span>&gt; words = <span class="fu">getWords</span>();
 log.<span class="fu">debug</span>(<span class="st">&quot;Words in sorted order: {}&quot;</span>,
         words.<span class="fu">stream</span>().<span class="fu">sorted</span>().<span class="fu">collect</span>(Collectors.<span class="fu">joining</span>(<span class="st">&quot;, &quot;</span>)));</code></pre></div>
 <p>В нашем случае, даже если уровень <code>DEBUG</code> отключён в настройках логирования, операции сортировки и слияния списка слов всё равно будут выполнены — вхолостую. Имеет смысл выполнять их только в случае, если соответствующий уровень логирования включён. Для такой проверки в классе <code>Logger</code> имеется пять методов, по одному на каждый уровень:</p>
@@ -152,7 +159,7 @@ log.<span class="fu">debug</span>(<span class="st">&quot;Words in sorted order: 
 <p><code>boolean isDebugEnabled()</code></p>
 <p><code>boolean isTraceEnabled()</code></p>
 <p>Пользуясь этим средством, мы могли бы оптимизировать свой код:</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">List&lt;String&gt; words = <span class="fu">getWords</span>();
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="bu">List</span>&lt;<span class="bu">String</span>&gt; words = <span class="fu">getWords</span>();
 
 <span class="kw">if</span> (log.<span class="fu">isDebugEnabled</span>()) {
     log.<span class="fu">debug</span>(<span class="st">&quot;Words in sorted order: {}&quot;</span>,
@@ -168,13 +175,13 @@ log.<span class="fu">debug</span>(<span class="st">&quot;Words in sorted order: 
 <p>Эти методы не поддерживают форматирование сообщений (хотя для него всегда можно использовать сторонние средства форматирования, например, <code>String.format</code>). Эта форма методов логирования записывает в лог сначала сообщение, переданное первым параметром, а затем — сообщение и трассировку стека для переданного исключения.</p>
 <p>Например, следующий код</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> ExceptionLogging {
-    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> Logger log =
+    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> <span class="bu">Logger</span> log =
             LoggerFactory.<span class="fu">getLogger</span>(ExceptionLogging.<span class="fu">class</span>);
 
-    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(<span class="bu">String</span>[] args) {
         <span class="kw">try</span> {
             Files.<span class="fu">size</span>(Paths.<span class="fu">get</span>(<span class="st">&quot;/invalid/invalid&quot;</span>));
-        } <span class="kw">catch</span> (<span class="dt">final</span> IOException e) {
+        } <span class="kw">catch</span> (<span class="dt">final</span> <span class="bu">IOException</span> e) {
             log.<span class="fu">error</span>(<span class="st">&quot;Не удалось получить размер файла&quot;</span>, e);
         }
     }
